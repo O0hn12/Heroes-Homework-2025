@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Heroes adventure 2025</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=18+Khebrat+Musamim:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Forte&display=swap');
+
+    body {
+      background-image: url('https://i.imgur.com/jKMhKlP.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: scroll;
+      color: white;
+      text-align: center;
+      font-family: '18 Khebrat Musamim', serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .data-section, .search-section {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      margin: 20px;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    h2 {
+      font-size: 2em;
+      text-shadow: 2px 2px 5px #000000;
+    }
+
+    label {
+      font-size: 1.2em;
+      margin-right: 10px;
+      text-align: right;
+      width: 100px;
+    }
+
+    input, button {
+      font-size: 1.2em;
+      font-family: '18 Khebrat Musamim', serif;
+      text-align: center;
+      padding: 10px;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 30px;
+      border-collapse: collapse;
+      display: none;
+      font-family: '18 Khebrat Musamim', serif;
+      font-size: 1.2em;
+      direction: rtl;
+    }
+
+    th, td {
+      border: 1px solid white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .suggestion-item {
+      cursor: pointer;
+      padding: 5px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .suggestion-item:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const spreadsheetId = '<?= spreadsheetId ?>';
+    const sheetName = '<?= sheetName ?>';
+
+    google.script.run.withSuccessHandler(setupAutocomplete).getAllNames();
+
+    function setupAutocomplete(names) {
+      const searchInput = document.getElementById("search");
+      const suggestions = document.getElementById("suggestions");
+
+      searchInput.addEventListener("input", function () {
+        const inputValue = searchInput.value.toLowerCase();
+        suggestions.innerHTML = "";
+
+        if (inputValue.trim() === "") return;
+
+        names.forEach(name => {
+          if (name.toLowerCase().startsWith(inputValue)) {
+            const suggestionItem = document.createElement("div");
+            suggestionItem.innerHTML = name;
+            suggestionItem.className = "suggestion-item";
+            suggestionItem.onclick = function () {
+              searchInput.value = name;
+              suggestions.innerHTML = "";
+            };
+            suggestions.appendChild(suggestionItem);
+          }
+        });
+      });
+    }
+
+    function login() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (username === 'John-2020' && password === 'viscabarca') {
+        alert('Login successful!');
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('main-section').style.display = 'block';
+        document.querySelector('.search-section').style.display = 'block';
+      } else {
+        alert('Invalid username or password.');
+      }
+    }
+
+    function searchName() {
+      const name = document.getElementById('search').value;
+      google.script.run.withSuccessHandler(showResults).searchName(spreadsheetId, sheetName, name);
+    }
+
+    function showResults(result) {
+      const tableBody = document.getElementById('resultTable').querySelector('tbody');
+      tableBody.innerHTML = "";
+
+      if (result.found) {
+        const data = result.data;
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${data[0]}</td>` + data.slice(1).map(val => `<td>${val || 0}</td>`).join('');
+        tableBody.appendChild(row);
+        document.getElementById('resultTable').style.display = 'table';
+      } else {
+        document.getElementById('resultTable').style.display = 'none';
+        alert('الاسم غير موجود.');
+      }
+    }
+  </script>
+
+  <div id="login-section">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <div class="highlight-box">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" style="font-size: 1.2em; width: 80%;">
+      </div>
+      <div class="highlight-box">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" style="font-size: 1.2em; width: 80%;">
+      </div>
+      <button type="button" onclick="login()" style="font-size: 1.2em;">Login</button>
+    </form>
+  </div>
+
+  <div class="data-section" style="display: none;" id="main-section">
+    <h2>Heroes adventure 2025</h2>
+    <form id="dataForm">
+      <div class="form-group">
+        <label for="name">الاسم</label>
+        <input type="text" id="name" name="name" placeholder="ادخل الاسم" style="font-size: 1.2em;" list="namesList">
+        <datalist id="namesList">
+          <?!= allNames ? allNames.map(name => `<option value="${name}"></option>`).join('') : '' ?>
+        </datalist>
+      </div>
+      <div class="form-group">
+        <label for="grade">الدرجة</label>
+        <input type="number" id="grade" name="grade" placeholder="ادخل الرقم" min="0" max="5" required style="font-size: 1.2em;">
+      </div>
+      <button type="submit" style="font-size: 1.2em;">Submit</button>
+    </form>
+  </div>
+
+  <div class="search-section" style="display: none;">
+    <h2>Search for data</h2>
+    <div class="form-group">
+      <label for="search">الاسم</label>
+      <input type="text" id="search" name="search" placeholder="ادخل الاسم" style="font-size: 1.2em;" autocomplete="off">
+      <div id="suggestions"></div>
+    </div>
+    <button type="button" onclick="searchName()" style="font-size: 1.2em;">Search</button>
+    <div class="table-container">
+      <table id="resultTable" class="table-visible">
+        <thead>
+          <tr>
+            <th>الاسم</th>
+            <th>الاسبوع الاول</th>
+            <th>الاسبوع الثانى</th>
+            <th>الاسبوع الثالث</th>
+            <th>الاسبوع الرابع</th>
+            <th>الاسبوع الخامس</th>
+            <th>الاسبوع السادس</th>
+            <th>الاسبوع السابع</th>
+            <th>الاسبوع الثامن</th>
+            <th>الاسبوع التاسع</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
