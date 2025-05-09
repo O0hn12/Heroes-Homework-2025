@@ -103,29 +103,29 @@
     google.script.run.withSuccessHandler(setupAutocomplete).getAllNames();
 
     function setupAutocomplete(names) {
-      const searchInput = document.getElementById("search");
-      const suggestions = document.getElementById("suggestions");
+  const searchInput = document.getElementById("search");
+  const suggestions = document.getElementById("suggestions");
 
-      searchInput.addEventListener("input", function () {
-        const inputValue = searchInput.value.toLowerCase();
-        suggestions.innerHTML = "";
+  searchInput.addEventListener("input", function () {
+    const inputValue = searchInput.value.toLowerCase();
+    suggestions.innerHTML = "";
 
-        if (inputValue.trim() === "") return;
+    if (inputValue.trim() === "") return;
 
-        names.forEach(name => {
-          if (name.toLowerCase().startsWith(inputValue)) {
-            const suggestionItem = document.createElement("div");
-            suggestionItem.innerHTML = name;
-            suggestionItem.className = "suggestion-item";
-            suggestionItem.onclick = function () {
-              searchInput.value = name;
-              suggestions.innerHTML = "";
-            };
-            suggestions.appendChild(suggestionItem);
-          }
-        });
-      });
-    }
+    names.forEach(name => {
+      if (name.toLowerCase().startsWith(inputValue)) {
+        const suggestionItem = document.createElement("div");
+        suggestionItem.innerText = name;  // استخدم innerText بدلًا من innerHTML
+        suggestionItem.className = "suggestion-item";
+        suggestionItem.onclick = function () {
+          searchInput.value = name;
+          suggestions.innerHTML = "";
+        };
+        suggestions.appendChild(suggestionItem);
+      }
+    });
+  });
+}
 
     function login() {
       const username = document.getElementById('username').value.trim();
@@ -141,50 +141,50 @@
       }
     }
 
-    function searchName() {
-      const name = document.getElementById('search').value;
-      google.script.run.withSuccessHandler(showResults).searchName(spreadsheetId, sheetName, name);
-    }
-
-    function showResults(result) {
-      const tableBody = document.getElementById('resultTable').querySelector('tbody');
-      tableBody.innerHTML = "";
-
-      if (result.found) {
-        const data = result.data;
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${data[0]}</td>` + data.slice(1).map(val => `<td>${val || 0}</td>`).join('');
-        tableBody.appendChild(row);
-        document.getElementById('resultTable').style.display = 'table';
-      } else {
-        document.getElementById('resultTable').style.display = 'none';
-        alert('الاسم غير موجود.');
-      }
-    }
-
     function handleSubmit(event) {
-      event.preventDefault(); // ⛔ منع إعادة تحميل الصفحة
+  event.preventDefault(); // منع إعادة تحميل الصفحة عند الضغط على Submit
 
-      const name = document.getElementById("name").value.trim();
-      const grade = document.getElementById("grade").value.trim();
+  const name = document.getElementById("name").value.trim();
+  const grade = document.getElementById("grade").value.trim();
 
-      if (!name || grade === "") {
-        alert("يجب إدخال الاسم والدرجة.");
-        return;
+  if (!name || grade === "") {
+    alert("يجب إدخال الاسم والدرجة.");
+    return;
+  }
+
+  // نرسل البيانات إلى Google Apps Script
+  google.script.run
+    .withSuccessHandler(function(response) {
+      if (response.success) {
+        alert("تم الحفظ بنجاح!");
+        document.getElementById("dataForm").reset();
+      } else {
+        alert("حدث خطأ: " + response.message);
       }
+    })
+    .processFormData(spreadsheetId, sheetName, name, Number(grade), false, "");
+}
 
-      // نرسل البيانات إلى Google Apps Script
-      google.script.run
-        .withSuccessHandler(function(response) {
-          if (response.success) {
-            alert("تم الحفظ بنجاح!");
-            document.getElementById("dataForm").reset();
-          } else {
-            alert("حدث خطأ: " + response.message);
-          }
-        })
-        .processFormData(spreadsheetId, sheetName, name, Number(grade), false, "");
-    }
+function searchName() {
+  const name = document.getElementById('search').value;
+  google.script.run.withSuccessHandler(showResults).searchName(spreadsheetId, sheetName, name);
+}
+
+function showResults(result) {
+  const tableBody = document.getElementById('resultTable').querySelector('tbody');
+  tableBody.innerHTML = "";
+
+  if (result.found) {
+    const data = result.data;
+    const row = document.createElement('tr');
+    row.innerHTML = `<td>${data[0]}</td>` + data.slice(1).map(val => `<td>${val || 0}</td>`).join('');
+    tableBody.appendChild(row);
+    document.getElementById('resultTable').style.display = 'table';
+  } else {
+    document.getElementById('resultTable').style.display = 'none';
+    alert('الاسم غير موجود.');
+  }
+}
   </script>
 
   <div id="login-section">
