@@ -15,78 +15,52 @@ function getAllNames() {
     const nameColumn = sheet.getRange("A:A").getValues();
     const uniqueNames = [...new Set(nameColumn.flat().filter(String))]; // Get unique names and remove empty strings
     Logger.log('Unique Names: ' + uniqueNames);
-return uniqueNames;
+    return uniqueNames;
   } catch (error) {
     Logger.log(`Error in getAllNames: ${error.message}`);
     return [];
   }
 }
 
-function processFormData(spreadsheetId, sheetName, identifier, number, useQrNumber, qrNumber) {
+function processFormData(spreadsheetId, sheetName, identifier, number) {
   try {
     const ss = SpreadsheetApp.openById(spreadsheetId);
     const sheet = ss.getSheetByName(sheetName);
 
-    let range;
-    let qrRange;
-    let column;
-
-    if (useQrNumber) {
-      column = "O"; // البحث في عمود QR Number
-    } else {
-      column = "A"; // البحث في عمود الاسم
-    }
-
-    range = sheet.getRange(`${column}:${column}`).getValues();
-    qrRange = sheet.getRange("N:O").getValues(); // العمود QR Number
-    Logger.log(`Range: ${range}`);
-    Logger.log(`QR Range: ${qrRange}`);
-
+    let range = sheet.getRange("A:A").getValues();
     let found = false;
     let rowIndex = -1;
-    let qrFound = false;
-    let qrRowIndex = -1;
 
-    // Check if the identifier exists in the specified column
-    if (!useQrNumber) {
-      for (let i = 0; i < range.length; i++) {
-        if (range[i][0] === identifier) {
-          rowIndex = i + 1;
-          found = true;
-          Logger.log(`Identifier ${identifier} found at row ${rowIndex}`);
-          break;
-        }
+    // Check if the identifier (name) exists in the specified column
+    for (let i = 0; i < range.length; i++) {
+      if (range[i][0] === identifier) {
+        rowIndex = i + 1;
+        found = true;
+        Logger.log(`Identifier ${identifier} found at row ${rowIndex}`);
+        break;
       }
     }
 
-    // Check if the QR number exists in the QR column
-    if (useQrNumber) {
-      for (let i = 0; i < qrRange.length; i++) {
-        Logger.log(`Checking QR Number ${qrRange[i][0]} against input ${qrNumber}`);
-        if (qrRange[i][0] === qrNumber) {
-          qrRowIndex = i + 1;
-          qrFound = true;
-          Logger.log(`QR number ${qrNumber} found at row ${qrRowIndex}`);
-          break;
+    // If the identifier is found, add the number in the first empty column
+    if (found) {
+      const rowValues = sheet.getRange(rowIndex, 2, 1, 12).getValues()[0];
+      let lastFilledIndex = -1;
+      for (let i = 0; i < rowValues.length; i++) {
+        if (rowValues[i] !== '') {
+          lastFilledIndex = i;
         }
       }
-    }
 
-    // Update the row based on the found status
-    if (qrFound) {
-      processQrNumber(qrNumber, number); // تعديل مرتبط برقم QR
-    } else if (found) {
-      updateRow(sheet, rowIndex, number);
-    } else if (useQrNumber) {
-      Logger.log(`QR Number ${qrNumber} not found, no row updated.`);
-      return { success: false, message: "QR Number not found!" };
+      if (lastFilledIndex + 1 < rowValues.length) {
+        sheet.getRange(rowIndex, lastFilledIndex + 3).setValue(number); // Add number to the next empty cell
+      } else {
+        Logger.log("No more columns available to add the number.");
+      }
     } else {
-      // Add the new name under the last name in column A
+      // If the identifier is not found, add a new row with the identifier and number
       const lastRowWithName = sheet.getRange("A:A").getValues().filter(row => row[0] !== "").length;
-      sheet.getRange(lastRowWithName + 1, 1).setValue(identifier); // إضافة الاسم الجديد
-
-      // Add the number in the first column within the range 2-13
-      sheet.getRange(lastRowWithName + 1, 2).setValue(number); // الرقم يذهب لأول عمود
+      sheet.getRange(lastRowWithName + 1, 1).setValue(identifier); // Add name in the first column
+      sheet.getRange(lastRowWithName + 1, 2).setValue(number); // Add number in the second column
     }
 
     // Perform zero-filling for all rows based on the largest column filled
@@ -98,82 +72,12 @@ function processFormData(spreadsheetId, sheetName, identifier, number, useQrNumb
     return { success: false, message: error.message };
   }
 }
-function processQrNumber(qrNumber, newNumber) {
-  try {
-    // التحقق من أن QR Number موجود
-    if (!qrNumber) {
-      Logger.log("Error: QR Number is undefined or empty.");
-      return { success: false, message: "QR Number is required!" };
-    }
 
-    const ss = SpreadsheetApp.openById(spreadsheetId);
-    const sheet = ss.getSheetByName(sheetName);
-
-    // قراءة البيانات من عمود QR Number 1 مع تنظيفها وتحويلها لنصوص
-    const qrRange = sheet.getRange("O:O").getValues().map(cell => cell[0] ? cell[0].toString().trim() : "");
-    const inputQrNumber = qrNumber.toString().trim();
-    let targetRow = -1;
-
-    // فحص البيانات عبر Regex وطباعة التفاصيل
-    Logger.log("=== Debugging Comparison with Regex ===");
-    Logger.log(`Input QR Number: '${inputQrNumber}'`);
-    for (let i = 0; i < qrRange.length; i++) {
-      const qrInSheet = qrRange[i];
-      Logger.log(`Row ${i + 1}: Comparing QR in Sheet = '${qrInSheet}' with Input = '${inputQrNumber}'`);
-
-      // استخدام regex للمقارنة
-      if (qrInSheet.match(new RegExp(`^${inputQrNumber}$`))) {
-        Logger.log("Match found using regex!");
-        targetRow = i + 1;
-        break;
-      } else {
-        Logger.log("No match at this row.");
-      }
-    }
-
-    if (targetRow === -1) {
-      Logger.log(`QR Number ${inputQrNumber} not found.`);
-      return { success: false, message: "QR Number not found!" };
-    }
-
-    Logger.log(`QR Number ${inputQrNumber} found at row ${targetRow}.`);
-
-    // باقي الكود لمعالجة الصف وإضافة الرقم الجديد
-    const rowValues = sheet.getRange(targetRow, 2, 1, 12).getValues()[0];
-    let lastFilledIndex = -1;
-
-    for (let j = 0; j < rowValues.length; j++) {
-      if (rowValues[j] !== '') {
-        lastFilledIndex = j;
-      }
-    }
-
-    if (lastFilledIndex + 1 < rowValues.length) {
-      sheet.getRange(targetRow, lastFilledIndex + 3).setValue(newNumber);
-      Logger.log(`Added ${newNumber} to row ${targetRow}, column ${lastFilledIndex + 3}`);
-    } else {
-      Logger.log("No more columns available to add the number.");
-      return { success: false, message: "No more columns available!" };
-    }
-
-    for (let j = 0; j < lastFilledIndex; j++) {
-      if (rowValues[j] === '') {
-        sheet.getRange(targetRow, j + 2).setValue(0);
-      }
-    }
-
-    return { success: true, message: "Number added successfully!" };
-
-  } catch (error) {
-    Logger.log(`Error: ${error.message}`);
-    return { success: false, message: error.message };
-  }
-}
 function zeroFillAllRows(sheet) {
-  const allRows = sheet.getRange(2, 2, sheet.getLastRow() - 1, 12).getValues(); // الأعمدة من 2 إلى 13
+  const allRows = sheet.getRange(2, 2, sheet.getLastRow() - 1, 12).getValues(); // Columns from 2 to 13
   let maxColumnIndex = -1;
 
-  // تحديد أكبر عمود فيه بيانات
+  // Find the largest filled column
   for (let i = 0; i < allRows.length; i++) {
     const currentRow = allRows[i];
     for (let j = 0; j < currentRow.length; j++) {
@@ -183,34 +87,15 @@ function zeroFillAllRows(sheet) {
     }
   }
 
-  // تصفير كل الصفوف حتى العمود الذي يسبق آخر عمود مليان
+  // Zero-fill all rows up to the largest filled column
   const lastRowWithName = sheet.getRange("A:A").getValues().filter(row => row[0] !== "").length;
   for (let i = 2; i <= lastRowWithName; i++) {
     const row = sheet.getRange(i, 2, 1, 12).getValues()[0];
-    for (let j = 0; j < maxColumnIndex; j++) { // نوقف عند العمود الذي يسبق الأخير
+    for (let j = 0; j < maxColumnIndex; j++) { // Stop at the second-to-last filled column
       if (row[j] === '') {
-        sheet.getRange(i, j + 2).setValue(0); // ملء الخلايا الفارغة بالقيمة 0
+        sheet.getRange(i, j + 2).setValue(0); // Fill empty cells with 0
       }
     }
-  }
-}
-
-function updateRow(sheet, rowIndex, number) {
-  const row = sheet.getRange(rowIndex, 2, 1, 12).getValues()[0];
-  let lastFilledIndex = -1;
-
-  // تحديد آخر عمود مليان
-  for (let j = 0; j < row.length; j++) {
-    if (row[j] !== '') {
-      lastFilledIndex = j;
-    }
-  }
-
-  // إضافة الرقم في العمود التالي لآخر عمود مليان
-  if (lastFilledIndex + 1 < row.length) {
-    sheet.getRange(rowIndex, lastFilledIndex + 3).setValue(number);
-  } else {
-    Logger.log("No more columns available to add the number.");
   }
 }
 
@@ -220,12 +105,11 @@ function searchName(spreadsheetId, sheetName, identifier) {
     const sheet = ss.getSheetByName(sheetName);
 
     const nameRange = sheet.getRange("A:A").getValues();
-    const qrRange = sheet.getRange("O:O").getValues(); // البحث في عمود O
     let data = [];
     let found = false;
 
     for (let i = 0; i < nameRange.length; i++) {
-      if (nameRange[i][0] === identifier || qrRange[i][0] === identifier) {
+      if (nameRange[i][0] === identifier) {
         data = sheet.getRange(i + 1, 1, 1, 13).getValues()[0]; // Get columns A to M
         found = true;
         break;
@@ -236,15 +120,5 @@ function searchName(spreadsheetId, sheetName, identifier) {
   } catch (error) {
     Logger.log(`Error: ${error.message}`);
     return { success: false, message: error.message };
-  }
-}
-
-function debugQrColumn() {
-  const ss = SpreadsheetApp.openById(spreadsheetId); // معرف الشيت
-  const sheet = ss.getSheetByName(sheetName); // اسم الصفحة
-  const qrRange = sheet.getRange("O:O").getValues(); // العمود QR Number 1
-
-  for (let i = 0; i < qrRange.length; i++) {
-    Logger.log(`Row ${i + 1}: ${qrRange[i][0]}`); // طباعة كل قيمة موجودة في العمود
   }
 }
