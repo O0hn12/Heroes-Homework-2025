@@ -149,7 +149,7 @@
   </div>
 
   <script>
-    const scriptURL = 'http://localhost:3000/proxy?action=getAllNames'; // تأكد من أن الخادم المحلي يعمل على هذا الرابط
+    const scriptURL = 'http://localhost:3000/proxy'; // تأكد من أن الخادم المحلي يعمل على هذا الرابط
     let allNames = [];
 
     fetch(scriptURL + '?action=getAllNames')
@@ -236,7 +236,6 @@
         });
     }
 
-    // ربط الحدث بعد تحميل السكربت
     document.getElementById("loginBtn").addEventListener("click", login);
 
     function login() {
