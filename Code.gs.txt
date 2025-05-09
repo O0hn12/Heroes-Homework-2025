@@ -1,61 +1,99 @@
 const spreadsheetId = '1DPxfNEfgupBq2ZF7s1pXgvVkKQXBJE-Jn1FlIlwhDbE';
 const sheetName = 'test (Responses)';
 
-function doGet() {
-  const template = HtmlService.createTemplateFromFile('copilot');
-  template.allNames = getAllNames();
-  return template.evaluate().setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const nameOrQR = data.name?.trim();
+    const number = parseInt(data.number);
+    if (!nameOrQR || isNaN(number) || number < 0 || number > 5) {
+      return ContentService.createTextOutput(JSON.stringify({ success: false, message: "Invalid input" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const ss = SpreadsheetApp.openById(spreadsheetId);
+    const sheet = ss.getSheetByName(sheetName);
+
+    const names = sheet.getRange("A:A").getValues().flat();
+    let rowIndex = names.indexOf(nameOrQR);
+
+    // Add name if not found
+    if (rowIndex === -1) {
+      rowIndex = names.filter(n => n !== "").length;
+      sheet.getRange(rowIndex + 1, 1).setValue(nameOrQR);
+    }
+
+    // Insert number in next empty cell
+    const row = sheet.getRange(rowIndex + 1, 2, 1, 12).getValues()[0];
+    let nextIndex = row.findIndex(cell => cell === "");
+    if (nextIndex === -1) nextIndex = 12; // if full, place after last
+
+    if (nextIndex < 12) {
+      sheet.getRange(rowIndex + 1, nextIndex + 2).setValue(number);
+    }
+
+    zeroFillAllRows(sheet);
+
+    return ContentService.createTextOutput(JSON.stringify({ success: true }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, message: error.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 function getAllNames() {
-  const ss = SpreadsheetApp.openById(spreadsheetId);
-  const sheet = ss.getSheetByName(sheetName);
-  const names = sheet.getRange("A2:A" + sheet.getLastRow()).getValues().flat();
-  const uniqueNames = [...new Set(names.filter(name => name !== ""))];
-  return uniqueNames;
+  try {
+    const ss = SpreadsheetApp.openById(spreadsheetId);
+    const sheet = ss.getSheetByName(sheetName);
+    const names = sheet.getRange("A:A").getValues().flat();
+    const unique = [...new Set(names.filter(n => n.trim() !== ""))];
+    return ContentService.createTextOutput(JSON.stringify(unique))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (e) {
+    return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
-function processFormData(identifier, number) {
-  const ss = SpreadsheetApp.openById(spreadsheetId);
-  const sheet = ss.getSheetByName(sheetName);
-  const data = sheet.getRange("A:A").getValues().flat();
-  let rowIndex = data.indexOf(identifier) + 1;
+function searchName(e) {
+  try {
+    const identifier = e.parameter.name?.trim();
+    if (!identifier) throw new Error("Name is required");
 
-  if (rowIndex === 0) {
-    rowIndex = data.filter(v => v).length + 1;
-    sheet.getRange(rowIndex, 1).setValue(identifier);
+    const ss = SpreadsheetApp.openById(spreadsheetId);
+    const sheet = ss.getSheetByName(sheetName);
+    const names = sheet.getRange("A:A").getValues().flat();
+
+    const rowIndex = names.indexOf(identifier);
+    if (rowIndex === -1) {
+      return ContentService.createTextOutput(JSON.stringify({ found: false, data: [] }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const row = sheet.getRange(rowIndex + 1, 1, 1, 13).getValues()[0];
+    return ContentService.createTextOutput(JSON.stringify({ found: true, data: row }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, message: error.message }))
+      .setMimeType(ContentService.MimeType.JSON);
   }
-
-  const row = sheet.getRange(rowIndex, 2, 1, 12).getValues()[0];
-  let insertCol = row.findIndex(v => v === "");
-  if (insertCol === -1) insertCol = row.length;
-  sheet.getRange(rowIndex, insertCol + 2).setValue(number);
-  zeroFillAllRows(sheet);
-  return { success: true };
 }
 
 function zeroFillAllRows(sheet) {
-  const lastRow = sheet.getLastRow();
-  const range = sheet.getRange(2, 2, lastRow - 1, 12).getValues();
+  const data = sheet.getRange(2, 2, sheet.getLastRow() - 1, 12).getValues();
+  let maxIndex = 0;
 
-  range.forEach((row, i) => {
-    let lastIndex = row.length - 1;
-    while (lastIndex >= 0 && row[lastIndex] === "") lastIndex--;
-    for (let j = 0; j < lastIndex; j++) {
-      if (row[j] === "") row[j] = 0;
+  for (const row of data) {
+    const last = row.lastIndexOf(row.find(cell => cell === "") || "") - 1;
+    const filled = row.filter(v => v !== "").length - 1;
+    maxIndex = Math.max(maxIndex, last >= 0 ? last : filled);
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    for (let j = 0; j < maxIndex; j++) {
+      if (data[i][j] === "") {
+        sheet.getRange(i + 2, j + 2).setValue(0);
+      }
     }
-  });
-
-  sheet.getRange(2, 2, range.length, 12).setValues(range);
-}
-
-function searchName(identifier) {
-  const ss = SpreadsheetApp.openById(spreadsheetId);
-  const sheet = ss.getSheetByName(sheetName);
-  const data = sheet.getRange("A2:A" + sheet.getLastRow()).getValues().flat();
-  const index = data.indexOf(identifier);
-  if (index === -1) return { found: false };
-
-  const row = sheet.getRange(index + 2, 1, 1, 13).getValues()[0];
-  return { found: true, data: row };
+  }
 }
