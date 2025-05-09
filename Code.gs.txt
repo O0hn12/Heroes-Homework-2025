@@ -1,129 +1,61 @@
 const spreadsheetId = '1DPxfNEfgupBq2ZF7s1pXgvVkKQXBJE-Jn1FlIlwhDbE';
 const sheetName = 'test (Responses)';
 
-function doGet(e) {
-  const data = JSON.parse(e.postData.contents);
-  const name = data.name;
-  const number = data.number;
-  const template = HtmlService.createTemplateFromFile('copilot_fixed');
-  const allNames = getAllNames();
-  template.allNames = allNames;
-  return template.evaluate();
-  return ContentService.createTextOutput(JSON.stringify({ success: true }))
-    .setMimeType(ContentService.MimeType.JSON);
+function doGet() {
+  const template = HtmlService.createTemplateFromFile('copilot');
+  template.allNames = getAllNames();
+  return template.evaluate().setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 function getAllNames() {
-  try {
-    const ss = SpreadsheetApp.openById(spreadsheetId);
-    const sheet = ss.getSheetByName(sheetName);
-    const nameColumn = sheet.getRange("A:A").getValues();
-    const uniqueNames = [...new Set(nameColumn.flat().filter(String))]; // Get unique names and remove empty strings
-    Logger.log('Unique Names: ' + uniqueNames);
-    return uniqueNames;
-  } catch (error) {
-    Logger.log(`Error in getAllNames: ${error.message}`);
-    return [];
-  }
+  const ss = SpreadsheetApp.openById(spreadsheetId);
+  const sheet = ss.getSheetByName(sheetName);
+  const names = sheet.getRange("A2:A" + sheet.getLastRow()).getValues().flat();
+  const uniqueNames = [...new Set(names.filter(name => name !== ""))];
+  return uniqueNames;
 }
 
-function processFormData(spreadsheetId, sheetName, identifier, number) {
-  try {
-    const ss = SpreadsheetApp.openById(spreadsheetId);
-    const sheet = ss.getSheetByName(sheetName);
+function processFormData(identifier, number) {
+  const ss = SpreadsheetApp.openById(spreadsheetId);
+  const sheet = ss.getSheetByName(sheetName);
+  const data = sheet.getRange("A:A").getValues().flat();
+  let rowIndex = data.indexOf(identifier) + 1;
 
-    let range = sheet.getRange("A:A").getValues();
-    let found = false;
-    let rowIndex = -1;
-
-    // Check if the identifier (name) exists in the specified column
-    for (let i = 0; i < range.length; i++) {
-      if (range[i][0] === identifier) {
-        rowIndex = i + 1;
-        found = true;
-        Logger.log(`Identifier ${identifier} found at row ${rowIndex}`);
-        break;
-      }
-    }
-
-    // If the identifier is found, add the number in the first empty column
-    if (found) {
-      const rowValues = sheet.getRange(rowIndex, 2, 1, 12).getValues()[0];
-      let lastFilledIndex = -1;
-      for (let i = 0; i < rowValues.length; i++) {
-        if (rowValues[i] !== '') {
-          lastFilledIndex = i;
-        }
-      }
-
-      if (lastFilledIndex + 1 < rowValues.length) {
-        sheet.getRange(rowIndex, lastFilledIndex + 3).setValue(number); // Add number to the next empty cell
-      } else {
-        Logger.log("No more columns available to add the number.");
-      }
-    } else {
-      // If the identifier is not found, add a new row with the identifier and number
-      const lastRowWithName = sheet.getRange("A:A").getValues().filter(row => row[0] !== "").length;
-      sheet.getRange(lastRowWithName + 1, 1).setValue(identifier); // Add name in the first column
-      sheet.getRange(lastRowWithName + 1, 2).setValue(number); // Add number in the second column
-    }
-
-    // Perform zero-filling for all rows based on the largest column filled
-    zeroFillAllRows(sheet);
-
-    return { success: true };
-  } catch (error) {
-    Logger.log(`Error: ${error.message}`);
-    return { success: false, message: error.message };
+  if (rowIndex === 0) {
+    rowIndex = data.filter(v => v).length + 1;
+    sheet.getRange(rowIndex, 1).setValue(identifier);
   }
+
+  const row = sheet.getRange(rowIndex, 2, 1, 12).getValues()[0];
+  let insertCol = row.findIndex(v => v === "");
+  if (insertCol === -1) insertCol = row.length;
+  sheet.getRange(rowIndex, insertCol + 2).setValue(number);
+  zeroFillAllRows(sheet);
+  return { success: true };
 }
 
 function zeroFillAllRows(sheet) {
-  const allRows = sheet.getRange(2, 2, sheet.getLastRow() - 1, 12).getValues(); // Columns from 2 to 13
-  let maxColumnIndex = -1;
+  const lastRow = sheet.getLastRow();
+  const range = sheet.getRange(2, 2, lastRow - 1, 12).getValues();
 
-  // Find the largest filled column
-  for (let i = 0; i < allRows.length; i++) {
-    const currentRow = allRows[i];
-    for (let j = 0; j < currentRow.length; j++) {
-      if (currentRow[j] !== '') {
-        maxColumnIndex = Math.max(maxColumnIndex, j);
-      }
+  range.forEach((row, i) => {
+    let lastIndex = row.length - 1;
+    while (lastIndex >= 0 && row[lastIndex] === "") lastIndex--;
+    for (let j = 0; j < lastIndex; j++) {
+      if (row[j] === "") row[j] = 0;
     }
-  }
+  });
 
-  // Zero-fill all rows up to the largest filled column
-  const lastRowWithName = sheet.getRange("A:A").getValues().filter(row => row[0] !== "").length;
-  for (let i = 2; i <= lastRowWithName; i++) {
-    const row = sheet.getRange(i, 2, 1, 12).getValues()[0];
-    for (let j = 0; j < maxColumnIndex; j++) { // Stop at the second-to-last filled column
-      if (row[j] === '') {
-        sheet.getRange(i, j + 2).setValue(0); // Fill empty cells with 0
-      }
-    }
-  }
+  sheet.getRange(2, 2, range.length, 12).setValues(range);
 }
 
-function searchName(spreadsheetId, sheetName, identifier) {
-  try {
-    const ss = SpreadsheetApp.openById(spreadsheetId);
-    const sheet = ss.getSheetByName(sheetName);
+function searchName(identifier) {
+  const ss = SpreadsheetApp.openById(spreadsheetId);
+  const sheet = ss.getSheetByName(sheetName);
+  const data = sheet.getRange("A2:A" + sheet.getLastRow()).getValues().flat();
+  const index = data.indexOf(identifier);
+  if (index === -1) return { found: false };
 
-    const nameRange = sheet.getRange("A:A").getValues();
-    let data = [];
-    let found = false;
-
-    for (let i = 0; i < nameRange.length; i++) {
-      if (nameRange[i][0] === identifier) {
-        data = sheet.getRange(i + 1, 1, 1, 13).getValues()[0]; // Get columns A to M
-        found = true;
-        break;
-      }
-    }
-
-    return { data: data, found: found };
-  } catch (error) {
-    Logger.log(`Error: ${error.message}`);
-    return { success: false, message: error.message };
-  }
+  const row = sheet.getRange(index + 2, 1, 1, 13).getValues()[0];
+  return { found: true, data: row };
 }
