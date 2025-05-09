@@ -2,7 +2,7 @@ const spreadsheetId = '1DPxfNEfgupBq2ZF7s1pXgvVkKQXBJE-Jn1FlIlwhDbE';
 const sheetName = 'test (Responses)';
 
 function doGet(e) {
-  const template = HtmlService.createTemplateFromFile('copilot_fixed.html');
+  const template = HtmlService.createTemplateFromFile('copilot_fixed');
   const allNames = getAllNames();
   template.allNames = allNames;
   return template.evaluate();
