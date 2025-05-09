@@ -142,18 +142,25 @@
     }
 
     function searchName() {
-        const name = document.getElementById('nameInput').value;
-        if (name) {
-          google.script.run.withSuccessHandler(function(response) {
-            if (response.found) {
-              alert('Name found: ' + response.data.join(', '));
-            } else {
-              alert('Name not found.');
-            }
-          }).searchName('1DPxfNEfgupBq2ZF7s1pXgvVkKQXBJE-Jn1FlIlwhDbE', 'test (Responses)', name);
-        } else {
-          alert('Please enter a name to search.');
-        }
+        document.getElementById("submitBtn").addEventListener("click", function () {
+  const name = document.getElementById("nameInput").value;
+  const number = document.getElementById("numberInput").value;
+
+  fetch("https://script.google.com/macros/s/AKfycbwQYJxPwilpfgssG22eoMLBdthSoEr1TDpLKo6CfW29WZmd0lL8OmRoH1OalrSc4Hkm5A/exec", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name: name, number: number })
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log("تم الإرسال بنجاح", data);
+  })
+  .catch(error => {
+    console.error("حصل خطأ", error);
+  });
+});
       }
 
       function submitData() {
