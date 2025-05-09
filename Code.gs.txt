@@ -117,13 +117,37 @@ function zeroFillAllRows(sheet) {
   }
 
   // Zero-fill all rows up to the largest filled column
-  const lastFilledColumn = maxColumnIndex + 2;
-  for (let i = 0; i < allRows.length; i++) {
-    for (let j = 0; j < lastFilledColumn; j++) {
-      if (allRows[i][j] === '') {
-        allRows[i][j] = 0;
+  const lastRowWithName = sheet.getRange("A:A").getValues().filter(row => row[0] !== "").length;
+  for (let i = 2; i <= lastRowWithName; i++) {
+    const row = sheet.getRange(i, 2, 1, 12).getValues()[0];
+    for (let j = 0; j < maxColumnIndex; j++) { // Stop at the second-to-last filled column
+      if (row[j] === '') {
+        sheet.getRange(i, j + 2).setValue(0); // Fill empty cells with 0
       }
     }
-    sheet.getRange(i + 2, 2, 1, lastFilledColumn).setValues([allRows[i]]);
+  }
+}
+
+function searchName(spreadsheetId, sheetName, identifier) {
+  try {
+    const ss = SpreadsheetApp.openById(spreadsheetId);
+    const sheet = ss.getSheetByName(sheetName);
+
+    const nameRange = sheet.getRange("A:A").getValues();
+    let data = [];
+    let found = false;
+
+    for (let i = 0; i < nameRange.length; i++) {
+      if (nameRange[i][0] === identifier) {
+        data = sheet.getRange(i + 1, 1, 1, 13).getValues()[0]; // Get columns A to M
+        found = true;
+        break;
+      }
+    }
+
+    return { data: data, found: found };
+  } catch (error) {
+    Logger.log(`Error: ${error.message}`);
+    return { success: false, message: error.message };
   }
 }
