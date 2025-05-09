@@ -14,8 +14,8 @@ function getAllNames() {
     const sheet = ss.getSheetByName(sheetName);
     const nameColumn = sheet.getRange("A:A").getValues();
     const uniqueNames = [...new Set(nameColumn.flat().filter(String))]; // Get unique names and remove empty strings
-    return uniqueNames;
-    Logger.log('Unique Names:', uniqueNames);
+    Logger.log('Unique Names: ' + uniqueNames);
+return uniqueNames;
   } catch (error) {
     Logger.log(`Error in getAllNames: ${error.message}`);
     return [];
