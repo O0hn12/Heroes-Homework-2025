@@ -120,7 +120,7 @@
     <button id="submitBtn" onclick="submitData()" disabled>Submit</button>
   </div>
 
-  <div class="search-section">
+  <div class="search-section" style="display: none;">
     <h2>بحث عن الاسم</h2>
     <div class="form-group">
       <label for="searchInput">الاسم</label>
@@ -243,6 +243,7 @@
         alert("تم تسجيل الدخول بنجاح");
         document.getElementById("loginSection").style.display = "none";
         document.getElementById("dataSection").style.display = "block";
+        document.querySelector(".search-section").style.display = "block";
       } else {
         alert("اسم المستخدم أو كلمة المرور غير صحيحة");
       }
