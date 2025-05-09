@@ -168,7 +168,7 @@
 
       if (!value) return;
 
-      const filtered = allNames.filter(name => name.toLowerCase().startsWith(value));
+      const filtered = allNames.filter(name => name.toLowerCase().includes(value));
       filtered.slice(0, 10).forEach(name => {
         const item = document.createElement("div");
         item.className = "suggestion-item";
@@ -243,7 +243,7 @@
     document.getElementById("loginBtn").addEventListener("click", () => {
       const username = document.getElementById("loginUsername").value.trim();
       const password = document.getElementById("loginPassword").value.trim();
-      if (username === "جون" && password === "123") {
+      if (username === "جون" && password === "12345") {
         alert("تم تسجيل الدخول بنجاح");
         document.getElementById("loginSection").style.display = "none";
         document.getElementById("dataSection").style.display = "block";
