@@ -1,22 +1,65 @@
 const spreadsheetId = '1DPxfNEfgupBq2ZF7s1pXgvVkKQXBJE-Jn1FlIlwhDbE';
 const sheetName = 'test (Responses)';
 
-function doPost(e) {
-  try {
-    const data = JSON.parse(e.postData.contents);
-    const name = data.name;
-    const number = parseInt(data.number);
+function doGet(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const action = e.parameter.action;
 
-    const ss = SpreadsheetApp.openById(spreadsheetId);
-    const sheet = ss.getSheetByName(sheetName);
+  if (action === 'getAllNames') {
+    const names = sheet.getRange("A2:A" + sheet.getLastRow()).getValues().flat().filter(name => name !== "");
+    return ContentService.createTextOutput(JSON.stringify(names)).setMimeType(ContentService.MimeType.JSON);
+  }
 
-    const nameColumn = sheet.getRange("A:A").getValues().flat();
-    let rowIndex = nameColumn.indexOf(name);
+  if (action === 'searchName') {
+    const nameToSearch = e.parameter.name;
+    const data = sheet.getDataRange().getValues();
 
-    if (rowIndex === -1) {
-      rowIndex = nameColumn.filter(v => v !== "").length;
-      sheet.getRange(rowIndex + 1, 1).setValue(name);
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === nameToSearch) {
+        return ContentService.createTextOutput(JSON.stringify({
+          found: true,
+          data: data[i]
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
     }
+
+    return ContentService.createTextOutput(JSON.stringify({
+      found: false
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  return ContentService.createTextOutput("Invalid action").setMimeType(ContentService.MimeType.TEXT);
+}
+
+function doPost(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const payload = JSON.parse(e.postData.contents);
+  const name = payload.name;
+  const number = payload.number;
+
+  const data = sheet.getDataRange().getValues();
+  let rowIndex = -1;
+
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === name) {
+      rowIndex = i + 1;
+      break;
+    }
+  }
+
+  if (rowIndex === -1) {
+    rowIndex = sheet.getLastRow() + 1;
+    sheet.getRange("A" + rowIndex).setValue(name);
+  }
+
+  const rowData = sheet.getRange(rowIndex, 1, 1, sheet.getLastColumn()).getValues()[0];
+  let insertCol = rowData.findIndex((val, idx) => idx > 0 && val === "");
+  if (insertCol === -1) insertCol = rowData.length;
+
+  sheet.getRange(rowIndex, insertCol + 1).setValue(number);
+
+  return ContentService.createTextOutput("تم الإرسال بنجاح").setMimeType(ContentService.MimeType.TEXT);
+}
 
     const row = sheet.getRange(rowIndex + 1, 2, 1, 12).getValues()[0];
     let lastFilledIndex = row.lastIndexOf(row.find(cell => cell === "") || "") - 1;
