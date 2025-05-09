@@ -149,7 +149,8 @@
   </div>
 
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwT2Zsl--Vi5VHd7-Cs8rIdGfknCzgyxPXe4iUxGbH3yMD4AjNkw9BIirh0Hu7weYc8rQ/exec';
+    const scriptURL = 'fetch('http://localhost:3000/proxy?action=getAllNames')
+';
     let allNames = [];
 
     fetch(scriptURL + '?action=getAllNames')
