@@ -142,10 +142,35 @@
     }
 
     function searchName() {
-      const name = document.getElementById('search').value;
-      if (!name.trim()) return;
-      google.script.run.withSuccessHandler(showResults).searchName(spreadsheetId, sheetName, name);
-    }
+        const name = document.getElementById('nameInput').value;
+        if (name) {
+          google.script.run.withSuccessHandler(function(response) {
+            if (response.found) {
+              alert('Name found: ' + response.data.join(', '));
+            } else {
+              alert('Name not found.');
+            }
+          }).searchName('1DPxfNEfgupBq2ZF7s1pXgvVkKQXBJE-Jn1FlIlwhDbE', 'test (Responses)', name);
+        } else {
+          alert('Please enter a name to search.');
+        }
+      }
+
+      function submitData() {
+        const name = document.getElementById('nameInput').value;
+        const number = document.getElementById('numberInput').value;
+        if (name && number) {
+          google.script.run.withSuccessHandler(function(response) {
+            if (response.success) {
+              alert('Data submitted successfully');
+            } else {
+              alert('Failed to submit data');
+            }
+          }).processFormData('1DPxfNEfgupBq2ZF7s1pXgvVkKQXBJE-Jn1FlIlwhDbE', 'test (Responses)', name, number);
+        } else {
+          alert('Please fill out both the name and the number.');
+        }
+      }
 
     function showResults(result) {
       const tableBody = document.getElementById('resultTable').querySelector('tbody');
@@ -218,6 +243,7 @@
         <input type="number" id="grade" name="grade" placeholder="ادخل الرقم" min="0" max="5" required style="font-size: 1.2em;">
       </div>
       <button type="submit" style="font-size: 1.2em;">Submit</button>
+      <button type="button" onclick="submitData()">Submit</button>
     </form>
   </div>
 
@@ -229,6 +255,7 @@
       <div id="suggestions"></div>
     </div>
     <button type="button" onclick="searchName()" style="font-size: 1.2em;">Search</button>
+    <button type="button" onclick="searchName()">Search</button>
     <div class="table-container">
       <table id="resultTable" class="table-visible">
         <thead>
