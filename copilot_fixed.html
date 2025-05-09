@@ -1,285 +1,106 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Heroes adventure 2025</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=18+Khebrat+Musamim:wght@400;700&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Forte&display=swap');
+  <head>
+    <base target="_top">
+    <style>
+      body { font-family: Arial; margin: 20px; }
+      #resultTable { margin-top: 20px; border-collapse: collapse; }
+      #resultTable td, #resultTable th { border: 1px solid #ddd; padding: 8px; }
+      #resultTable th { background-color: #f2f2f2; }
+      input[type="number"] { width: 60px; }
+      .suggestions { border: 1px solid #ccc; max-height: 100px; overflow-y: auto; }
+      .suggestions div { padding: 5px; cursor: pointer; }
+      .suggestions div:hover { background-color: #eee; }
+    </style>
+  </head>
+  <body>
+    <h2>Heroes Adventure</h2>
 
-    body {
-      background-image: url('https://i.imgur.com/jKMhKlP.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: scroll;
-      color: white;
-      text-align: center;
-      font-family: '18 Khebrat Musamim', serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
+    <label for="name">Name:</label>
+    <input type="text" id="nameInput" oninput="showSuggestions()" autocomplete="off">
+    <div id="suggestions" class="suggestions"></div>
 
-    .data-section, .search-section {
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 20px;
-      border-radius: 15px;
-      text-align: center;
-      margin: 20px;
-      width: 90%;
-      max-width: 600px;
-    }
+    <br><br>
 
-    h2 {
-      font-size: 2em;
-      text-shadow: 2px 2px 5px #000000;
-    }
+    <label for="number">Number (0-5):</label>
+    <input type="number" id="numberInput" min="0" max="5">
 
-    label {
-      font-size: 1.2em;
-      margin-right: 10px;
-      text-align: right;
-      width: 100px;
-    }
+    <br><br>
 
-    input, button {
-      font-size: 1.2em;
-      font-family: '18 Khebrat Musamim', serif;
-      text-align: center;
-      padding: 10px;
-      width: 100%;
-      margin-top: 10px;
-    }
+    <button onclick="submitForm()" id="submitBtn" disabled>Submit</button>
+    <button onclick="searchName()" id="searchBtn" disabled>Search</button>
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 20px;
-    }
+    <table id="resultTable" style="display: none;"></table>
 
-    .table-container {
-      overflow-x: auto;
-      width: 100%;
-    }
+    <script>
+      let allNames = <?= JSON.stringify(allNames) ?>;
 
-    table {
-      width: 100%;
-      margin-top: 30px;
-      border-collapse: collapse;
-      display: none;
-      font-family: '18 Khebrat Musamim', serif;
-      font-size: 1.2em;
-      direction: rtl;
-    }
+      const nameInput = document.getElementById('nameInput');
+      const numberInput = document.getElementById('numberInput');
+      const submitBtn = document.getElementById('submitBtn');
+      const searchBtn = document.getElementById('searchBtn');
 
-    th, td {
-      border: 1px solid white;
-      padding: 15px;
-      text-align: center;
-    }
+      nameInput.addEventListener('input', validateForm);
+      numberInput.addEventListener('input', validateForm);
 
-    .suggestion-item {
-      cursor: pointer;
-      padding: 5px;
-      border-bottom: 1px solid #ccc;
-    }
+      function validateForm() {
+        const name = nameInput.value.trim();
+        const number = numberInput.value.trim();
+        submitBtn.disabled = !(name && number >= 0 && number <= 5);
+        searchBtn.disabled = !name;
+      }
 
-    .suggestion-item:hover {
-      background-color: #f0f0f0;
-    }
-  </style>
-</head>
-<body>
-  <script>
-    const spreadsheetId = '<?= spreadsheetId ?>';
-    const sheetName = '<?= sheetName ?>';
+      function showSuggestions() {
+        const input = nameInput.value.toLowerCase();
+        const suggestionBox = document.getElementById('suggestions');
+        suggestionBox.innerHTML = '';
+        if (input.length === 0) return;
 
-    google.script.run.withSuccessHandler(setupAutocomplete).getAllNames();
-
-    function setupAutocomplete(names) {
-      const searchInput = document.getElementById("search");
-      const suggestions = document.getElementById("suggestions");
-
-      searchInput.addEventListener("input", function () {
-        const inputValue = searchInput.value.toLowerCase();
-        suggestions.innerHTML = "";
-
-        if (inputValue.trim() === "") return;
-
-        names.forEach(name => {
-          if (name.toLowerCase().startsWith(inputValue)) {
-            const suggestionItem = document.createElement("div");
-            suggestionItem.innerText = name;  // استخدم innerText هنا
-            suggestionItem.className = "suggestion-item";
-            suggestionItem.onclick = function () {
-              searchInput.value = name;
-              suggestions.innerHTML = "";
-            };
-            suggestions.appendChild(suggestionItem);
-          }
+        const matches = allNames.filter(name => name.toLowerCase().includes(input));
+        matches.forEach(name => {
+          const div = document.createElement('div');
+          div.textContent = name;
+          div.onclick = () => {
+            nameInput.value = name;
+            suggestionBox.innerHTML = '';
+            validateForm();
+          };
+          suggestionBox.appendChild(div);
         });
-      });
-    }
-
-    function login() {
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
-
-      if (username === 'John-2020' && password === 'viscabarca') {
-        alert('Login successful!');
-        document.getElementById('login-section').style.display = 'none';
-        document.getElementById('main-section').style.display = 'block';
-        document.querySelector('.search-section').style.display = 'block';
-      } else {
-        alert('Invalid username or password.');
-      }
-    }
-
-    function searchName() {
-        document.getElementById("submitBtn").addEventListener("click", function () {
-  const name = document.getElementById("nameInput").value;
-  const number = document.getElementById("numberInput").value;
-
-  fetch("https://script.google.com/macros/s/AKfycbwQYJxPwilpfgssG22eoMLBdthSoEr1TDpLKo6CfW29WZmd0lL8OmRoH1OalrSc4Hkm5A/exec", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ name: name, number: number })
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log("تم الإرسال بنجاح", data);
-  })
-  .catch(error => {
-    console.error("حصل خطأ", error);
-  });
-});
       }
 
-      function submitData() {
-        const name = document.getElementById('nameInput').value;
-        const number = document.getElementById('numberInput').value;
-        if (name && number) {
-          google.script.run.withSuccessHandler(function(response) {
-            if (response.success) {
-              alert('Data submitted successfully');
-            } else {
-              alert('Failed to submit data');
-            }
-          }).processFormData('1DPxfNEfgupBq2ZF7s1pXgvVkKQXBJE-Jn1FlIlwhDbE', 'test (Responses)', name, number);
-        } else {
-          alert('Please fill out both the name and the number.');
+      function submitForm() {
+        const name = nameInput.value.trim();
+        const number = parseInt(numberInput.value.trim());
+        if (name && number >= 0 && number <= 5) {
+          google.script.run
+            .withSuccessHandler(response => {
+              alert("Submitted successfully!");
+              nameInput.value = '';
+              numberInput.value = '';
+              validateForm();
+            })
+            .processFormData(name, number);
         }
       }
 
-    function showResults(result) {
-      const tableBody = document.getElementById('resultTable').querySelector('tbody');
-      tableBody.innerHTML = "";
-
-      if (result.found) {
-        const data = result.data;
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${data[0]}</td>` + data.slice(1).map(val => `<td>${val || 0}</td>`).join('');
-        tableBody.appendChild(row);
-        document.getElementById('resultTable').style.display = 'table';
-      } else {
-        document.getElementById('resultTable').style.display = 'none';
-        alert('الاسم غير موجود.');
-      }
-    }
-
-    function handleSubmit(event) {
-      event.preventDefault(); // ⛔ منع إعادة تحميل الصفحة
-
-      const name = document.getElementById("name").value.trim();
-      const grade = document.getElementById("grade").value.trim();
-
-      if (!name || grade === "") {
-        alert("يجب إدخال الاسم والدرجة.");
-        return;
-      }
-
-      // نرسل البيانات إلى Google Apps Script
-      google.script.run
-        .withSuccessHandler(function(response) {
-          if (response.success) {
-            alert("تم الحفظ بنجاح!");
-            document.getElementById("dataForm").reset();
-          } else {
-            alert("حدث خطأ: " + response.message);
+      function searchName() {
+        const name = nameInput.value.trim();
+        google.script.run.withSuccessHandler(response => {
+          const table = document.getElementById("resultTable");
+          if (!response.found) {
+            table.style.display = "none";
+            alert("Name not found.");
+            return;
           }
-        })
-        .processFormData(spreadsheetId, sheetName, name, Number(grade), false, "");
-    }
-  </script>
 
-  <div id="login-section">
-    <h2>Login</h2>
-    <form id="loginForm">
-      <div class="highlight-box">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" style="font-size: 1.2em; width: 80%;">
-      </div>
-      <div class="highlight-box">
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" style="font-size: 1.2em; width: 80%;">
-      </div>
-      <button type="button" onclick="login()" style="font-size: 1.2em;">Login</button>
-    </form>
-  </div>
-
-  <div class="data-section" style="display: none;" id="main-section">
-    <h2>Heroes adventure 2025</h2>
-    <form id="dataForm" onsubmit="handleSubmit(event)">
-      <div class="form-group">
-        <label for="name">الاسم</label>
-        <input type="text" id="name" name="name" placeholder="ادخل الاسم" style="font-size: 1.2em;" list="namesList">
-        <datalist id="namesList">
-          <?!= allNames ? allNames.map(name => `<option value="${name}"></option>`).join('') : '' ?>
-        </datalist>
-      </div>
-      <div class="form-group">
-        <label for="grade">الدرجة</label>
-        <input type="number" id="grade" name="grade" placeholder="ادخل الرقم" min="0" max="5" required style="font-size: 1.2em;">
-      </div>
-      <button type="submit" style="font-size: 1.2em;">Submit</button>
-    </form>
-  </div>
-
-  <div class="search-section" style="display: none;">
-    <h2>Search for data</h2>
-    <div class="form-group">
-      <label for="search">الاسم</label>
-      <input type="text" id="search" name="search" placeholder="ادخل الاسم" style="font-size: 1.2em;" autocomplete="off">
-      <div id="suggestions"></div>
-    </div>
-    <button type="button" onclick="searchName()" style="font-size: 1.2em;">Search</button>
-    <div class="table-container">
-      <table id="resultTable" class="table-visible">
-        <thead>
-          <tr>
-            <th>الاسم</th>
-            <th>الاسبوع الاول</th>
-            <th>الاسبوع الثانى</th>
-            <th>الاسبوع الثالث</th>
-            <th>الاسبوع الرابع</th>
-            <th>الاسبوع الخامس</th>
-            <th>الاسبوع السادس</th>
-            <th>الاسبوع السابع</th>
-            <th>الاسبوع الثامن</th>
-            <th>الاسبوع التاسع</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-</body>
+          const headers = ["Name", "Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6", "Week 7", "Week 8", "Week 9", "Week 10", "Week 11", "Week 12"];
+          let html = "<tr>" + headers.map(h => `<th>${h}</th>`).join("") + "</tr>";
+          html += "<tr>" + response.data.map(val => `<td>${val}</td>`).join("") + "</tr>";
+          table.innerHTML = html;
+          table.style.display = "table";
+        }).searchName(name);
+      }
+    </script>
+  </body>
 </html>
