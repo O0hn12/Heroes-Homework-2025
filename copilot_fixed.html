@@ -101,7 +101,7 @@
       <input type="password" id="loginPassword">
     </div>
 
-    <button onclick="login()">تسجيل الدخول</button>
+    <button id="loginBtn">تسجيل الدخول</button> <!-- تعديل: تغيير onclick إلى addEventListener -->
   </div>
 
   <!-- الصفحة الرئيسية بعد تسجيل الدخول -->
@@ -149,8 +149,7 @@
   </div>
 
   <script>
-    const scriptURL = 'fetch('http://localhost:3000/proxy?action=getAllNames')
-';
+    const scriptURL = 'http://localhost:3000/proxy?action=getAllNames';
     let allNames = [];
 
     fetch(scriptURL + '?action=getAllNames')
@@ -236,6 +235,9 @@
           console.error('Search error:', err);
         });
     }
+
+    // تعديل: ربط الحدث بعد تحميل السكربت
+    document.getElementById("loginBtn").addEventListener("click", login);
 
     function login() {
       const username = document.getElementById("loginUsername").value.trim();
