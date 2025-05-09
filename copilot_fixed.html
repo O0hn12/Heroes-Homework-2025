@@ -140,6 +140,10 @@
       .then(res => res.json())
       .then(names => {
         allNames = names;
+        console.log('Loaded names:', allNames); // تحقق من الأسماء المحملة
+      })
+      .catch(err => {
+        console.error('Failed to load names:', err);
       });
 
     // الاقتراحات السريعة
@@ -180,6 +184,8 @@
       const name = document.getElementById("nameInput").value.trim();
       const number = Number(document.getElementById("numberInput").value);
 
+      console.log('Submitting data:', { name, number });
+
       fetch(scriptURL, {
         method: 'POST',
         body: JSON.stringify({ name, number }),
@@ -191,12 +197,17 @@
         document.getElementById("nameInput").value = "";
         document.getElementById("numberInput").value = "";
         checkSubmitState();
+      })
+      .catch(err => {
+        console.error('Failed to submit data:', err);
       });
     }
 
     // بحث بالاسم
     function searchName() {
       const search = document.getElementById("searchInput").value;
+
+      console.log('Searching for name:', search);
 
       fetch(`${scriptURL}?action=searchName&name=${encodeURIComponent(search)}`)
         .then(res => res.json())
@@ -219,6 +230,9 @@
           } else {
             alert("الاسم غير موجود");
           }
+        })
+        .catch(err => {
+          console.error('Search error:', err);
         });
     }
   </script>
