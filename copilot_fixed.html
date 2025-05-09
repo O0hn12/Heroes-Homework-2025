@@ -135,9 +135,11 @@
     let allNames = [];
 
     // استدعاء الأسماء عند التحميل
-    google.script.run.withSuccessHandler(names => {
-      allNames = names;
-    }).getAllNames();
+   fetch(scriptURL + '?action=getAllNames')
+  .then(res => res.json())
+  .then(names => {
+    allNames = names;
+  });
 
     // الاقتراحات السريعة
     document.getElementById("searchInput").addEventListener("input", function () {
@@ -177,38 +179,49 @@
       const name = document.getElementById("nameInput").value.trim();
       const number = Number(document.getElementById("numberInput").value);
 
-      google.script.run.withSuccessHandler(msg => {
-        alert(msg);
-        document.getElementById("nameInput").value = "";
-        document.getElementById("numberInput").value = "";
-        checkSubmitState();
-      }).processFormData(name, number);
+      fetch(scriptURL, {
+  method: 'POST',
+  body: JSON.stringify({ name, number }),
+  headers: { 'Content-Type': 'application/json' }
+})
+.then(res => res.text())
+.then(msg => {
+  alert(msg);
+  document.getElementById("nameInput").value = "";
+  document.getElementById("numberInput").value = "";
+  checkSubmitState();
+})
+.catch(err => {
+  alert("حدث خطأ في الإرسال");
+});
     }
 
     // بحث بالاسم
     function searchName() {
       const search = document.getElementById("searchInput").value;
 
-      google.script.run.withSuccessHandler(response => {
-        const table = document.getElementById("resultTable");
-        const tbody = table.querySelector("tbody");
-        tbody.innerHTML = "";
+      fetch(scriptURL + '?action=searchName&name=' + encodeURIComponent(search))
+  .then(res => res.json())
+  .then(response => {
+    const table = document.getElementById("resultTable");
+    const tbody = table.querySelector("tbody");
+    tbody.innerHTML = "";
 
-        if (response.found) {
-          const row = document.createElement("tr");
+    if (response.found) {
+      const row = document.createElement("tr");
 
-          response.data.forEach(cell => {
-            const td = document.createElement("td");
-            td.textContent = cell;
-            row.appendChild(td);
-          });
+      response.data.forEach(cell => {
+        const td = document.createElement("td");
+        td.textContent = cell;
+        row.appendChild(td);
+      });
 
-          tbody.appendChild(row);
-          table.style.display = "table";
-        } else {
-          alert("الاسم غير موجود");
-        }
-      }).searchName(search);
+      tbody.appendChild(row);
+      table.style.display = "table";
+    } else {
+      alert("الاسم غير موجود");
+    }
+  });
     }
   </script>
 
