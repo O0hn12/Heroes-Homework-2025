@@ -157,7 +157,7 @@ fetch(`${scriptURL}?action=getAllNames`)
   .then(names => {
     if (Array.isArray(names)) {
       allNames = names;
-      console.log("✅ الأسماء المحملة:", allNames);
+      console.log("✅ الأسماء المحملة بنجاح:", allNames);
     } else {
       console.error("❌ لم يتم تحميل الأسماء بشكل صحيح!");
     }
