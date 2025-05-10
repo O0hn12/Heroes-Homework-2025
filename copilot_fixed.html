@@ -158,9 +158,11 @@ fetch(`${scriptURL}?action=getAllNames`)
     if (Array.isArray(names)) {
       allNames = names;
       console.log("✅ الأسماء المحملة:", allNames);
+    } else {
+      console.error("❌ لم يتم تحميل الأسماء بشكل صحيح!");
     }
   })
-  .catch(err => console.error('❌ فشل تحميل الأسماء:', err));
+  .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
 
 // دالة لتحديث الاقتراحات أثناء الكتابة
 function showSuggestions(inputElement, suggestionsContainer) {
@@ -191,8 +193,8 @@ function showSuggestions(inputElement, suggestionsContainer) {
 }
 
 // ربط الحدث بمربعات الإدخال
-document.getElementById("nameInput").addEventListener("input", function () {
-  showSuggestions(this, document.getElementById("nameSuggestions"));
+document.getElementById("searchInput").addEventListener("input", function () {
+  showSuggestions(this, document.getElementById("searchSuggestions"));
 });
 
 document.getElementById("searchInput").addEventListener("input", function () {
