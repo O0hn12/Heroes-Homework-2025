@@ -204,26 +204,6 @@ function showSuggestions(inputElement, suggestionsContainer) {
   });
 }
 
-  filtered.slice(0, 10).forEach(name => {
-    const item = document.createElement("div");
-    item.className = "suggestion-item";
-    item.textContent = name;
-    item.onclick = () => {
-      inputElement.value = name;
-      suggestionsContainer.innerHTML = "";
-    };
-    suggestionsContainer.appendChild(item);
-  });
-}
-// ربط الحدث بمربعات الإدخال
-document.getElementById("searchInput").addEventListener("input", function () {
-  showSuggestions(this, document.getElementById("searchSuggestions"));
-});
-
-document.getElementById("searchInput").addEventListener("input", function () {
-  showSuggestions(this, document.getElementById("searchSuggestions"));
-});
-
     function searchName() {
       const search = document.getElementById("searchInput").value.trim();
       fetch(`${scriptURL}?action=searchName&name=${encodeURIComponent(search)}`)
