@@ -5,119 +5,261 @@
   <title>Heroes Adventure 2025</title>
   <link rel="icon" type="image/png" href="https://i.imgur.com/jKMhKlP.png">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=18+Khebrat+Musamim:wght@400;700&display=swap');
+
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
+      background-image: url('https://i.imgur.com/jKMhKlP.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: '18 Khebrat Musamim', serif;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      flex-direction: column;
+      margin: 0;
+      padding: 0;
+      text-align: center;
     }
+
+    .data-section, .search-section, .login-section {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 15px;
+      margin: 20px;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    label {
+      font-size: 1.2em;
+      margin-bottom: 5px;
+    }
+
+    input, button {
+      font-size: 1.2em;
+      font-family: '18 Khebrat Musamim', serif;
+      text-align: center;
+      padding: 10px;
+      width: 100%;
+      margin-top: 10px;
+    }
+
     .form-group {
       display: flex;
       flex-direction: column;
       margin-bottom: 20px;
     }
-    input, button {
-      font-size: 1.2em;
-      padding: 10px;
-      margin-top: 10px;
-      width: 300px;
+
+    #suggestions {
+      background: white;
+      color: black;
+      text-align: right;
+      border-radius: 5px;
+      max-height: 150px;
+      overflow-y: auto;
+      position: relative;
+      z-index: 1000;
     }
-    button {
+
+    .suggestion-item {
+      padding: 5px;
       cursor: pointer;
     }
-    #resultTable {
-      width: 100%;
-      margin-top: 20px;
-      display: none;
-      border-collapse: collapse;
+
+    .suggestion-item:hover {
+      background-color: #eee;
     }
-    #resultTable th, #resultTable td {
+
+    table {
+      width: 100%;
+      margin-top: 30px;
+      border-collapse: collapse;
+      display: none;
+      font-size: 1.1em;
+    }
+
+    th, td {
+      border: 1px solid white;
       padding: 10px;
-      border: 1px solid #ddd;
     }
   </style>
 </head>
 <body>
-  <h2>إدخال البيانات</h2>
-  <div class="form-group">
-    <label for="name">الاسم:</label>
-    <input type="text" id="name" placeholder="أدخل الاسم">
-  </div>
-  <div class="form-group">
-    <label for="number">الرقم (0-5):</label>
-    <input type="number" id="number" min="0" max="5" placeholder="أدخل الرقم">
-  </div>
-  <button id="submitButton" disabled>إرسال</button>
 
-  <h2>بحث عن الاسم</h2>
-  <div class="form-group">
-    <label for="search">ابحث عن اسم:</label>
-    <input type="text" id="search" placeholder="أدخل الاسم للبحث">
-  </div>
-  <button id="searchButton">بحث</button>
+  <div class="login-section" id="loginSection">
+    <h2>تسجيل الدخول</h2>
+    <div class="form-group">
+      <label for="loginUsername">اسم المستخدم</label>
+      <input type="text" id="loginUsername" autocomplete="off">
+    </div>
 
-  <table id="resultTable">
-    <thead>
-      <tr>
-        <th>الاسم</th>
-        <th>الرقم</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <div class="form-group">
+      <label for="loginPassword">كلمة المرور</label>
+      <input type="password" id="loginPassword">
+    </div>
+
+    <button id="loginBtn">تسجيل الدخول</button>
+  </div>
+
+  <div class="data-section" id="dataSection" style="display: none;">
+    <h2>Heroes Adventure 2025</h2>
+    <div class="form-group">
+      <label for="nameInput">الاسم</label>
+      <input type="text" id="nameInput" autocomplete="off" oninput="checkSubmitState()">
+    </div>
+
+    <div class="form-group">
+      <label for="numberInput">الرقم (بين 0 و 5)</label>
+      <input type="number" id="numberInput" min="0" max="5" oninput="checkSubmitState()">
+    </div>
+
+    <button id="submitBtn" onclick="submitData()" disabled>Submit</button>
+  </div>
+
+  <div class="search-section" style="display: none;">
+    <h2>بحث عن الاسم</h2>
+    <div class="form-group">
+      <label for="searchInput">الاسم</label>
+      <input type="text" id="searchInput" autocomplete="off">
+      <div id="suggestions"></div>
+    </div>
+    <button onclick="searchName()">Search</button>
+
+    <table id="resultTable">
+      <thead>
+        <tr>
+          <th>الاسم</th>
+          <th>الأسبوع 1</th>
+          <th>الأسبوع 2</th>
+          <th>الأسبوع 3</th>
+          <th>الأسبوع 4</th>
+          <th>الأسبوع 5</th>
+          <th>الأسبوع 6</th>
+          <th>الأسبوع 7</th>
+          <th>الأسبوع 8</th>
+          <th>الأسبوع 9</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
   <script>
-    const submitButton = document.getElementById('submitButton');
-    const searchInput = document.getElementById('search');
-    const searchButton = document.getElementById('searchButton');
-    const resultTable = document.getElementById('resultTable');
-    const tbody = resultTable.querySelector('tbody');
+    const scriptURL = 'http://localhost:3000/proxy';
+    let allNames = [];
 
-    document.getElementById('name').addEventListener('input', toggleSubmitButton);
-    document.getElementById('number').addEventListener('input', toggleSubmitButton);
+    // تحميل الأسماء فورًا
+    fetch(scriptURL + '?action=getAllNames')
+      .then(res => res.json())
+      .then(names => {
+        allNames = names;
+      })
+      .catch(err => {
+        console.error('فشل تحميل الأسماء:', err);
+      });
 
-    function toggleSubmitButton() {
-      const name = document.getElementById('name').value;
-      const number = document.getElementById('number').value;
-      submitButton.disabled = !(name && number >= 0 && number <= 5);
+    // اقتراحات أثناء الكتابة
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const value = this.value.toLowerCase();
+      const suggestions = document.getElementById("suggestions");
+      suggestions.innerHTML = "";
+
+      if (!value) return;
+
+      const filtered = allNames.filter(name => name.toLowerCase().includes(value));
+      filtered.slice(0, 10).forEach(name => {
+        const item = document.createElement("div");
+        item.className = "suggestion-item";
+        item.textContent = name;
+        item.onclick = () => {
+          document.getElementById("searchInput").value = name;
+          suggestions.innerHTML = "";
+        };
+        suggestions.appendChild(item);
+      });
+    });
+
+    function checkSubmitState() {
+      const name = document.getElementById("nameInput").value.trim();
+      const number = document.getElementById("numberInput").value.trim();
+      const validNumber = number !== "" && +number >= 0 && +number <= 5;
+      const hasName = name !== "";
+      document.getElementById("submitBtn").disabled = !(validNumber && hasName);
     }
 
-    submitButton.addEventListener('click', () => {
-      const name = document.getElementById('name').value;
-      const number = document.getElementById('number').value;
+    function submitData() {
+      const name = document.getElementById("nameInput").value.trim();
+      const number = Number(document.getElementById("numberInput").value);
+      if (name === "" || isNaN(number) || number < 0 || number > 5) {
+        alert("يرجى إدخال اسم ورقم صحيح بين 0 و 5");
+        return;
+      }
 
-      fetch('https://script.google.com/macros/s/AKfycbys8QNjSVItLJcG1XdR8XWDu7t4239jHO5-tdI3THBESUJ2ZIyicoI8ypE2OEezwj7UJg/exec', {
+      fetch(scriptURL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, number })
+        body: JSON.stringify({ name, number }),
+        headers: { 'Content-Type': 'application/json' }
       })
-        .then(response => response.text())
-        .then(result => alert(result))
-        .catch(error => console.error('Error submitting data:', error));
-    });
+      .then(res => res.text())
+      .then(msg => {
+  alert(msg);
+  document.getElementById("nameInput").value = "";
+  document.getElementById("numberInput").value = "";
+  checkSubmitState();
 
-    searchButton.addEventListener('click', () => {
-      const search = searchInput.value;
-      fetch(`https://script.google.com/macros/s/AKfycbys8QNjSVItLJcG1XdR8XWDu7t4239jHO5-tdI3THBESUJ2ZIyicoI8ypE2OEezwj7UJg/exec?action=searchName&name=${encodeURIComponent(search)}`)
+  // تحديث قائمة الأسماء
+  fetch(scriptURL + '?action=getAllNames')
+    .then(res => res.json())
+    .then(names => {
+      allNames = names;
+    });
+})
+      .catch(err => {
+        console.error('فشل الإرسال:', err);
+      });
+    }
+
+    function searchName() {
+      const search = document.getElementById("searchInput").value.trim();
+      fetch(${scriptURL}?action=searchName&name=${encodeURIComponent(search)})
         .then(res => res.json())
-        .then(data => {
-          tbody.innerHTML = '';
-          if (data.found) {
-            const row = document.createElement('tr');
-            row.innerHTML = `<td>${data.data[0]}</td><td>${data.data[1]}</td>`;
+        .then(response => {
+          const table = document.getElementById("resultTable");
+          const tbody = table.querySelector("tbody");
+          tbody.innerHTML = "";
+          if (response.found) {
+            const row = document.createElement("tr");
+            response.data.forEach(cell => {
+              const td = document.createElement("td");
+              td.textContent = cell;
+              row.appendChild(td);
+            });
             tbody.appendChild(row);
-            resultTable.style.display = 'table';
+            table.style.display = "table";
           } else {
-            alert('الاسم غير موجود');
+            alert("الاسم غير موجود");
           }
         })
-        .catch(error => console.error('Error searching name:', error));
+        .catch(err => {
+          console.error('خطأ أثناء البحث:', err);
+        });
+    }
+
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const username = document.getElementById("loginUsername").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+      if (username === "جون" && password === "12") {
+        alert("تم تسجيل الدخول بنجاح");
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("dataSection").style.display = "block";
+        document.querySelector(".search-section").style.display = "block";
+      } else {
+        alert("اسم المستخدم أو كلمة المرور غير صحيحة");
+      }
     });
   </script>
+
 </body>
 </html>
