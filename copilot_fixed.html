@@ -5,135 +5,79 @@
   <title>Heroes Adventure 2025</title>
   <link rel="icon" type="image/png" href="https://i.imgur.com/jKMhKlP.png">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=18+Khebrat+Musamim:wght@400;700&display=swap');
-
     body {
-      background-image: url('https://i.imgur.com/jKMhKlP.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      color: white;
-      font-family: '18 Khebrat Musamim', serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
       margin: 0;
       padding: 0;
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
     }
-
-    .data-section, .search-section, .login-section {
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 20px;
-      border-radius: 15px;
-      margin: 20px;
-      width: 90%;
-      max-width: 600px;
-    }
-
-    label {
-      font-size: 1.2em;
-      margin-bottom: 5px;
-    }
-
-    input, button {
-      font-size: 1.2em;
-      font-family: '18 Khebrat Musamim', serif;
-      text-align: center;
-      padding: 10px;
-      width: 100%;
-      margin-top: 10px;
-    }
-
     .form-group {
       display: flex;
       flex-direction: column;
       margin-bottom: 20px;
     }
-
-    #suggestions {
-      background: white;
-      color: black;
-      text-align: right;
-      border-radius: 5px;
-      max-height: 150px;
-      overflow-y: auto;
-      position: relative;
-      z-index: 1000;
+    input, button {
+      font-size: 1.2em;
+      padding: 10px;
+      margin-top: 10px;
+      width: 300px;
     }
-
-    .suggestion-item {
-      padding: 5px;
+    button {
       cursor: pointer;
     }
-
-    .suggestion-item:hover {
-      background-color: #eee;
-    }
-
-    table {
+    #resultTable {
       width: 100%;
-      border-collapse: collapse;
       margin-top: 20px;
       display: none;
+      border-collapse: collapse;
     }
-
-    th, td {
-      padding: 8px;
+    #resultTable th, #resultTable td {
+      padding: 10px;
       border: 1px solid #ddd;
-      text-align: right;
-    }
-
-    th {
-      background-color: #f4f4f4;
     }
   </style>
 </head>
 <body>
-  <div class="data-section">
-    <h2>إدخال البيانات</h2>
-    <div class="form-group">
-      <label for="name">الاسم:</label>
-      <input type="text" id="name" placeholder="أدخل الاسم">
-    </div>
-    <div class="form-group">
-      <label for="number">الرقم (0-5):</label>
-      <input type="number" id="number" min="0" max="5" placeholder="أدخل الرقم">
-    </div>
-    <div class="form-group">
-      <button id="submitButton" disabled>إرسال</button>
-    </div>
+  <h2>إدخال البيانات</h2>
+  <div class="form-group">
+    <label for="name">الاسم:</label>
+    <input type="text" id="name" placeholder="أدخل الاسم">
   </div>
-
-  <div class="search-section">
-    <h2>بحث عن الاسم</h2>
-    <div class="form-group">
-      <label for="search">ابحث عن اسم:</label>
-      <input type="text" id="search" placeholder="أدخل الاسم للبحث">
-      <div id="suggestions"></div>
-    </div>
-    <button id="searchButton">بحث</button>
-
-    <table id="resultTable">
-      <thead>
-        <tr>
-          <th>الاسم</th>
-          <th>الرقم</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <div class="form-group">
+    <label for="number">الرقم (0-5):</label>
+    <input type="number" id="number" min="0" max="5" placeholder="أدخل الرقم">
   </div>
+  <button id="submitButton" disabled>إرسال</button>
+
+  <h2>بحث عن الاسم</h2>
+  <div class="form-group">
+    <label for="search">ابحث عن اسم:</label>
+    <input type="text" id="search" placeholder="أدخل الاسم للبحث">
+  </div>
+  <button id="searchButton">بحث</button>
+
+  <table id="resultTable">
+    <thead>
+      <tr>
+        <th>الاسم</th>
+        <th>الرقم</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
   <script>
     const submitButton = document.getElementById('submitButton');
     const searchInput = document.getElementById('search');
     const searchButton = document.getElementById('searchButton');
     const resultTable = document.getElementById('resultTable');
-    const suggestionsDiv = document.getElementById('suggestions');
-    
-    // للتحقق من إدخال البيانات
+    const tbody = resultTable.querySelector('tbody');
+
     document.getElementById('name').addEventListener('input', toggleSubmitButton);
     document.getElementById('number').addEventListener('input', toggleSubmitButton);
 
@@ -143,39 +87,29 @@
       submitButton.disabled = !(name && number >= 0 && number <= 5);
     }
 
-    // البحث عن الاسم
-    searchInput.addEventListener('input', () => {
-      const search = searchInput.value;
+    submitButton.addEventListener('click', () => {
+      const name = document.getElementById('name').value;
+      const number = document.getElementById('number').value;
 
-      if (!search) {
-        suggestionsDiv.innerHTML = '';
-        return;
-      }
-
-      fetch(`http://localhost:3000/proxy?action=searchName&name=${encodeURIComponent(search)}`)
-        .then(res => res.json())
-        .then(data => {
-          suggestionsDiv.innerHTML = data.found
-            ? `<div class="suggestion-item">${data.data[0]}</div>`
-            : 'لا توجد نتائج';
-        })
-        .catch(error => console.error('Error fetching data:', error));
+      fetch('https://script.google.com/macros/s/AKfycbys8QNjSVItLJcG1XdR8XWDu7t4239jHO5-tdI3THBESUJ2ZIyicoI8ypE2OEezwj7UJg/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, number })
+      })
+        .then(response => response.text())
+        .then(result => alert(result))
+        .catch(error => console.error('Error submitting data:', error));
     });
 
     searchButton.addEventListener('click', () => {
       const search = searchInput.value;
-      fetch(`http://localhost:3000/proxy?action=searchName&name=${encodeURIComponent(search)}`)
+      fetch(`https://script.google.com/macros/s/AKfycbys8QNjSVItLJcG1XdR8XWDu7t4239jHO5-tdI3THBESUJ2ZIyicoI8ypE2OEezwj7UJg/exec?action=searchName&name=${encodeURIComponent(search)}`)
         .then(res => res.json())
-        .then(response => {
-          const tbody = resultTable.querySelector('tbody');
+        .then(data => {
           tbody.innerHTML = '';
-          if (response.found) {
+          if (data.found) {
             const row = document.createElement('tr');
-            response.data.forEach(cell => {
-              const td = document.createElement('td');
-              td.textContent = cell;
-              row.appendChild(td);
-            });
+            row.innerHTML = `<td>${data.data[0]}</td><td>${data.data[1]}</td>`;
             tbody.appendChild(row);
             resultTable.style.display = 'table';
           } else {
@@ -183,21 +117,6 @@
           }
         })
         .catch(error => console.error('Error searching name:', error));
-    });
-
-    submitButton.addEventListener('click', () => {
-      const name = document.getElementById('name').value;
-      const number = document.getElementById('number').value;
-      fetch('http://localhost:3000/proxy', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, number })
-      })
-        .then(response => response.text())
-        .then(result => {
-          alert(result);
-        })
-        .catch(error => console.error('Error submitting data:', error));
     });
   </script>
 </body>
