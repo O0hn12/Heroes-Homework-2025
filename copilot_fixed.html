@@ -214,6 +214,7 @@
       showSuggestions(this, document.getElementById("searchSuggestions"));
     });
     document.getElementById("loginBtn").addEventListener("click", function () {
+    document.getElementById("submitBtn").addEventListener("touchstart", submitData);
   console.log("🔍 تم الضغط على تسجيل الدخول");
 
   const username = document.getElementById("loginUsername").value.trim();
