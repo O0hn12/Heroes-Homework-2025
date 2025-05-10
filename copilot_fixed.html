@@ -150,101 +150,39 @@
     const scriptURL = 'http://localhost:3000/proxy';
     let allNames = [];
 
-    // تحميل الأسماء فورًا
-    fetch(scriptURL + '?action=getAllNames')
+    fetch(`${scriptURL}?action=getAllNames`)
       .then(res => res.json())
       .then(names => {
-        allNames = names;
+        if (Array.isArray(names)) {
+          allNames = names;
+        }
       })
-      .catch(err => {
-        console.error('فشل تحميل الأسماء:', err);
-      });
-
-    // اقتراحات أثناء الكتابة
-    document.getElementById("searchInput").addEventListener("input", function () {
-      const value = this.value.toLowerCase();
-      const suggestions = document.getElementById("suggestions");
-      suggestions.innerHTML = "";
-
-      if (!value) return;
-
-      const filtered = allNames.filter(name => name.toLowerCase().includes(value));
-      filtered.slice(0, 10).forEach(name => {
-        const item = document.createElement("div");
-        item.className = "suggestion-item";
-        item.textContent = name;
-        item.onclick = () => {
-          document.getElementById("searchInput").value = name;
-          suggestions.innerHTML = "";
-        };
-        suggestions.appendChild(item);
-      });
-    });
-
-    function checkSubmitState() {
-      const name = document.getElementById("nameInput").value.trim();
-      const number = document.getElementById("numberInput").value.trim();
-      const validNumber = number !== "" && +number >= 0 && +number <= 5;
-      const hasName = name !== "";
-      document.getElementById("submitBtn").disabled = !(validNumber && hasName);
-    }
-
-    function submitData() {
-      const name = document.getElementById("nameInput").value.trim();
-      const number = Number(document.getElementById("numberInput").value);
-      if (name === "" || isNaN(number) || number < 0 || number > 5) {
-        alert("يرجى إدخال اسم ورقم صحيح بين 0 و 5");
-        return;
-      }
-
-      fetch(scriptURL, {
-        method: 'POST',
-        body: JSON.stringify({ name, number }),
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(res => res.text())
-      .then(msg => {
-  alert(msg);
-  document.getElementById("nameInput").value = "";
-  document.getElementById("numberInput").value = "";
-  checkSubmitState();
-
-  // تحديث قائمة الأسماء
-  fetch(scriptURL + '?action=getAllNames')
-    .then(res => res.json())
-    .then(names => {
-      allNames = names;
-    });
-})
-      .catch(err => {
-        console.error('فشل الإرسال:', err);
-      });
-    }
+      .catch(err => console.error('فشل تحميل الأسماء:', err));
 
     function searchName() {
       const search = document.getElementById("searchInput").value.trim();
-      fetch(${scriptURL}?action=searchName&name=${encodeURIComponent(search)})
+      fetch(`${scriptURL}?action=searchName&name=${encodeURIComponent(search)}`)
         .then(res => res.json())
         .then(response => {
           const table = document.getElementById("resultTable");
           const tbody = table.querySelector("tbody");
           tbody.innerHTML = "";
-          if (response.found) {
-            const row = document.createElement("tr");
-            response.data.forEach(cell => {
-              const td = document.createElement("td");
-              td.textContent = cell;
-              row.appendChild(td);
-            });
-            tbody.appendChild(row);
-            table.style.display = "table";
-          } else {
-            alert("الاسم غير موجود");
+
+          if (!response || !response.found || !response.data) {
+            alert("الاسم غير موجود أو البيانات غير صحيحة");
+            return;
           }
+
+          const row = document.createElement("tr");
+          response.data.forEach(cell => {
+            const td = document.createElement("td");
+            td.textContent = cell;
+            row.appendChild(td);
+          });
+          tbody.appendChild(row);
+          table.style.display = "table";
         })
-        .catch(err => {
-          console.error('خطأ أثناء البحث:', err);
-        });
+        .catch(err => console.error('خطأ أثناء البحث:', err));
     }
 
     document.getElementById("loginBtn").addEventListener("click", () => {
