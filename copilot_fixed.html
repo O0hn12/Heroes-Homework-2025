@@ -167,12 +167,22 @@ fetch(`${scriptURL}?action=getAllNames`)
 
 // دالة لتحديث الاقتراحات أثناء الكتابة
 function showSuggestions(inputElement, suggestionsContainer) {
+  console.log("🔍 اختبار: الاقتراحات يتم تحديثها لـ", inputElement.id);
+  console.log("✅ الأسماء المتاحة:", allNames); // تأكيد أن الأسماء تصل إلى هذه الدالة
+
+  if (!suggestionsContainer) {
+    console.error("❌ عنصر الاقتراحات غير موجود! تأكد من أن `nameSuggestions` و `searchSuggestions` معرفان في HTML.");
+    return;
+  }
+
   const value = inputElement.value.toLowerCase();
   suggestionsContainer.innerHTML = "";
 
   if (!value) return;
 
   const filtered = allNames.filter(name => name.toLowerCase().includes(value));
+
+  console.log("🟢 الاقتراحات المتاحة:", filtered); // تأكيد أن الفلترة تعمل بشكل صحيح
 
   if (filtered.length === 0) {
     suggestionsContainer.innerHTML = "<div class='suggestion-item'>لا توجد نتائج</div>";
@@ -189,10 +199,7 @@ function showSuggestions(inputElement, suggestionsContainer) {
     };
     suggestionsContainer.appendChild(item);
   });
-
-  console.log("🟢 الاقتراحات المتاحة:", filtered);
 }
-
 // ربط الحدث بمربعات الإدخال
 document.getElementById("searchInput").addEventListener("input", function () {
   showSuggestions(this, document.getElementById("searchSuggestions"));
