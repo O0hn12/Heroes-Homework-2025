@@ -148,6 +148,50 @@
   </div>
 
   <script>
+    const scriptURL = 'http://localhost:3000/proxy';
+    let allNames = [];
+
+    fetch(`${scriptURL}?action=getAllNames`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data.names)) {
+          allNames = data.names;
+          console.log("✅ الأسماء المحملة بنجاح:", allNames);
+        } else {
+          console.error("❌ لم يتم تحميل الأسماء بشكل صحيح!");
+        }
+      })
+      .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
+
+    function showSuggestions(inputElement, suggestionsContainer) {
+      if (!suggestionsContainer) {
+        console.error("❌ عنصر الاقتراحات غير موجود في HTML!");
+        return;
+      }
+
+      const value = inputElement.value.toLowerCase();
+      suggestionsContainer.innerHTML = "";
+
+      if (!value) return;
+
+      let filtered = allNames.filter(name => name && name.toLowerCase().includes(value));
+      if (filtered.length === 0) {
+        suggestionsContainer.innerHTML = "<div class='suggestion-item'>لا توجد نتائج</div>";
+        return;
+      }
+
+      filtered.slice(0, 10).forEach(name => {
+        const item = document.createElement("div");
+        item.className = "suggestion-item";
+        item.textContent = name;
+        item.onclick = () => {
+          inputElement.value = name;
+          suggestionsContainer.innerHTML = "";
+        };
+        suggestionsContainer.appendChild(item);
+      });
+    }
+
     document.getElementById("nameInput").addEventListener("input", function () {
       showSuggestions(this, document.getElementById("nameSuggestions"));
     });
