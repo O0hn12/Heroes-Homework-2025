@@ -167,26 +167,11 @@ fetch(`${scriptURL}?action=getAllNames`)
 
 // دالة لتحديث الاقتراحات أثناء الكتابة
 function showSuggestions(inputElement, suggestionsContainer) {
-  console.log("🔍 اختبار: الاقتراحات يتم تحديثها لـ", inputElement.id);
-  console.log("✅ الأسماء المتاحة:", allNames); // تأكيد أن الأسماء تصل إلى هذه الدالة
   console.log("🔎 الفلترة بدأت - النص المدخل:", inputElement.value);
   console.log("🟢 قائمة الأسماء قبل الفلترة:", allNames);
-  console.log("🛠 أسماء بعد الفلترة:", filtered);
-  filtered.slice(0, 10).forEach(name => {
-  console.log("🛠 يتم إدراج هذا الاسم كاقتراح:", name);
-
-  const item = document.createElement("div");
-  item.className = "suggestion-item";
-  item.textContent = name;
-  item.onclick = () => {
-    inputElement.value = name;
-    suggestionsContainer.innerHTML = "";
-  };
-  suggestionsContainer.appendChild(item);
-});
 
   if (!suggestionsContainer) {
-    console.error("❌ عنصر الاقتراحات غير موجود! تأكد من أن `nameSuggestions` و `searchSuggestions` معرفان في HTML.");
+    console.error("❌ عنصر الاقتراحات غير موجود! تأكد من أنه معرف في HTML.");
     return;
   }
 
@@ -195,14 +180,29 @@ function showSuggestions(inputElement, suggestionsContainer) {
 
   if (!value) return;
 
-  const filtered = allNames.filter(name => name.toLowerCase().includes(value));
+  // تأكد من أن filtered تم تعريفه بشكل صحيح
+  let filtered = allNames.filter(name => name && name.toLowerCase().includes(value));
 
-  console.log("🟢 الاقتراحات المتاحة:", filtered); // تأكيد أن الفلترة تعمل بشكل صحيح
+  console.log("🛠 أسماء بعد الفلترة:", filtered);
 
   if (filtered.length === 0) {
     suggestionsContainer.innerHTML = "<div class='suggestion-item'>لا توجد نتائج</div>";
     return;
   }
+
+  filtered.slice(0, 10).forEach(name => {
+    console.log("🛠 يتم إدراج هذا الاسم كاقتراح:", name);
+    
+    const item = document.createElement("div");
+    item.className = "suggestion-item";
+    item.textContent = name;
+    item.onclick = () => {
+      inputElement.value = name;
+      suggestionsContainer.innerHTML = "";
+    };
+    suggestionsContainer.appendChild(item);
+  });
+}
 
   filtered.slice(0, 10).forEach(name => {
     const item = document.createElement("div");
