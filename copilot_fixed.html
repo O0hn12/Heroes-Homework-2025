@@ -156,8 +156,9 @@
     if (Array.isArray(names)) {
       allNames = names;
     }
+    console.log("✅ الأسماء المحملة:", allNames); // متابعة التحميل
   })
-  .catch(err => console.error('فشل تحميل الأسماء:', err));
+  .catch(err => console.error('❌ فشل تحميل الأسماء:', err));
 
     function searchName() {
       const search = document.getElementById("searchInput").value.trim();
