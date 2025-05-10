@@ -204,6 +204,31 @@
   const hasName = name !== "";
   document.getElementById("submitBtn").disabled = !(validNumber && hasName);
 }
+    function submitData() {
+  const name = document.getElementById("nameInput").value.trim();
+  const number = Number(document.getElementById("numberInput").value);
+
+  if (name === "" || isNaN(number) || number < 0 || number > 5) {
+    alert("يرجى إدخال اسم ورقم صحيح بين 0 و 5");
+    return;
+  }
+
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify({ name, number }),
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(res => res.json()) // تأكد من أن الاستجابة بصيغة JSON صحيحة
+  .then(msg => {
+    alert(msg.success ? "تم الإرسال بنجاح" : "فشل الإرسال");
+    document.getElementById("nameInput").value = "";
+    document.getElementById("numberInput").value = "";
+    checkSubmitState();
+  })
+  .catch(err => {
+    console.error('فشل الإرسال:', err);
+  });
+}
   </script>
 
 </body>
