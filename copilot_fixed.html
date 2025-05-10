@@ -151,13 +151,13 @@
     let allNames = [];
 
     fetch(`${scriptURL}?action=getAllNames`)
-      .then(res => res.json())
-      .then(names => {
-        if (Array.isArray(names)) {
-          allNames = names;
-        }
-      })
-      .catch(err => console.error('فشل تحميل الأسماء:', err));
+  .then(res => res.json())
+  .then(names => {
+    if (Array.isArray(names)) {
+      allNames = names;
+    }
+  })
+  .catch(err => console.error('فشل تحميل الأسماء:', err));
 
     function searchName() {
       const search = document.getElementById("searchInput").value.trim();
@@ -229,6 +229,25 @@
     console.error('فشل الإرسال:', err);
   });
 }
+    document.getElementById("searchInput").addEventListener("input", function () {
+  const value = this.value.toLowerCase();
+  const suggestions = document.getElementById("suggestions");
+  suggestions.innerHTML = "";
+
+  if (!value) return;
+
+  const filtered = allNames.filter(name => name.toLowerCase().includes(value));
+  filtered.slice(0, 10).forEach(name => {
+    const item = document.createElement("div");
+    item.className = "suggestion-item";
+    item.textContent = name;
+    item.onclick = () => {
+      document.getElementById("searchInput").value = name;
+      suggestions.innerHTML = "";
+    };
+    suggestions.appendChild(item);
+  });
+});
   </script>
 
 </body>
