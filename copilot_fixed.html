@@ -204,11 +204,18 @@
       })
       .then(res => res.text())
       .then(msg => {
-        alert(msg);
-        document.getElementById("nameInput").value = "";
-        document.getElementById("numberInput").value = "";
-        checkSubmitState();
-      })
+  alert(msg);
+  document.getElementById("nameInput").value = "";
+  document.getElementById("numberInput").value = "";
+  checkSubmitState();
+
+  // تحديث قائمة الأسماء
+  fetch(scriptURL + '?action=getAllNames')
+    .then(res => res.json())
+    .then(names => {
+      allNames = names;
+    });
+})
       .catch(err => {
         console.error('فشل الإرسال:', err);
       });
@@ -243,7 +250,7 @@
     document.getElementById("loginBtn").addEventListener("click", () => {
       const username = document.getElementById("loginUsername").value.trim();
       const password = document.getElementById("loginPassword").value.trim();
-      if (username === "جون" && password === "12345") {
+      if (username === "جون" && password === "123") {
         alert("تم تسجيل الدخول بنجاح");
         document.getElementById("loginSection").style.display = "none";
         document.getElementById("dataSection").style.display = "block";
