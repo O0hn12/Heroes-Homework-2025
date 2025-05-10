@@ -169,6 +169,9 @@ fetch(`${scriptURL}?action=getAllNames`)
 function showSuggestions(inputElement, suggestionsContainer) {
   console.log("🔍 اختبار: الاقتراحات يتم تحديثها لـ", inputElement.id);
   console.log("✅ الأسماء المتاحة:", allNames); // تأكيد أن الأسماء تصل إلى هذه الدالة
+  console.log("🔎 الفلترة بدأت - النص المدخل:", inputElement.value);
+  console.log("🟢 قائمة الأسماء قبل الفلترة:", allNames);
+  console.log("🛠 أسماء بعد الفلترة:", filtered);
 
   if (!suggestionsContainer) {
     console.error("❌ عنصر الاقتراحات غير موجود! تأكد من أن `nameSuggestions` و `searchSuggestions` معرفان في HTML.");
