@@ -197,6 +197,13 @@
         alert("اسم المستخدم أو كلمة المرور غير صحيحة");
       }
     });
+    function checkSubmitState() {
+  const name = document.getElementById("nameInput").value.trim();
+  const number = document.getElementById("numberInput").value.trim();
+  const validNumber = number !== "" && +number >= 0 && +number <= 5;
+  const hasName = name !== "";
+  document.getElementById("submitBtn").disabled = !(validNumber && hasName);
+}
   </script>
 
 </body>
