@@ -155,7 +155,8 @@
 fetch(`${scriptURL}?action=getAllNames`)
   .then(res => res.json())
   .then(names => {
-    if (Array.isArray(names)) {
+    console.log("🔍 استجابة السيرفر:", names); // طباعة البيانات القادمة من السيرفر
+    if (Array.isArray(names) && names.length > 0) {
       allNames = names;
       console.log("✅ الأسماء المحملة بنجاح:", allNames);
     } else {
