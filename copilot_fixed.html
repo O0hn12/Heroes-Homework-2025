@@ -172,6 +172,18 @@ function showSuggestions(inputElement, suggestionsContainer) {
   console.log("🔎 الفلترة بدأت - النص المدخل:", inputElement.value);
   console.log("🟢 قائمة الأسماء قبل الفلترة:", allNames);
   console.log("🛠 أسماء بعد الفلترة:", filtered);
+  filtered.slice(0, 10).forEach(name => {
+  console.log("🛠 يتم إدراج هذا الاسم كاقتراح:", name);
+
+  const item = document.createElement("div");
+  item.className = "suggestion-item";
+  item.textContent = name;
+  item.onclick = () => {
+    inputElement.value = name;
+    suggestionsContainer.innerHTML = "";
+  };
+  suggestionsContainer.appendChild(item);
+});
 
   if (!suggestionsContainer) {
     console.error("❌ عنصر الاقتراحات غير موجود! تأكد من أن `nameSuggestions` و `searchSuggestions` معرفان في HTML.");
