@@ -309,22 +309,10 @@
   })
   .then(res => res.json())
   .then(response => {
+    console.log("✅ استجابة السيرفر:", response);
     alert(response.success ? `✅ تم إدخال البيانات في ${selectedSheet} بنجاح!` : "❌ فشل الإرسال!");
-  })
-  .catch(err => console.error('❌ خطأ أثناء الإرسال:', err));
-}
 
-  fetch(scriptURL, {
-    method: 'POST',
-    body: JSON.stringify({ name, number }),
-    headers: { 'Content-Type': 'application/json' }
-  })
-  .then(res => res.json())
-  .then(msg => {
-    console.log("✅ استجابة السيرفر:", msg);
-    alert(msg.success ? "تم الإرسال بنجاح!" : "❌ فشل الإرسال!");
-    
-    // إعادة تعيين القيم بعد الإرسال
+    // ✅ إعادة تعيين القيم بعد الإدخال
     document.getElementById("nameInput").value = "";
     document.getElementById("numberInput").value = "";
     checkSubmitState();
