@@ -140,7 +140,20 @@
 
   <script>
     let selectedSheet = "";
-
+    const scriptURL = 'http://localhost:3000/proxy';
+    let allNames = [];
+    fetch(`${scriptURL}?action=getAllNames`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data.names)) {
+          allNames = data.names;
+          console.log("✅ الأسماء المحملة بنجاح:", allNames);
+        } else {
+          console.error("❌ لم يتم تحميل الأسماء بشكل صحيح!");
+        }
+      })
+      .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
+    
     document.getElementById("loginBtn").addEventListener("click", function () {
       const username = document.getElementById("loginUsername").value.trim();
       const password = document.getElementById("loginPassword").value.trim();
@@ -166,6 +179,137 @@
       document.getElementById(newPage).style.display = "block";
       setTimeout(() => { document.getElementById(newPage).classList.add("active"); }, 50);
     }
+    function showSuggestions(inputElement, suggestionsContainer) {
+      if (!suggestionsContainer) {
+        console.error("❌ عنصر الاقتراحات غير موجود في HTML!");
+        return;
+      }
+
+      const value = inputElement.value.toLowerCase();
+      suggestionsContainer.innerHTML = "";
+
+      if (!value) return;
+
+      let filtered = allNames.filter(name => name && name.toLowerCase().includes(value));
+      if (filtered.length === 0) {
+        suggestionsContainer.innerHTML = "<div class='suggestion-item'>لا توجد نتائج</div>";
+        return;
+      }
+
+      filtered.slice(0, 10).forEach(name => {
+        const item = document.createElement("div");
+        item.className = "suggestion-item";
+        item.textContent = name;
+        item.onclick = () => {
+          inputElement.value = name;
+          suggestionsContainer.innerHTML = "";
+        };
+        suggestionsContainer.appendChild(item);
+      });
+    }
+
+    document.getElementById("nameInput").addEventListener("input", function () {
+      showSuggestions(this, document.getElementById("nameSuggestions"));
+    });
+
+    document.getElementById("searchInput").addEventListener("input", function () {
+      showSuggestions(this, document.getElementById("searchSuggestions"));
+    });
+    function checkSubmitState() {
+  const name = document.getElementById("nameInput").value.trim();
+  const number = document.getElementById("numberInput").value.trim();
+  const validNumber = number !== "" && +number >= 0 && +number <= 5;
+  const hasName = name !== "";
+
+  console.log("🔍 فحص حالة الإدخال: الاسم =", hasName, "| الرقم =", validNumber);
+
+  document.getElementById("submitBtn").disabled = !(validNumber && hasName);
+}
+    function submitData() {
+  console.log("🔍 تم الضغط على Submit"); // تأكيد تشغيل الدالة
+
+  const name = document.getElementById("nameInput").value.trim();
+  const number = Number(document.getElementById("numberInput").value);
+
+  if (name === "" || isNaN(number) || number < 0 || number > 5) {
+    alert("❌ يرجى إدخال اسم ورقم صحيح بين 0 و 5!");
+    return;
+  }
+
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify({ name, number }),
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(res => res.json())
+  .then(msg => {
+    console.log("✅ استجابة السيرفر:", msg);
+    alert(msg.success ? "تم الإرسال بنجاح!" : "❌ فشل الإرسال!");
+    
+    // إعادة تعيين القيم بعد الإرسال
+    document.getElementById("nameInput").value = "";
+    document.getElementById("numberInput").value = "";
+    checkSubmitState();
+  })
+  .catch(err => {
+    console.error('❌ فشل الإرسال:', err);
+  });
+}
+    function searchName() {
+  console.log("🔍 تم الضغط على زر البحث"); // تأكيد تشغيل الدالة
+
+  const search = document.getElementById("searchInput").value.trim();
+
+  if (!search) {
+    alert("❌ يرجى إدخال اسم للبحث!");
+    return;
+  }
+
+  fetch(`${scriptURL}?action=searchName&name=${encodeURIComponent(search)}`)
+    .then(res => res.json())
+    .then(response => {
+      console.log("✅ استجابة السيرفر:", response);
+
+      const table = document.getElementById("resultTable");
+      const tbody = table.querySelector("tbody");
+      tbody.innerHTML = "";
+
+      if (!response || !response.found || !response.data) {
+        alert("❌ الاسم غير موجود أو البيانات غير صحيحة!");
+        return;
+      }
+
+      const row = document.createElement("tr");
+      response.data.forEach(cell => {
+        const td = document.createElement("td");
+        td.textContent = cell;
+        row.appendChild(td);
+      });
+      tbody.appendChild(row);
+      table.style.display = "table";
+    })
+    .catch(err => console.error('❌ خطأ أثناء البحث:', err));
+}
+    function submitData() {
+  const name = document.getElementById("nameInput").value.trim();
+  const number = Number(document.getElementById("numberInput").value);
+
+  if (!selectedSheet) {
+    alert("❌ يجب اختيار شيت أولاً!");
+    return;
+  }
+
+  fetch(`http://localhost:3000/proxy?action=insertData&sheet=${selectedSheet}`, {
+    method: 'POST',
+    body: JSON.stringify({ name, number }),
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(res => res.json())
+  .then(response => {
+    alert(response.success ? "تم الإرسال بنجاح!" : "❌ فشل الإرسال!");
+  })
+  .catch(err => console.error('❌ خطأ أثناء الإرسال:', err));
+}
   </script>
 
 </body>
