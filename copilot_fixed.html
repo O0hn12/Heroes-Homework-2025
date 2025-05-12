@@ -329,6 +329,8 @@
     .catch(err => console.error('❌ خطأ أثناء البحث:', err));
 }
     function submitData() {
+  console.log("🔍 تم الضغط على Submit");
+
   const name = document.getElementById("nameInput").value.trim();
   const number = Number(document.getElementById("numberInput").value);
 
@@ -337,14 +339,14 @@
     return;
   }
 
-  fetch(`http://localhost:3000/proxy?action=insertData&sheet=${selectedSheet}`, {
+  fetch(`http://localhost:3000/proxy?action=insertData&sheet=${selectedSheet}`, { // ✅ إرسال اسم الشيت الصحيح إلى السيرفر
     method: 'POST',
-    body: JSON.stringify({ name, number }),
+    body: JSON.stringify({ name, number, sheet: selectedSheet }), // ✅ تأكد من تضمين `selectedSheet`
     headers: { 'Content-Type': 'application/json' }
   })
   .then(res => res.json())
   .then(response => {
-    alert(response.success ? "تم الإرسال بنجاح!" : "❌ فشل الإرسال!");
+    alert(response.success ? `✅ تم إدخال البيانات إلى ${selectedSheet} بنجاح!` : "❌ فشل الإرسال!");
   })
   .catch(err => console.error('❌ خطأ أثناء الإرسال:', err));
 }
