@@ -22,21 +22,9 @@
       margin: 0;
       padding: 0;
       text-align: center;
-      @media screen and (max-width: 768px) {
-  .data-section, .search-section, .login-section {
-    width: 95%;
-    max-width: 400px;
-  }
-}
-      .login-section {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
     }
 
-    .data-section, .search-section, .login-section {
+    .data-section, .search-section, .login-section, .choice-section {
       background-color: rgba(0, 0, 0, 0.7);
       padding: 20px;
       border-radius: 15px;
@@ -45,12 +33,7 @@
       max-width: 600px;
     }
 
-    label {
-      font-size: 1.2em;
-      margin-bottom: 5px;
-    }
-
-    input, button {
+    label, input, button {
       font-size: 1.2em;
       font-family: '18 Khebrat Musamim', serif;
       text-align: center;
@@ -59,70 +42,35 @@
       margin-top: 10px;
     }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 20px;
+    .page {
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
     }
 
-    #suggestions {
-      background: white;
-      color: black;
-      text-align: right;
-      border-radius: 5px;
-      max-height: 150px;
-      overflow-y: auto;
-      position: relative;
-      z-index: 1000;
+    .page.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    .suggestion-item {
-      padding: 5px;
+    .choice-section button {
+      font-size: 1.5em;
+      margin: 10px;
+      padding: 10px;
       cursor: pointer;
     }
-
-    .suggestion-item:hover {
-      background-color: #eee;
-    }
-
-    table {
-      width: 100%;
-      margin-top: 30px;
-      border-collapse: collapse;
-      display: none;
-      font-size: 1.1em;
-      overflow-y: auto; /* تمكين التمرير */
-    }
-
-    th, td {
-      border: 1px solid white;
-      padding: 10px;
-    }
-    .page {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-}
-
-.page.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-    .choice-section button {
-  font-size: 1.5em;
-  margin: 10px;
-  padding: 10px;
-  cursor: pointer;
-}
   </style>
 </head>
 <body>
 
-  <div class="login-section" id="loginSection">
+  <!-- ✅ صفحة تسجيل الدخول -->
+  <div class="login-section page active" id="loginSection">
     <h2>تسجيل الدخول</h2>
     <div class="form-group">
       <label for="loginUsername">اسم المستخدم</label>
-      <input type="text" id="loginUsername" autocomplete="off">
+      <input type="text" id="loginUsername">
     </div>
 
     <div class="form-group">
@@ -132,249 +80,88 @@
 
     <button id="loginBtn">تسجيل الدخول</button>
   </div>
-<div class="choice-section page" id="choiceSection" style="display: none;">
-  <h2>اختر الشيت الذي تريد إدخال البيانات إليه</h2>
-  <button onclick="selectSheet('1ب')">1ب</button>
-  <button onclick="selectSheet('2ب')">2ب</button>
-  <button onclick="selectSheet('3ب')">3ب</button>
-  <button onclick="selectSheet('4ب')">4ب</button>
-  <button onclick="selectSheet('5ب')">5ب</button>
-  <button onclick="selectSheet('6ب')">6ب</button>
-</div>
-  <div class="data-section" id="dataSection" style="display: none;">
+
+  <!-- ✅ صفحة اختيار الشيت -->
+  <div class="choice-section page" id="choiceSection" style="display: none;">
+    <h2>اختر الشيت الذي تريد إدخال البيانات إليه</h2>
+    <button onclick="selectSheet('1ب')">1ب</button>
+    <button onclick="selectSheet('2ب')">2ب</button>
+    <button onclick="selectSheet('3ب')">3ب</button>
+    <button onclick="selectSheet('4ب')">4ب</button>
+    <button onclick="selectSheet('5ب')">5ب</button>
+    <button onclick="selectSheet('6ب')">6ب</button>
+  </div>
+
+  <!-- ✅ صفحة إدخال البيانات -->
+  <div class="data-section page" id="dataSection" style="display: none;">
     <h2>Heroes Adventure 2025 - <span id="selectedSheet">لم يتم الاختيار بعد</span></h2>
     <div class="form-group">
       <label for="nameInput">الاسم</label>
-      <input type="text" id="nameInput" autocomplete="off" oninput="checkSubmitState()">
-      <div id="nameSuggestions"></div>
+      <input type="text" id="nameInput">
     </div>
 
     <div class="form-group">
       <label for="numberInput">الرقم (بين 0 و 5)</label>
-      <input type="number" id="numberInput" min="0" max="5" oninput="checkSubmitState()">
+      <input type="number" id="numberInput" min="0" max="5">
     </div>
 
-    <button id="submitBtn" onclick="submitData()" disabled>Submit</button>
-  </div>
-
-  <div class="search-section" style="display: none;">
-    <h2>بحث عن الاسم</h2>
-    <div class="form-group">
-      <label for="searchInput">الاسم</label>
-      <input type="text" id="searchInput" autocomplete="off">
-      <div id="searchSuggestions"></div>
-    </div>
-    <button onclick="searchName()">Search</button>
-
-    <table id="resultTable">
-      <thead>
-        <tr>
-          <th>الاسم</th>
-          <th>الأسبوع 1</th>
-          <th>الأسبوع 2</th>
-          <th>الأسبوع 3</th>
-          <th>الأسبوع 4</th>
-          <th>الأسبوع 5</th>
-          <th>الأسبوع 6</th>
-          <th>الأسبوع 7</th>
-          <th>الأسبوع 8</th>
-          <th>الأسبوع 9</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <button id="submitBtn">Submit</button>
   </div>
 
   <script>
-    const scriptURL = 'http://localhost:3000/proxy';
-    let allNames = [];
+    let selectedSheet = ""; // متغير لتخزين اسم الشيت المختار
 
-    fetch(`${scriptURL}?action=getAllNames`)
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data.names)) {
-          allNames = data.names;
-          console.log("✅ الأسماء المحملة بنجاح:", allNames);
-        } else {
-          console.error("❌ لم يتم تحميل الأسماء بشكل صحيح!");
-        }
-      })
-      .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
+    document.getElementById("loginBtn").addEventListener("click", function () {
+      console.log("🔍 تم الضغط على تسجيل الدخول");
 
-    function showSuggestions(inputElement, suggestionsContainer) {
-      if (!suggestionsContainer) {
-        console.error("❌ عنصر الاقتراحات غير موجود في HTML!");
-        return;
+      const username = document.getElementById("loginUsername").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+
+      if (username === "جون" && password === "12345") {
+        alert("تم تسجيل الدخول بنجاح");
+        changePage("loginSection", "choiceSection"); // انتقال إلى صفحة الاختيار
+      } else {
+        alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة!");
       }
+    });
 
-      const value = inputElement.value.toLowerCase();
-      suggestionsContainer.innerHTML = "";
-
-      if (!value) return;
-
-      let filtered = allNames.filter(name => name && name.toLowerCase().includes(value));
-      if (filtered.length === 0) {
-        suggestionsContainer.innerHTML = "<div class='suggestion-item'>لا توجد نتائج</div>";
-        return;
-      }
-
-      filtered.slice(0, 10).forEach(name => {
-        const item = document.createElement("div");
-        item.className = "suggestion-item";
-        item.textContent = name;
-        item.onclick = () => {
-          inputElement.value = name;
-          suggestionsContainer.innerHTML = "";
-        };
-        suggestionsContainer.appendChild(item);
-      });
+    function selectSheet(sheetName) {
+      selectedSheet = sheetName;
+      document.getElementById("selectedSheet").textContent = sheetName;
+      alert(`تم اختيار ${sheetName}`);
+      changePage("choiceSection", "dataSection"); // الانتقال إلى صفحة إدخال البيانات
     }
 
-    document.getElementById("nameInput").addEventListener("input", function () {
-      showSuggestions(this, document.getElementById("nameSuggestions"));
-    });
-
-    document.getElementById("searchInput").addEventListener("input", function () {
-      showSuggestions(this, document.getElementById("searchSuggestions"));
-    });
-    document.getElementById("loginBtn").addEventListener("click", function () {
-    document.getElementById("submitBtn").addEventListener("touchstart", submitData);
-  console.log("🔍 تم الضغط على تسجيل الدخول");
-
-  const username = document.getElementById("loginUsername").value.trim();
-  const password = document.getElementById("loginPassword").value.trim();
-
-  if (username === "جون" && password === "12345") {
-    alert("تم تسجيل الدخول بنجاح");
-    document.getElementById("loginSection").style.display = "none";
-    document.getElementById("dataSection").style.display = "block";
-    document.querySelector(".search-section").style.display = "block";
-  } else {
-    alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة!");
-  }
-});
-    function checkSubmitState() {
-  const name = document.getElementById("nameInput").value.trim();
-  const number = document.getElementById("numberInput").value.trim();
-  const validNumber = number !== "" && +number >= 0 && +number <= 5;
-  const hasName = name !== "";
-
-  console.log("🔍 فحص حالة الإدخال: الاسم =", hasName, "| الرقم =", validNumber);
-
-  document.getElementById("submitBtn").disabled = !(validNumber && hasName);
-}
     function submitData() {
-  console.log("🔍 تم الضغط على Submit"); // تأكيد تشغيل الدالة
+      const name = document.getElementById("nameInput").value.trim();
+      const number = Number(document.getElementById("numberInput").value);
 
-  const name = document.getElementById("nameInput").value.trim();
-  const number = Number(document.getElementById("numberInput").value);
-
-  if (name === "" || isNaN(number) || number < 0 || number > 5) {
-    alert("❌ يرجى إدخال اسم ورقم صحيح بين 0 و 5!");
-    return;
-  }
-
-  fetch(scriptURL, {
-    method: 'POST',
-    body: JSON.stringify({ name, number }),
-    headers: { 'Content-Type': 'application/json' }
-  })
-  .then(res => res.json())
-  .then(msg => {
-    console.log("✅ استجابة السيرفر:", msg);
-    alert(msg.success ? "تم الإرسال بنجاح!" : "❌ فشل الإرسال!");
-    
-    // إعادة تعيين القيم بعد الإرسال
-    document.getElementById("nameInput").value = "";
-    document.getElementById("numberInput").value = "";
-    checkSubmitState();
-  })
-  .catch(err => {
-    console.error('❌ فشل الإرسال:', err);
-  });
-}
-    function searchName() {
-  console.log("🔍 تم الضغط على زر البحث"); // تأكيد تشغيل الدالة
-
-  const search = document.getElementById("searchInput").value.trim();
-
-  if (!search) {
-    alert("❌ يرجى إدخال اسم للبحث!");
-    return;
-  }
-
-  fetch(`${scriptURL}?action=searchName&name=${encodeURIComponent(search)}`)
-    .then(res => res.json())
-    .then(response => {
-      console.log("✅ استجابة السيرفر:", response);
-
-      const table = document.getElementById("resultTable");
-      const tbody = table.querySelector("tbody");
-      tbody.innerHTML = "";
-
-      if (!response || !response.found || !response.data) {
-        alert("❌ الاسم غير موجود أو البيانات غير صحيحة!");
+      if (!selectedSheet) {
+        alert("❌ يجب اختيار شيت أولاً!");
         return;
       }
 
-      const row = document.createElement("tr");
-      response.data.forEach(cell => {
-        const td = document.createElement("td");
-        td.textContent = cell;
-        row.appendChild(td);
-      });
-      tbody.appendChild(row);
-      table.style.display = "table";
-    })
-    .catch(err => console.error('❌ خطأ أثناء البحث:', err));
-}
+      fetch(`http://localhost:3000/proxy?action=insertData&sheet=${selectedSheet}`, {
+        method: 'POST',
+        body: JSON.stringify({ name, number }),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(res => res.json())
+      .then(response => {
+        alert(response.success ? "تم الإرسال بنجاح!" : "❌ فشل الإرسال!");
+      })
+      .catch(err => console.error('❌ خطأ أثناء الإرسال:', err));
+    }
+
     function changePage(oldPage, newPage) {
-    document.getElementById(oldPage).classList.remove("active");
-    document.getElementById(newPage).classList.add("active");
-}
-    let selectedSheet = ""; // تخزين الشيت المختار
+      document.getElementById(oldPage).classList.remove("active");
+      document.getElementById(oldPage).style.display = "none";
 
-document.getElementById("loginBtn").addEventListener("click", function () {
-  console.log("🔍 تم الضغط على تسجيل الدخول");
-
-  const username = document.getElementById("loginUsername").value.trim();
-  const password = document.getElementById("loginPassword").value.trim();
-
-  if (username === "جون" && password === "12345") {
-    alert("تم تسجيل الدخول بنجاح");
-    changePage("loginSection", "choiceSection"); // انتقال إلى صفحة الاختيار بدلاً من إدخال البيانات
-  } else {
-    alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة!");
-  }
-});
-
-function selectSheet(sheetName) {
-  selectedSheet = sheetName;
-  document.getElementById("selectedSheet").textContent = sheetName;
-  alert(`تم اختيار ${sheetName}`);
-  changePage("choiceSection", "dataSection"); // الآن سيتم الانتقال بعد اختيار الشيت
-}
-
-function submitData() {
-  const name = document.getElementById("nameInput").value.trim();
-  const number = Number(document.getElementById("numberInput").value);
-
-  if (!selectedSheet) {
-    alert("❌ يجب اختيار شيت أولاً!");
-    return;
-  }
-
-  fetch(`http://localhost:3000/proxy?action=insertData&sheet=${selectedSheet}`, {
-    method: 'POST',
-    body: JSON.stringify({ name, number }),
-    headers: { 'Content-Type': 'application/json' }
-  })
-  .then(res => res.json())
-  .then(response => {
-    alert(response.success ? "تم الإرسال بنجاح!" : "❌ فشل الإرسال!");
-  })
-  .catch(err => console.error('❌ خطأ أثناء الإرسال:', err));
-}
+      document.getElementById(newPage).style.display = "block";
+      setTimeout(() => {
+        document.getElementById(newPage).classList.add("active");
+      }, 50);
+    }
   </script>
 
 </body>
