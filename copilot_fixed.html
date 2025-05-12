@@ -373,6 +373,17 @@
     })
     .catch(err => console.error('❌ خطأ أثناء البحث:', err));
 }
+
+// ✅ الآن دالة إدخال البيانات مستقلة ولا تتداخل مع `searchName()`
+function submitData() {
+  if (!selectedSheet) {
+    alert("❌ يجب اختيار شيت أولاً!");
+    return;
+  }
+
+  const name = document.getElementById("nameInput").value.trim();
+  const number = Number(document.getElementById("numberInput").value);
+
   fetch(`http://localhost:3000/proxy?action=insertData&sheet=${selectedSheet}`, { // ✅ إرسال اسم الشيت الصحيح إلى السيرفر
     method: 'POST',
     body: JSON.stringify({ name, number, sheet: selectedSheet }), // ✅ تأكد من تضمين `selectedSheet`
