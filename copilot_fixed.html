@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Heroes Adventure 2025</title>
+  <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/png" href="https://i.imgur.com/jKMhKlP.png">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=18+Khebrat+Musamim:wght@400;700&display=swap');
@@ -187,6 +188,10 @@
       })
       .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
 
+    function changePage(oldPage, newPage) {
+    document.getElementById(oldPage).classList.remove("active");
+    document.getElementById(newPage).classList.add("active");
+}
     function showSuggestions(inputElement, suggestionsContainer) {
       if (!suggestionsContainer) {
         console.error("❌ عنصر الاقتراحات غير موجود في HTML!");
@@ -313,10 +318,6 @@
       table.style.display = "table";
     })
     .catch(err => console.error('❌ خطأ أثناء البحث:', err));
-}
-    function changePage(oldPage, newPage) {
-  document.getElementById(oldPage).classList.remove("active");
-  document.getElementById(newPage).classList.add("active");
 }
   </script>
 
