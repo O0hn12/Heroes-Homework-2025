@@ -100,19 +100,23 @@
       padding: 10px;
     }
     .page {
+  display: none; /* Hide inactive pages */
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
 
 .page.active {
+  display: block; /* Show active page */
   opacity: 1;
   transform: translateY(0);
 }
   </style>
 </head>
 <body>
-
+<div class="login-section page" id="loginSection">
+<div class="data-section page" id="dataSection" style="display: none;">
+<div class="search-section page" id="searchSection" style="display: none;">
   <div class="login-section" id="loginSection">
     <h2>تسجيل الدخول</h2>
     <div class="form-group">
@@ -317,7 +321,12 @@
 }
     function changePage(oldPage, newPage) {
     document.getElementById(oldPage).classList.remove("active");
-    document.getElementById(newPage).classList.add("active");
+    document.getElementById(oldPage).style.display = "none"; // Hide the old page
+    
+    document.getElementById(newPage).style.display = "block"; // Show the new page
+    setTimeout(() => { // Wait a bit to allow display change
+        document.getElementById(newPage).classList.add("active");
+    }, 50);
 }
   </script>
 
