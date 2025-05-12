@@ -213,6 +213,13 @@
     alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة!");
   }
 });
+    function changePage(oldPage, newPage) {
+      document.getElementById(oldPage).classList.remove("active");
+      document.getElementById(oldPage).style.display = "none";
+      document.getElementById(newPage).style.display = "block";
+      setTimeout(() => { document.getElementById(newPage).classList.add("active"); }, 50);
+    }
+    
     function loadNames() {
   if (!selectedSheet) {
     console.error("❌ لم يتم اختيار شيت بعد!");
@@ -227,19 +234,7 @@
   loadNames(); // ✅ تحميل البيانات وفقًا للشيت المختار
   changePage("choiceSection", "dataSection");
 }
-    
-    function changePage(oldPage, newPage) {
-      document.getElementById(oldPage).classList.remove("active");
-      document.getElementById(oldPage).style.display = "none";
-      document.getElementById(newPage).style.display = "block";
-      setTimeout(() => { document.getElementById(newPage).classList.add("active"); }, 50);
-    }
-    function loadNames() {
-  if (!selectedSheet) {
-    console.error("❌ لم يتم اختيار شيت بعد!");
-    return;
-  }
-
+      
   fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`) // ✅ الآن نحمل الأسماء من الشيت المختار
     .then(res => res.json())
     .then(data => {
