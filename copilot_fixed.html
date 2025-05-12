@@ -342,7 +342,7 @@ document.getElementById("loginBtn").addEventListener("click", function () {
 
   if (username === "جون" && password === "12345") {
     alert("تم تسجيل الدخول بنجاح");
-    changePage("loginSection", "choiceSection"); // انتقال إلى صفحة الاختيار
+    changePage("loginSection", "choiceSection"); // انتقال إلى صفحة الاختيار بدلاً من إدخال البيانات
   } else {
     alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة!");
   }
@@ -352,7 +352,7 @@ function selectSheet(sheetName) {
   selectedSheet = sheetName;
   document.getElementById("selectedSheet").textContent = sheetName;
   alert(`تم اختيار ${sheetName}`);
-  changePage("choiceSection", "dataSection"); // انتقال إلى إدخال البيانات
+  changePage("choiceSection", "dataSection"); // الآن سيتم الانتقال بعد اختيار الشيت
 }
 
 function submitData() {
