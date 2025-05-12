@@ -22,6 +22,11 @@
       margin: 0;
       padding: 0;
       text-align: center;
+      @media screen and (max-width: 768px) {
+  .data-section, .search-section, .login-section {
+    width: 95%;
+    max-width: 400px;
+  }
     }
 
     .data-section, .search-section, .login-section, .choice-section {
@@ -40,6 +45,39 @@
       padding: 10px;
       width: 100%;
       margin-top: 10px;
+    }
+      #suggestions {
+      background: white;
+      color: black;
+      text-align: right;
+      border-radius: 5px;
+      max-height: 150px;
+      overflow-y: auto;
+      position: relative;
+      z-index: 1000;
+    }
+
+    .suggestion-item {
+      padding: 5px;
+      cursor: pointer;
+    }
+
+    .suggestion-item:hover {
+      background-color: #eee;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 30px;
+      border-collapse: collapse;
+      display: none;
+      font-size: 1.1em;
+      overflow-y: auto; /* تمكين التمرير */
+    }
+
+    th, td {
+      border: 1px solid white;
+      padding: 10px;
     }
 
     .page {
@@ -110,7 +148,7 @@
   </div>
 
   <!-- ✅ صفحة البحث -->
-  <div class="search-section page" id="searchSection" style="display: none;">
+  <div class="search-section " id="searchSection" style="display: none;">
     <h2>بحث عن الاسم</h2>
     <div class="form-group">
       <label for="searchInput">الاسم</label>
