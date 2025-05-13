@@ -219,23 +219,23 @@
     }
 
     function loadNames() {
-        if (!selectedSheet || selectedSheet.trim() === "") {
-            console.error("❌ No sheet selected! Aborting request.");
-            return;
-        }
-
-        fetch(`${scriptURL}?action=getAllNames&sheet=${encodeURIComponent(selectedSheet)}`)
-            .then(res => res.json())
-            .then(data => {
-                if (Array.isArray(data.names)) {
-                    allNames = data.names;
-                    console.log(`✅ Loaded names from ${selectedSheet}:`, allNames);
-                } else {
-                    console.error("❌ Failed to load names correctly!");
-                }
-            })
-            .catch(err => console.error("❌ Error loading names:", err));
+    if (!selectedSheet || selectedSheet.trim() === "") {
+        console.error("❌ No sheet selected! Aborting request.");
+        return;
     }
+
+    fetch(`${scriptURL}?action=getAllNames&sheet=${encodeURIComponent(selectedSheet)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (Array.isArray(data.names)) {
+                allNames = data.names;
+                console.log(`✅ Loaded names from ${selectedSheet}:`, allNames);
+            } else {
+                console.error("❌ Failed to load names correctly!");
+            }
+        })
+        .catch(err => console.error("❌ Error loading names:", err));
+}
 
     function showSuggestions(inputElement, suggestionsContainer) {
         if (!suggestionsContainer) {
