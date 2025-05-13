@@ -195,7 +195,7 @@
         const username = document.getElementById("loginUsername").value.trim();
         const password = document.getElementById("loginPassword").value.trim();
 
-        if (username === "جون" && password === "123") {
+        if (username === "جون" && password === "12345") {
             alert("تم تسجيل الدخول بنجاح");
             changePage("loginSection", "choiceSection");
         } else {
@@ -211,16 +211,17 @@
     }
 
     function selectSheet(sheetName) {
-        selectedSheet = sheetName;
-        document.getElementById("selectedSheet").textContent = sheetName;
-        alert(`✅ Selected sheet: ${sheetName}`);
-        loadNames();
-        changePage("choiceSection", "dataSection");
-    }
+    selectedSheet = sheetName;
+    document.getElementById("selectedSheet").textContent = sheetName;
+    alert(`✅ تم اختيار ${selectedSheet}`);
+    loadNames(); // ✅ تحميل الأسماء فقط بعد اختيار الشيت
+    changePage("choiceSection", "dataSection");
+}
+
 
     function loadNames() {
     if (!selectedSheet || selectedSheet.trim() === "") {
-        console.error("❌ No sheet selected! Aborting request.");
+        console.error("❌ لم يتم اختيار شيت بعد! الطلب لن يتم إرساله.");
         return;
     }
 
@@ -229,12 +230,12 @@
         .then(data => {
             if (Array.isArray(data.names)) {
                 allNames = data.names;
-                console.log(`✅ Loaded names from ${selectedSheet}:`, allNames);
+                console.log(`✅ تم تحميل أسماء من ${selectedSheet}:`, allNames);
             } else {
-                console.error("❌ Failed to load names correctly!");
+                console.error("❌ لم يتم تحميل الأسماء بشكل صحيح!");
             }
         })
-        .catch(err => console.error("❌ Error loading names:", err));
+        .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
 }
 
     function showSuggestions(inputElement, suggestionsContainer) {
