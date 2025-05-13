@@ -305,23 +305,21 @@ function loadNames() {
     method: 'POST',
     body: JSON.stringify({ name, number }),
     headers: { 'Content-Type': 'application/json' }
-  })
-  .then(res => {
-  if (!res.ok) throw new Error(`❌ استجابة غير صحيحة: ${res.status}`);
-  return res.json();
-  .then(response => {
+})
+.then(res => {
+    if (!res.ok) throw new Error(`❌ استجابة غير صحيحة: ${res.status}`);
+    return res.json();
+})
+.then(response => {  // ✅ الآن الإغلاق صحيح
     console.log("✅ استجابة السيرفر:", response);
-    alert(response.success ? `✅ تم إدخال البيانات في ${selectedSheet} بنجاح!` : "❌ فشل الإرسال!");
+    alert(response.success ? `✅ تم إدخال البيانات إلى ${selectedSheet} بنجاح!` : "❌ فشل الإرسال!");
 
-    // ✅ إعادة تعيين القيم بعد الإدخال
     document.getElementById("nameInput").value = "";
     document.getElementById("numberInput").value = "";
     checkSubmitState();
-  })
-  .catch(err => {
-    console.error('❌ فشل الإرسال:', err);
-  });
-}
+})
+.catch(err => console.error('❌ خطأ أثناء الإرسال:', err));
+
     function searchName() {
   console.log("🔍 تم الضغط على زر البحث"); // تأكيد تشغيل الدالة
 
