@@ -245,8 +245,9 @@ function loadNames() {
       }
     })
     .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
-  
-    function showSuggestions(inputElement, suggestionsContainer) {
+} // ✅ تأكد من إغلاق `loadNames()` هنا
+
+function showSuggestions(inputElement, suggestionsContainer) {
       if (!suggestionsContainer) {
         console.error("❌ عنصر الاقتراحات غير موجود في HTML!");
         return;
