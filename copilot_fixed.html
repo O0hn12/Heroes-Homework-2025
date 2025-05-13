@@ -109,6 +109,7 @@
     }
   </style>
 </head>
+  <script src="script.js" defer></script>
 <body>
 
   <!-- ✅ صفحة تسجيل الدخول -->
@@ -227,13 +228,13 @@
   }
 
     function selectSheet(sheetName) {
-  selectedSheet = sheetName;
+  selectedSheet = sheetName; // ✅ تخزين اسم الشيت المختار
   document.getElementById("selectedSheet").textContent = sheetName;
   alert(`✅ تم اختيار ${sheetName}`);
-  
   loadNames(); // ✅ تحميل البيانات وفقًا للشيت المختار
-  changePage("choiceSection", "dataSection");
+  changePage("choiceSection", "dataSection"); // ✅ الانتقال إلى صفحة إدخال البيانات
 }
+
       
   fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`) // ✅ الآن نحمل الأسماء من الشيت المختار
     .then(res => res.json())
