@@ -368,13 +368,17 @@ function submitData() {
   const name = document.getElementById("nameInput").value.trim();
   const number = Number(document.getElementById("numberInput").value);
 
-  fetch(`http://localhost:3000/proxy?action=insertData&sheet=${selectedSheet}`, { // ✅ إرسال اسم الشيت الصحيح إلى السيرفر
-    method: 'POST',
-    body: JSON.stringify({ name, number, sheet: selectedSheet }), // ✅ تأكد من تضمين `selectedSheet`
-    headers: { 'Content-Type': 'application/json' }
-  })
-  .then(res => res.json())
-  .then(response => {
+  fetch(`${scriptURL}?action=insertData&sheet=${selectedSheet}`, {
+  method: 'POST',
+  body: JSON.stringify({ name, number }),
+  headers: { 'Content-Type': 'application/json' }
+})
+.then(res => {
+  if (!res.ok) throw new Error(`❌ استجابة غير صحيحة: ${res.status}`);
+  return res.json();
+})
+.then(response => {  // ✅ الآن الإغلاق صحيح
+
     alert(response.success ? `✅ تم إدخال البيانات إلى ${selectedSheet} بنجاح!` : "❌ فشل الإرسال!");
   })
   .catch(err => console.error('❌ خطأ أثناء الإرسال:', err));
