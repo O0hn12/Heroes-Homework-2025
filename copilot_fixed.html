@@ -221,22 +221,21 @@
       setTimeout(() => { document.getElementById(newPage).classList.add("active"); }, 50);
     }
     
-    function loadNames() {
-  if (!selectedSheet) {
-    console.error("❌ لم يتم اختيار شيت بعد!");
-    return;
-  }
-
-    function selectSheet(sheetName) {
-  selectedSheet = sheetName; // ✅ تخزين اسم الشيت المختار
+    function selectSheet(sheetName) { // ✅ الآن الدالة مستقلة ويمكن استدعاؤها بشكل صحيح
+  selectedSheet = sheetName;
   document.getElementById("selectedSheet").textContent = sheetName;
   alert(`✅ تم اختيار ${sheetName}`);
   loadNames(); // ✅ تحميل البيانات وفقًا للشيت المختار
   changePage("choiceSection", "dataSection"); // ✅ الانتقال إلى صفحة إدخال البيانات
 }
 
-      
-  fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`) // ✅ الآن نحمل الأسماء من الشيت المختار
+function loadNames() {
+  if (!selectedSheet) {
+    console.error("❌ لم يتم اختيار شيت بعد!");
+    return;
+  }
+
+  fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
     .then(res => res.json())
     .then(data => {
       if (Array.isArray(data.names)) {
