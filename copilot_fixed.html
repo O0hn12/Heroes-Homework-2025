@@ -195,7 +195,7 @@
         const username = document.getElementById("loginUsername").value.trim();
         const password = document.getElementById("loginPassword").value.trim();
 
-        if (username === "جون" && password === "123") {
+        if (username === "جون" && password === "12345") {
             alert("تم تسجيل الدخول بنجاح");
             changePage("loginSection", "choiceSection");
         } else {
@@ -224,7 +224,7 @@
             return;
         }
 
-        fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
+        fetch(`${scriptURL}?action=getAllNames&sheet=${encodeURIComponent(selectedSheet)}`)
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data.names)) {
