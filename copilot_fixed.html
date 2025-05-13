@@ -355,36 +355,6 @@ function loadNames() {
     })
     .catch(err => console.error('❌ خطأ أثناء البحث:', err));
 }
-
-// ✅ الآن دالة إدخال البيانات مستقلة ولا تتداخل مع `searchName()`
-function submitData() {
-  if (!selectedSheet) {
-    alert("❌ يجب اختيار شيت أولاً!");
-    return;
-  }
-
-  const name = document.getElementById("nameInput").value.trim();
-  const number = Number(document.getElementById("numberInput").value);
-
-  fetch(`${scriptURL}?action=insertData&sheet=${selectedSheet}`, {
-    method: 'POST',
-    body: JSON.stringify({ name, number }),
-    headers: { 'Content-Type': 'application/json' }
-})
-.then(res => {
-    if (!res.ok) throw new Error(`❌ استجابة غير صحيحة: ${res.status}`);
-    return res.json();
-})
-.then(response => {  // ✅ الآن الإغلاق صحيح
-    console.log("✅ استجابة السيرفر:", response);
-    alert(response.success ? `✅ تم إدخال البيانات إلى ${selectedSheet} بنجاح!` : "❌ فشل الإرسال!");
-
-    document.getElementById("nameInput").value = "";
-    document.getElementById("numberInput").value = "";
-    checkSubmitState();
-})
-.catch(err => console.error('❌ خطأ أثناء الإرسال:', err));
-  
   </script>
 
 </body>
