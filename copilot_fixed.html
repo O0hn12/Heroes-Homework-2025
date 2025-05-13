@@ -220,31 +220,31 @@
       setTimeout(() => { document.getElementById(newPage).classList.add("active"); }, 50);
     }
     
-    function selectSheet(sheetName) { // ✅ الآن الدالة مستقلة ويمكن استدعاؤها بشكل صحيح
-  selectedSheet = sheetName;
-  document.getElementById("selectedSheet").textContent = sheetName;
-  alert(`✅ تم اختيار ${sheetName}`);
-  loadNames(); // ✅ تحميل البيانات وفقًا للشيت المختار
-  changePage("choiceSection", "dataSection"); // ✅ الانتقال إلى صفحة إدخال البيانات
+    function selectSheet(sheetName) {
+    selectedSheet = sheetName;
+    document.getElementById("selectedSheet").textContent = sheetName;
+    alert(`✅ Selected sheet: ${sheetName}`);
+    loadNames(); // ✅ Load names only after selecting a sheet
+    changePage("choiceSection", "dataSection");
 }
 
 function loadNames() {
-  if (!selectedSheet) {
-    console.error("❌ لم يتم اختيار شيت بعد!");
-    return;
-  }
+    if (!selectedSheet || selectedSheet.trim() === "") {
+        console.error("❌ No sheet selected! Aborting request.");
+        return;
+    }
 
-  fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
-    .then(res => res.json())
-    .then(data => {
-      if (Array.isArray(data.names)) {
-        allNames = data.names;
-        console.log(`✅ تم تحميل أسماء من ${selectedSheet}:`, allNames);
-      } else {
-        console.error("❌ لم يتم تحميل الأسماء بشكل صحيح!");
-      }
-    })
-    .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
+    fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
+        .then(res => res.json())
+        .then(data => {
+            if (Array.isArray(data.names)) {
+                allNames = data.names;
+                console.log(`✅ Loaded names from ${selectedSheet}:`, allNames);
+            } else {
+                console.error("❌ Failed to load names correctly!");
+            }
+        })
+        .catch(err => console.error("❌ Error loading names:", err));
 }
     function showSuggestions(inputElement, suggestionsContainer) {
       if (!suggestionsContainer) {
