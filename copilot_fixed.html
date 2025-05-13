@@ -211,32 +211,30 @@
     }
 
     function selectSheet(sheetName) {
-    selectedSheet = sheetName;
-    document.getElementById("selectedSheet").textContent = sheetName;
-    alert(`✅ تم اختيار ${selectedSheet}`);
-    loadNames(); // ✅ تحميل الأسماء فقط بعد اختيار الشيت
-    changePage("choiceSection", "dataSection");
-}
-
-
-    function loadNames() {
-    if (!selectedSheet || selectedSheet.trim() === "") {
-        console.error("❌ لم يتم اختيار شيت بعد! الطلب لن يتم إرساله.");
-        return;
+      selectedSheet = sheetName;
+      document.getElementById("selectedSheet").textContent = sheetName;
+      alert(`✅ تم اختيار ${selectedSheet}`);
+      loadNames();
     }
 
-    fetch(`${scriptURL}?action=getAllNames&sheet=${encodeURIComponent(selectedSheet)}`)
-        .then(res => res.json())
-        .then(data => {
-            if (Array.isArray(data.names)) {
-                allNames = data.names;
-                console.log(`✅ تم تحميل أسماء من ${selectedSheet}:`, allNames);
-            } else {
-                console.error("❌ لم يتم تحميل الأسماء بشكل صحيح!");
-            }
-        })
-        .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
-}
+    function loadNames() {
+      if (!selectedSheet || selectedSheet.trim() === "") {
+          console.error("❌ No sheet selected! Aborting request.");
+          return;
+      }
+
+      fetch(`${scriptURL}?action=getAllNames&sheet=${encodeURIComponent(selectedSheet)}`)
+          .then(res => res.json())
+          .then(data => {
+              if (Array.isArray(data.names)) {
+                  allNames = data.names;
+                  console.log(`✅ Loaded names from ${selectedSheet}:`, allNames);
+              } else {
+                  console.error("❌ Failed to load names correctly!");
+              }
+          })
+          .catch(err => console.error("❌ Error loading names:", err));
+    }
 
     function showSuggestions(inputElement, suggestionsContainer) {
         if (!suggestionsContainer) {
