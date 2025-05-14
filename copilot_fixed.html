@@ -227,15 +227,16 @@ function loadNames() {
     return;
   }
 
-  fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`, {
-  method: 'GET',
-  mode: 'no-cors'
-})
-.then(res => res.json())
-.then(data => {
-  console.log('✅ البيانات المستلمة:', data);
-})
-.catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
+  fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
+  .then(res => res.text()) // ✅ استخدم `text()` أولًا بدل `json()`
+  .then(text => {
+    console.log("🔍 استجابة Google Apps Script كنص:", text); // ✅ تحقق من الاستجابة قبل تحويلها إلى JSON
+    return JSON.parse(text); // ✅ تحويل الاستجابة إلى JSON بعد التأكد أنها ليست فارغة
+  })
+  .then(data => {
+    console.log("✅ البيانات المستلمة:", data);
+  })
+  .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
 } // ✅ تأكد من إغلاق `loadNames()` هنا
 
 function showSuggestions(inputElement, suggestionsContainer) {
