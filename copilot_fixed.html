@@ -300,19 +300,16 @@ function showSuggestions(inputElement, suggestionsContainer) {
   const name = document.getElementById("nameInput").value.trim();
   const number = Number(document.getElementById("numberInput").value);
 
-  fetch(`${scriptURL}?action=insertData&sheet=${selectedSheet}`, {
-  method: 'POST',
-  body: JSON.stringify({ name, number }),
-  headers: { 'Content-Type': 'application/json' }
-})
-.then(res => res.json())
-.then(response => {
-  console.log('✅ استجابة السيرفر:', response);
-  if (!response.success) {
-    console.error('❌ فشل إدخال البيانات:', response);
-  }
-}); // ✅ إضافة هذا القوس لإغلاق `submitData()`
-} // ✅ الآن `submitData()` مغلقة بشكل صحيح
+  fetch(`${scriptURL}?action=insertData&sheet=${selectedSheet}&name=${encodeURIComponent(name)}&number=${number}`)
+  .then(res => res.json())
+  .then(response => {
+    console.log("✅ استجابة Google Apps Script:", response);
+    if (!response.success) {
+      console.error("❌ فشل إدخال البيانات:", response);
+    }
+  })
+  .catch(err => console.error("❌ خطأ أثناء إرسال البيانات:", err));
+      
 function searchName() {
   console.log("🔍 تم الضغط على زر البحث"); // تأكيد تشغيل الدالة
 
