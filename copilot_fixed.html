@@ -189,13 +189,17 @@
     const scriptURL = 'http://localhost:3000/proxy';
     let allNames = [];
     fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
-  .then(res => res.json())
+  .then(res => {
+    console.log('🔍 استجابة السيرفر:', res);
+    return res.json();
+  })
   .then(data => {
+    console.log('🔍 البيانات المستلمة:', data);
     if (Array.isArray(data.names)) {
       allNames = data.names;
       console.log("✅ الأسماء المحملة بنجاح:", allNames);
     } else {
-      console.error("❌ لم يتم تحميل الأسماء بشكل صحيح!");
+      console.error("❌ لم يتم تحميل الأسماء بشكل صحيح! البيانات:", data);
     }
   })
   .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
