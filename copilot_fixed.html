@@ -237,8 +237,9 @@ function loadNames() {
     return JSON.parse(text);
   })
   .then(data => {
-    console.log("✅ البيانات المستلمة:", data);
-  })
+  console.log("✅ البيانات المستلمة:", data);
+  allNames = data; // ✅ حفظ الأسماء في المتغير
+})
   .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
 } // ✅ تأكد من إغلاق `loadNames()` هنا
 
@@ -277,8 +278,10 @@ let filtered = allNames.filter(name => name && name.toLowerCase().includes(value
     }
 
     document.getElementById("nameInput").addEventListener("input", function () {
-      showSuggestions(this, document.getElementById("nameSuggestions"));
-    });
+  showSuggestions(this, document.getElementById("nameSuggestions"));
+  checkSubmitState(); // ✅ تحديث حالة زر الإدخال
+});
+document.getElementById("numberInput").addEventListener("input", checkSubmitState); // ✅
 
     document.getElementById("searchInput").addEventListener("input", function () {
       showSuggestions(this, document.getElementById("searchSuggestions"));
