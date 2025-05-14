@@ -291,6 +291,7 @@ function showSuggestions(inputElement, suggestionsContainer) {
   document.getElementById("submitBtn").disabled = !(validNumber && hasName);
 }
     function submitData() {
+      console.log("✅ تم الضغط على زر الإدخال"); // 🔍 تأكيد تشغيل الدالة
   if (!selectedSheet) {
     alert("❌ يجب اختيار شيت أولاً!");
     return;
