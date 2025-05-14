@@ -230,9 +230,12 @@ function loadNames() {
   fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
   .then(res => res.text()) // ✅ استخدم `text()` أولًا بدل `json()`
   .then(text => {
-    console.log("🔍 استجابة Google Apps Script كنص:", text); // ✅ تحقق من الاستجابة قبل تحويلها إلى JSON
-    return JSON.parse(text); // ✅ تحويل الاستجابة إلى JSON بعد التأكد أنها ليست فارغة
-  })
+    console.log("🔍 استجابة Google Apps Script كنص:", text);
+    if (!text.trim()) {
+        throw new Error("❌ استجابة فارغة من السيرفر!");
+    }
+    return JSON.parse(text);
+})
   .then(data => {
     console.log("✅ البيانات المستلمة:", data);
   })
@@ -250,7 +253,12 @@ function showSuggestions(inputElement, suggestionsContainer) {
 
       if (!value) return;
 
-      let filtered = allNames.filter(name => name && name.toLowerCase().includes(value));
+      if (!allNames || allNames.length === 0) {
+    console.error("❌ لا توجد أسماء محملة!");
+    return;
+}
+let filtered = allNames.filter(name => name && name.toLowerCase().includes(value));
+
       if (filtered.length === 0) {
         suggestionsContainer.innerHTML = "<div class='suggestion-item'>لا توجد نتائج</div>";
         return;
