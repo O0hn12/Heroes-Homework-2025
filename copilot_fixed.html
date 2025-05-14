@@ -187,7 +187,7 @@
 
   <script>
     let selectedSheet = "";
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzXVsFN8vsYaD7oHSqRyxUhK7ki6lkxnHtXTV77jgT1TbWsnLcJG4EVE8xEyUwQDFK1dg/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwtFWQCqO3gYCu16dWooUAtoksr-7V3lpqJ_GHp6TFs6DXuFcTDeU_keysmAwirFDGfCQ/exec';
     let allNames = [];
     
     document.getElementById("loginBtn").addEventListener("click", function () {
@@ -278,9 +278,14 @@ let filtered = allNames.filter(name => name && name.toLowerCase().includes(value
     }
 
     document.getElementById("nameInput").addEventListener("input", function () {
+  if (allNames.length === 0) {
+    console.warn("🟡 الأسماء لم تُحمّل بعد، سيتم إعادة التحميل...");
+    loadNames();
+  }
   showSuggestions(this, document.getElementById("nameSuggestions"));
-  checkSubmitState(); // ✅ تحديث حالة زر الإدخال
+  checkSubmitState();
 });
+    
 document.getElementById("numberInput").addEventListener("input", checkSubmitState); // ✅
 
     document.getElementById("searchInput").addEventListener("input", function () {
