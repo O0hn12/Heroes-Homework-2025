@@ -228,14 +228,14 @@ function loadNames() {
   }
 
   fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
-  .then(res => res.text()) // ✅ استخدم `text()` أولًا بدل `json()`
+  .then(res => res.text())
   .then(text => {
     console.log("🔍 استجابة Google Apps Script كنص:", text);
     if (!text.trim()) {
-        throw new Error("❌ استجابة فارغة من السيرفر!");
+      throw new Error("❌ استجابة فارغة من السيرفر!");
     }
     return JSON.parse(text);
-})
+  })
   .then(data => {
     console.log("✅ البيانات المستلمة:", data);
   })
