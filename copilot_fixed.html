@@ -306,9 +306,9 @@ function showSuggestions(inputElement, suggestionsContainer) {
   if (!response.success) {
     console.error('❌ فشل إدخال البيانات:', response);
   }
-});
+}); // ✅ إضافة هذا القوس لإغلاق `submitData()`
 
-    function searchName() {
+function searchName() {
   console.log("🔍 تم الضغط على زر البحث"); // تأكيد تشغيل الدالة
 
   const search = document.getElementById("searchInput").value.trim();
