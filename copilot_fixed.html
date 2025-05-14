@@ -188,21 +188,6 @@
     let selectedSheet = "";
     const scriptURL = 'http://localhost:3000/proxy';
     let allNames = [];
-    fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
-  .then(res => {
-    console.log('🔍 استجابة السيرفر:', res);
-    return res.json();
-  })
-  .then(data => {
-    console.log('🔍 البيانات المستلمة:', data);
-    if (Array.isArray(data.names)) {
-      allNames = data.names;
-      console.log("✅ الأسماء المحملة بنجاح:", allNames);
-    } else {
-      console.error("❌ لم يتم تحميل الأسماء بشكل صحيح! البيانات:", data);
-    }
-  })
-  .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
     
     document.getElementById("loginBtn").addEventListener("click", function () {
   console.log("🔍 تم الضغط على تسجيل الدخول");
@@ -210,7 +195,7 @@
   const username = document.getElementById("loginUsername").value.trim();
   const password = document.getElementById("loginPassword").value.trim();
 
-  if (username === "جون" && password === "123") {
+  if (username === "جون" && password === "12345") {
     alert("تم تسجيل الدخول بنجاح");
     changePage("loginSection", "choiceSection"); // ✅ الانتقال إلى صفحة الاختيار بدلاً من إدخال البيانات
   } else {
@@ -239,16 +224,20 @@ function loadNames() {
   }
 
   fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
-    .then(res => res.json())
-    .then(data => {
-      if (Array.isArray(data.names)) {
-        allNames = data.names;
-        console.log(`✅ تم تحميل أسماء من ${selectedSheet}:`, allNames);
-      } else {
-        console.error("❌ لم يتم تحميل الأسماء بشكل صحيح!");
-      }
-    })
-    .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
+  .then(res => {
+    console.log('🔍 استجابة السيرفر:', res);
+    return res.json();
+  })
+  .then(data => {
+    console.log('🔍 البيانات المستلمة:', data);
+    if (Array.isArray(data.names)) {
+      allNames = data.names;
+      console.log("✅ الأسماء المحملة بنجاح:", allNames);
+    } else {
+      console.error("❌ لم يتم تحميل الأسماء بشكل صحيح! البيانات:", data);
+    }
+  })
+  .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
 } // ✅ تأكد من إغلاق `loadNames()` هنا
 
 function showSuggestions(inputElement, suggestionsContainer) {
@@ -307,24 +296,17 @@ function showSuggestions(inputElement, suggestionsContainer) {
   const number = Number(document.getElementById("numberInput").value);
 
   fetch(`${scriptURL}?action=insertData&sheet=${selectedSheet}`, {
-    method: 'POST',
-    body: JSON.stringify({ name, number }),
-    headers: { 'Content-Type': 'application/json' }
+  method: 'POST',
+  body: JSON.stringify({ name, number }),
+  headers: { 'Content-Type': 'application/json' }
 })
-.then(res => {
-    if (!res.ok) throw new Error(`❌ استجابة غير صحيحة: ${res.status}`);
-    return res.json();
-})
-.then(response => {  // ✅ الآن الإغلاق صحيح
-    console.log("✅ استجابة السيرفر:", response);
-    alert(response.success ? `✅ تم إدخال البيانات إلى ${selectedSheet} بنجاح!` : "❌ فشل الإرسال!");
-
-    document.getElementById("nameInput").value = "";
-    document.getElementById("numberInput").value = "";
-    checkSubmitState();
-})
-.catch(err => console.error('❌ خطأ أثناء الإرسال:', err));
-} // ✅ إضافة هذا القوس الناقص لإغلاق `submitData()`
+.then(res => res.json())
+.then(response => {
+  console.log('✅ استجابة السيرفر:', response);
+  if (!response.success) {
+    console.error('❌ فشل إدخال البيانات:', response);
+  }
+});
 
     function searchName() {
   console.log("🔍 تم الضغط على زر البحث"); // تأكيد تشغيل الدالة
