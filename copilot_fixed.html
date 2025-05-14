@@ -38,7 +38,7 @@
       max-width: 600px;
     }
       .search-section {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.1);
   padding: 20px;
   border-radius: 15px;
   margin: 20px;
@@ -155,30 +155,30 @@
     <button id="submitBtn" onclick="submitData()" disabled>Submit</button>
   </div>
 
-    <!-- ✅ قسم البحث داخل صفحة إدخال البيانات -->
-  <div class="form-group">
-  <h2>بحث عن الاسم</h2>
-  <div class="form-group">
-    <label for="searchInput">الاسم</label>
-    <input type="text" id="searchInput" autocomplete="off">
-    <div id="searchSuggestions"></div>
-  </div>
-  <button onclick="searchName()">Search</button>
+    <!-- ✅ البحث الآن داخل صفحة إدخال البيانات -->
+  <div class="search-section dark-background">
+    <h2>بحث عن الاسم</h2>
+    <div class="form-group">
+      <label for="searchInput">الاسم</label>
+      <input type="text" id="searchInput" autocomplete="off">
+      <div id="searchSuggestions"></div>
+    </div>
+    <button onclick="searchName()">Search</button>
 
-  <table id="resultTable">
-    <thead>
-      <tr>
-        <th>الاسم</th>
-        <th>الأسبوع 1</th>
-        <th>الأسبوع 2</th>
-        <th>الأسبوع 3</th>
-        <th>الأسبوع 4</th>
-        <th>الأسبوع 5</th>
-        <th>الأسبوع 6</th>
-        <th>الأسبوع 7</th>
-        <th>الأسبوع 8</th>
-        <th>الأسبوع 9</th>
-      </tr>
+    <table id="resultTable">
+      <thead>
+        <tr>
+          <th>الاسم</th>
+          <th>الأسبوع 1</th>
+          <th>الأسبوع 2</th>
+          <th>الأسبوع 3</th>
+          <th>الأسبوع 4</th>
+          <th>الأسبوع 5</th>
+          <th>الأسبوع 6</th>
+          <th>الأسبوع 7</th>
+          <th>الأسبوع 8</th>
+          <th>الأسبوع 9</th>
+        </tr>
     </thead>
     <tbody></tbody>
   </table>
