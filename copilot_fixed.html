@@ -294,7 +294,7 @@ function showSuggestions(inputElement, suggestionsContainer) {
   const name = document.getElementById("nameInput").value.trim();
   const number = Number(document.getElementById("numberInput").value);
 
-  fetch(`${scriptURL}?action=insertData&sheet=${selectedSheet}&name=${encodeURIComponent(name)}&number=${number}`)
+  fetch(`${scriptURL}?action=insertData&sheet=${selectedSheet}&name=${encodeURIComponent(name)}&number=${encodeURIComponent(number)}`)
   .then(res => res.json())
   .then(response => {
     console.log("✅ استجابة Google Apps Script:", response);
