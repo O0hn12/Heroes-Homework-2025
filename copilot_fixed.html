@@ -309,7 +309,8 @@ function showSuggestions(inputElement, suggestionsContainer) {
     }
   })
   .catch(err => console.error("❌ خطأ أثناء إرسال البيانات:", err));
-      
+} // ✅ إغلاق `submitData()` بشكل صحيح
+
 function searchName() {
   console.log("🔍 تم الضغط على زر البحث"); // تأكيد تشغيل الدالة
 
