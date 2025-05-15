@@ -292,11 +292,11 @@ function loadNames() {
                 row.appendChild(nameCell);
 
                 // ✅ إضافة الدرجات إلى الصف
-                scores.forEach(score => {
-                    let td = document.createElement("td");
-                    td.textContent = score;
-                    row.appendChild(td);
-                });
+                for (let i = 0; i < 9; i++) {
+    const td = document.createElement("td");
+    td.textContent = scores[i] !== undefined && scores[i] !== "" ? scores[i] : "-";
+    row.appendChild(td);
+}
 
                 tableBody.appendChild(row);
             });
@@ -430,7 +430,7 @@ nameCell.textContent = response.data[0];
 row.appendChild(nameCell);
 
 // ✅ توزيع الدرجات على الأعمدة الصحيحة للأسابيع
-let scores = Array.isArray(response.data.slice(1)) ? response.data.slice(1) : [];
+let scores = Array.isArray(response.data[1]) ? response.data[1] : response.data[1]?.split(",").map(s => s.trim());
 for (let i = 0; i < 9; i++) {
     const td = document.createElement("td");
     td.textContent = scores[i] !== undefined && scores[i] !== "" ? scores[i] : "-"; // ✅ إدراج البيانات إن وجدت، وإلا "-"
