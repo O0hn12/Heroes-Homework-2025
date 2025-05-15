@@ -271,10 +271,6 @@ function loadNames() {
 
             let tableBody = document.querySelector("#resultTable tbody");
             tableBody.innerHTML = "";
-
-            if (!data.students || !Array.isArray(data.students)) {
-    console.error("❌ البيانات المستلمة لا تحتوي على `students`.");
-    return;
 }
 
 data.students.forEach(student => {
