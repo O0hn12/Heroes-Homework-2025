@@ -377,26 +377,42 @@ function searchName() {
   fetch(`${scriptURL}?action=searchName&sheet=${selectedSheet}&name=${encodeURIComponent(search)}`) // ✅ البحث داخل الشيت المختار فقط
     .then(res => res.json())
     .then(response => {
-      console.log("✅ استجابة السيرفر:", response);
+  console.log("✅ استجابة السيرفر:", response);
 
-      const table = document.getElementById("resultTable");
-      const tbody = table.querySelector("tbody");
-      tbody.innerHTML = "";
+  const table = document.getElementById("resultTable");
+  const tbody = table.querySelector("tbody");
+  tbody.innerHTML = "";
 
-      if (!response || !response.found || !response.data) {
-        alert("❌ الاسم غير موجود أو البيانات غير صحيحة!");
-        return;
-      }
+  if (!response || !response.found || !response.data) {
+    alert("❌ الاسم غير موجود أو البيانات غير صحيحة!");
+    return;
+  }
 
-      const row = document.createElement("tr");
-      response.data.forEach(cell => {
-        const td = document.createElement("td");
-        td.textContent = cell;
-        row.appendChild(td);
-      });
-      tbody.appendChild(row);
-      table.style.display = "table";
-    })
+  const row = document.createElement("tr");
+
+  // العنصر الأول هو الاسم
+  const nameTd = document.createElement("td");
+  nameTd.textContent = response.data[0];
+  row.appendChild(nameTd);
+
+  // العنصر الثاني يحتوي الدرجات كنص، نفككه
+  let scores = [];
+  if (typeof response.data[1] === "string") {
+    scores = response.data[1].split(","); // مثال: "3,4,5,2,1,0,0,0,0" -> مصفوفة
+  } else if (Array.isArray(response.data[1])) {
+    scores = response.data[1]; // لو أصلاً مصفوفة
+  }
+
+  // نضيف كل درجة في عمود مستقل
+  scores.forEach(score => {
+    const td = document.createElement("td");
+    td.textContent = score.trim();
+    row.appendChild(td);
+  });
+
+  tbody.appendChild(row);
+  table.style.display = "table";
+})
     .catch(err => console.error('❌ خطأ أثناء البحث:', err));
 }
   </script>
