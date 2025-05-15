@@ -430,7 +430,7 @@ nameCell.textContent = response.data[0];
 row.appendChild(nameCell);
 
 // ✅ توزيع الدرجات على الأعمدة الصحيحة للأسابيع
-let scores = response.data[1] ? response.data[1].split(",") : []; // تأكد أن الدرجات منفصلة
+let scores = Array.isArray(response.data.slice(1)) ? response.data.slice(1) : [];
 for (let i = 0; i < 9; i++) {
     const td = document.createElement("td");
     td.textContent = scores[i] !== undefined && scores[i] !== "" ? scores[i] : "-"; // ✅ إدراج البيانات إن وجدت، وإلا "-"
