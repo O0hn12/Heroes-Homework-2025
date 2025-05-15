@@ -426,11 +426,11 @@ function searchName() {
 
 // ✅ إدراج الاسم في أول عمود
 const nameCell = document.createElement("td");
-nameCell.textContent = (response.data && response.data.length > 0) ? response.data[0] : "❌ الاسم غير موجود";
+nameCell.textContent = response.data.length > 0 && Array.isArray(response.data[0]) ? response.data[0][0] : "❌ الاسم غير موجود";
 row.appendChild(nameCell);
 
 // ✅ توزيع الدرجات على الأعمدة الصحيحة للأسابيع
-let scores = Array.isArray(response.data[1]) ? response.data[1] : response.data[1]?.split(",").map(s => s.trim());
+let scores = response.data.length > 0 && Array.isArray(response.data[0]) ? response.data[0].slice(1) : [];
 for (let i = 0; i < 9; i++) {
     const td = document.createElement("td");
     td.textContent = scores[i] !== undefined && scores[i] !== "" ? scores[i] : "-"; // ✅ إدراج البيانات إن وجدت، وإلا "-"
