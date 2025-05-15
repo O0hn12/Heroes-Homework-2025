@@ -227,7 +227,7 @@ function loadNames() {
     return;
   }
 
-  fetch(`https://hero2025.johnmamdouh777.workers.dev/?action=getAllNames&sheet=${selectedSheet}`)
+  fetch(`https://hero2025.johnmamdouh777.workers.dev/?action=getAllNames&sheet=${encodeURIComponent(selectedSheet)}`)
     .then(res => {
       if (!res.ok) {
         throw new Error(`❌ استجابة غير ناجحة من السيرفر: ${res.status}`);
