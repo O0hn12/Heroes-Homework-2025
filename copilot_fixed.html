@@ -266,7 +266,7 @@ function loadNames() {
             return res.json();
         })
         .then(data => {
-            console.log("✅ البيانات المستلمة:", data);
+            console.log("📌 بيانات المستلمة:", JSON.stringify(data, null, 2));
             allNames = data.names || []; // ✅ التأكد من وجود أسماء
 
             let tableBody = document.querySelector("#resultTable tbody");
