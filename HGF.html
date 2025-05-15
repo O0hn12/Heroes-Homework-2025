@@ -411,46 +411,33 @@ function searchName() {
   fetch(`${scriptURL}?action=searchName&sheet=${selectedSheet}&name=${encodeURIComponent(search)}`)
     .then(res => res.json())
     .then(response => {
-      console.log("✅ استجابة السيرفر:", response);
+        console.log("✅ استجابة السيرفر:", response);
 
-      const table = document.getElementById("resultTable");
-      const tbody = table.querySelector("tbody");
-      tbody.innerHTML = "";
+        const table = document.getElementById("resultTable");
+        const tbody = table.querySelector("tbody");
+        tbody.innerHTML = "";
 
-      if (!response || !response.found || !response.data) {
-        alert("❌ الاسم غير موجود أو البيانات غير صحيحة!");
-        return;
-      }
+        if (!response || !response.found || !response.data) {
+            alert("❌ الاسم غير موجود أو البيانات غير صحيحة!");
+            return;
+        }
 
-      const row = document.createElement("tr");
+        const row = document.createElement("tr");
 
-      // الجزء الأول: الاسم
-      const nameCell = document.createElement("td");
-      nameCell.textContent = response.data[0];
-      row.appendChild(nameCell);
+        // ✅ إضافة الاسم إلى الصف
+        let nameCell = document.createElement("td");
+        nameCell.textContent = response.data[0]; // ✅ استخدم الاسم مباشرة من نتيجة البحث
+        row.appendChild(nameCell);
 
-      // الجزء الثاني: الدرجات
-      let scores = [];
+        // ✅ توزيع الدرجات على الأسابيع
+        response.data.slice(1).forEach(score => {
+            let td = document.createElement("td");
+            td.textContent = score;
+            row.appendChild(td);
+        });
 
-      if (typeof response.data[1] === "string") {
-        // مثال: "3,4,5,2,1"
-        scores = response.data[1].split(",").map(s => s.trim());
-      } else if (Array.isArray(response.data[1])) {
-        // مثال: [3, 4, 5, 2, 1]
-        scores = response.data[1];
-      } else {
-        // أو إذا باقي العناصر مباشرة تبدأ من index 1
-        scores = response.data.slice(1);
-      }
-
-      scores.forEach(score => {
-        const td = document.createElement("td");
-        td.textContent = score;
-        row.appendChild(td);
-      });
-
-      tbody.appendChild(row);
-      table.style.display = "table";
+        tbody.appendChild(row);
+        table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط عند البحث
     })
     .catch(err => console.error('❌ خطأ أثناء البحث:', err));
 }
