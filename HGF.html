@@ -424,17 +424,21 @@ function searchName() {
 
         const row = document.createElement("tr");
 
-        // ✅ إضافة الاسم إلى الصف
-        let nameCell = document.createElement("td");
-        nameCell.textContent = response.data[0]; // ✅ استخدم الاسم مباشرة من نتيجة البحث
-        row.appendChild(nameCell);
+// ✅ إدراج الاسم في أول عمود
+const nameCell = document.createElement("td");
+nameCell.textContent = response.data[0]; 
+row.appendChild(nameCell);
 
-        // ✅ توزيع الدرجات على الأسابيع
-        response.data.slice(1).forEach(score => {
-            let td = document.createElement("td");
-            td.textContent = score;
-            row.appendChild(td);
-        });
+// ✅ توزيع الدرجات على الأعمدة الصحيحة للأسابيع
+let scores = response.data[1] ? response.data[1].split(",") : []; // تأكد أن الدرجات منفصلة
+for (let i = 0; i < 9; i++) {
+    const td = document.createElement("td");
+    td.textContent = scores[i] !== undefined && scores[i] !== "" ? scores[i] : "-"; // ✅ إدراج البيانات إن وجدت، وإلا "-"
+    row.appendChild(td);
+}
+
+tbody.appendChild(row);
+table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط عند البحث
 
         tbody.appendChild(row);
         table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط عند البحث
