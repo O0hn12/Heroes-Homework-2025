@@ -411,7 +411,7 @@ function searchName() {
   fetch(`${scriptURL}?action=searchName&sheet=${selectedSheet}&name=${encodeURIComponent(search)}`)
     .then(res => res.json())
     .then(response => {
-        console.log("✅ استجابة السيرفر:", response);
+        console.log("📌 شكل البيانات داخل `response.data`:", JSON.stringify(response, null, 2));
 
         const table = document.getElementById("resultTable");
         const tbody = table.querySelector("tbody");
@@ -426,7 +426,7 @@ function searchName() {
 
 // ✅ إدراج الاسم في أول عمود
 const nameCell = document.createElement("td");
-nameCell.textContent = response.data[0]; 
+nameCell.textContent = (response.data && response.data.length > 0) ? response.data[0] : "❌ الاسم غير موجود";
 row.appendChild(nameCell);
 
 // ✅ توزيع الدرجات على الأعمدة الصحيحة للأسابيع
