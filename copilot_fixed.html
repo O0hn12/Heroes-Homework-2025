@@ -256,6 +256,7 @@ function loadNames() {
   if (!selectedSheet) {
     console.error("❌ لم يتم اختيار شيت بعد!");
     return;
+  }
 fetch(`https://hero2025.johnmamdouh777.workers.dev/?action=getAllNames&sheet=${encodeURIComponent(selectedSheet)}`)
     .then(res => {
         if (!res.ok) {
