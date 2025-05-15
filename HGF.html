@@ -393,6 +393,9 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
       console.error("❌ فشل إدخال البيانات:", response);
     } else {
       alert("✅ تم الإدخال بنجاح!");
+      document.getElementById("nameInput").value = ""; // ✅ تفريغ مربع الاسم بعد الإدخال
+document.getElementById("numberInput").value = ""; // ✅ تفريغ مربع الرقم أيضًا
+      loadNames();
     }
   })
   .catch(err => console.error("❌ خطأ أثناء إرسال البيانات:", err));
