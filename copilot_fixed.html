@@ -278,17 +278,27 @@ function loadNames() {
 }
 
 data.students.forEach(student => {
-                let scores = student.scores;
-                while (scores.length < 9) { 
-                    scores.push("-"); // ✅ إضافة "-" للأعمدة الناقصة
-                }
+    let scores = Array.isArray(student.scores) ? student.scores : [];
+    while (scores.length < 9) { 
+        scores.push("-"); // ✅ ضمان أن كل صف يحتوي على 9 أعمدة
+    }
 
-                let row = `<tr>
-                    <td>${student.name}</td>
-                    ${scores.map(score => `<td>${score}</td>`).join("")}
-                </tr>`;
-                tableBody.innerHTML += row;
-            });
+    let row = document.createElement("tr");
+
+    // ✅ إضافة الاسم إلى الصف
+    let nameCell = document.createElement("td");
+    nameCell.textContent = student.name || "❌ غير معروف";
+    row.appendChild(nameCell);
+
+    // ✅ إضافة الدرجات إلى الصف
+    scores.forEach(score => {
+        let td = document.createElement("td");
+        td.textContent = score;
+        row.appendChild(td);
+    });
+
+    tableBody.appendChild(row);
+});
         })
         .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
 }
