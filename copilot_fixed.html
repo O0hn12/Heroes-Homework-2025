@@ -383,30 +383,28 @@ function searchName() {
       const tbody = table.querySelector("tbody");
       tbody.innerHTML = "";
 
-      if (!response || !response.found || !response.data) {
+      if (!response || !response.found || !response.data || response.data.length < 2) {
         alert("❌ الاسم غير موجود أو البيانات غير صحيحة!");
         return;
       }
 
       const row = document.createElement("tr");
 
-      // الجزء الأول: الاسم
+      // الاسم في أول خلية
       const nameCell = document.createElement("td");
       nameCell.textContent = response.data[0];
       row.appendChild(nameCell);
 
-      // الجزء الثاني: الدرجات
+      // استخراج الدرجات من العناصر بعد الاسم
       let scores = [];
 
-      if (typeof response.data[1] === "string") {
-        // مثال: "3,4,5,2,1"
-        scores = response.data[1].split(",").map(s => s.trim());
-      } else if (Array.isArray(response.data[1])) {
-        // مثال: [3, 4, 5, 2, 1]
-        scores = response.data[1];
-      } else {
-        // أو إذا باقي العناصر مباشرة تبدأ من index 1
-        scores = response.data.slice(1);
+      for (let i = 1; i < response.data.length; i++) {
+        const part = response.data[i];
+        if (typeof part === "string" && part.includes(",")) {
+          scores.push(...part.split(",").map(s => s.trim()));
+        } else {
+          scores.push(part);
+        }
       }
 
       scores.forEach(score => {
@@ -420,6 +418,7 @@ function searchName() {
     })
     .catch(err => console.error('❌ خطأ أثناء البحث:', err));
 }
+
   </script>
 
 </body>
