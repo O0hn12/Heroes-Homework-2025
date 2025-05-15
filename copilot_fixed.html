@@ -272,7 +272,12 @@ function loadNames() {
             let tableBody = document.querySelector("#resultTable tbody");
             tableBody.innerHTML = "";
 
-            data.students.forEach(student => {
+            if (!data.students || !Array.isArray(data.students)) {
+    console.error("❌ البيانات المستلمة لا تحتوي على `students`.");
+    return;
+}
+
+data.students.forEach(student => {
                 let scores = student.scores;
                 while (scores.length < 9) { 
                     scores.push("-"); // ✅ إضافة "-" للأعمدة الناقصة
