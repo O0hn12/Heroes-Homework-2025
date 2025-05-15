@@ -396,6 +396,7 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
       document.getElementById("nameInput").value = ""; // ✅ تفريغ مربع الاسم بعد الإدخال
 document.getElementById("numberInput").value = ""; // ✅ تفريغ مربع الرقم أيضًا
       loadNames();
+      checkSubmitState();
     }
   })
   .catch(err => console.error("❌ خطأ أثناء إرسال البيانات:", err));
