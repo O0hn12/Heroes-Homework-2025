@@ -252,23 +252,18 @@ table {
   changePage("choiceSection", "dataSection"); // ✅ الانتقال إلى صفحة إدخال البيانات
 }
 
-function loadNames() {
-  if (!selectedSheet) {
-    console.error("❌ لم يتم اختيار شيت بعد!");
-    return;
-  }
-
-  fetch(`https://hero2025.johnmamdouh777.workers.dev/?action=getAllNames&sheet=${encodeURIComponent(selectedSheet)}`)
+fetch(`https://hero2025.johnmamdouh777.workers.dev/?action=getAllNames&sheet=${encodeURIComponent(selectedSheet)}`)
     .then(res => {
-      if (!res.ok) {
-        throw new Error(`❌ استجابة غير ناجحة من السيرفر: ${res.status}`);
-      }
-      return res.json();
+        if (!res.ok) {
+            throw new Error(`❌ استجابة غير ناجحة من السيرفر: ${res.status}`);
+        }
+        return res.json();
     })
     .then(data => {
-      console.log("✅ البيانات المستلمة:", data);
-      allNames = data.names || [];  // << هذا هو التعديل
-      let tableBody = document.querySelector("#resultTable tbody");
+        console.log("✅ البيانات المستلمة:", data);
+        allNames = data.names || [];
+
+        let tableBody = document.querySelector("#resultTable tbody");
         tableBody.innerHTML = "";
 
         data.students.forEach(student => {
@@ -282,9 +277,9 @@ function loadNames() {
                 ${scores.map(score => `<td>${score}</td>`).join("")}
             </tr>`;
             tableBody.innerHTML += row;
-    })
+        }); // ✅ إغلاق `forEach()` بشكل صحيح
+    }) // ✅ إغلاق `then()`
     .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
-}
 
 function showSuggestions(inputElement, suggestionsContainer) {
       if (!suggestionsContainer) {
