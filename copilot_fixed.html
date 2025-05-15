@@ -227,7 +227,7 @@ function loadNames() {
     return;
   }
 
-  fetch(`${https://ba924c8d.heroes-2025.pages.dev}?action=getAllNames&sheet=${selectedSheet}`)
+  fetch(`https://ba924c8d.heroes-2025.pages.dev?action=getAllNames&sheet=${selectedSheet}`)
   .then(res => res.json())
   .then(text => {
     console.log("🔍 استجابة Google Apps Script كنص:", text);
