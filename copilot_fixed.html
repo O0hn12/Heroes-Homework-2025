@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <title>Heroes Adventure 2025</title>
   <link rel="icon" type="image/png" href="https://i.imgur.com/jKMhKlP.png">
+  
+  <!-- إضافة ضرورية لتجاوب الموبايل -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=18+Khebrat+Musamim:wght@400;700&display=swap');
 
@@ -22,11 +26,6 @@
       margin: 0;
       padding: 0;
       text-align: center;
-      @media screen and (max-width: 768px) {
-  .data-section, .search-section, .login-section {
-    width: 95%;
-    max-width: 400px;
-  }
     }
 
     .data-section, .search-section, .login-section, .choice-section {
@@ -37,14 +36,6 @@
       width: 90%;
       max-width: 600px;
     }
-      .search-section {
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 20px;
-  border-radius: 15px;
-  margin: 20px;
-  width: 90%;
-  max-width: 600px;
-}
 
     label, input, button {
       font-size: 1.2em;
@@ -53,8 +44,10 @@
       padding: 10px;
       width: 100%;
       margin-top: 10px;
+      box-sizing: border-box;
     }
-      #suggestions {
+
+    #suggestions {
       background: white;
       color: black;
       text-align: right;
@@ -80,12 +73,15 @@
       border-collapse: collapse;
       display: none;
       font-size: 1.1em;
-      overflow-y: auto; /* تمكين التمرير */
+      overflow-x: auto; /* بدل overflow-y عشان التمرير أفقي */
+      display: block; /* مهم لجعل التمرير فعال */
+      white-space: nowrap; /* لمنع الكسر داخل الجدول */
     }
 
     th, td {
       border: 1px solid white;
       padding: 10px;
+      white-space: nowrap;
     }
 
     .page {
@@ -107,9 +103,35 @@
       padding: 10px;
       cursor: pointer;
     }
+
+    /* تحسين التصميم على شاشات الموبايل */
+    @media screen and (max-width: 768px) {
+      .data-section, .search-section, .login-section, .choice-section {
+        width: 95%;
+        max-width: 400px;
+        padding: 15px;
+        margin: 10px auto;
+      }
+
+      label, input, button {
+        font-size: 1.4em;
+        padding: 12px;
+        margin-top: 8px;
+      }
+
+      table {
+        font-size: 1em;
+        margin-top: 20px;
+      }
+
+      .choice-section button {
+        font-size: 1.3em;
+        padding: 12px;
+        margin: 8px 0;
+      }
+    }
   </style>
 </head>
-<body>
 
   <!-- ✅ صفحة تسجيل الدخول -->
   <div class="login-section page active" id="loginSection">
