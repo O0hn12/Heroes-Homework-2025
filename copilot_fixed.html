@@ -228,7 +228,7 @@ function loadNames() {
   }
 
   fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
-  .then(res => res.text())
+  .then(res => res.json())
   .then(text => {
     console.log("🔍 استجابة Google Apps Script كنص:", text);
     if (!text.trim()) {
