@@ -85,6 +85,13 @@ table {
   white-space: nowrap;
 }
 
+    #tableContainer {
+    max-height: 300px; /* ✅ تحديد أقصى ارتفاع للجدول داخل المربع */
+    overflow-y: auto; /* ✅ إضافة تمرير رأسي عند الحاجة */
+    border: 1px solid #ccc; /* ✅ تحسين التصميم */
+    padding: 5px;
+}
+
     th, td {
       border: 1px solid white;
       padding: 10px;
@@ -197,6 +204,7 @@ table {
   <button onclick="searchName()">Search</button>
 
   <div class="search-results">
+    <div id="tableContainer">
     <table id="resultTable">
       <thead>
         <tr>
