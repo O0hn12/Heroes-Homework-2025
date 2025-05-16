@@ -135,10 +135,17 @@ table {
         margin-top: 8px;
       }
 
-      table {
-        font-size: 1em;
-        margin-top: 20px;
-      }
+      #tableContainer {
+    max-height: 200px; /* ✅ تحديد ارتفاع أصغر للموبايل */
+    overflow-y: auto; /* ✅ السماح بالتمرير */
+    padding: 5px;
+}
+
+table {
+    font-size: 1em;
+    margin-top: 20px;
+    min-width: 100%; /* ✅ ضمان عرض الجدول بالكامل على الموبايل */
+}
 
       .choice-section button {
         font-size: 1.3em;
