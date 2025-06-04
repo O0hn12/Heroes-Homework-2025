@@ -279,12 +279,14 @@ table {
     
     function selectSheet(sheetName) { // ✅ الآن الدالة مستقلة ويمكن استدعاؤها بشكل صحيح
   selectedSheet = sheetName;
-  const sheetElement = document.getElementById("selectedSheet");
-if (sheetElement) {
-    sheetElement.textContent = sheetName;
+  selectedWeek = weekName; // ✅ تخزين قيمة الأسبوع بشكل صحيح
+const weekElement = document.getElementById("selectedWeek");
+if (weekElement) {
+    weekElement.textContent = selectedWeek;
 } else {
-    console.error("❌ العنصر selectedSheet غير موجود في HTML!");
+    console.error("❌ العنصر selectedWeek غير موجود في HTML!");
 }
+console.log(`✅ تم تعيين selectedWeek بنجاح: ${selectedWeek}`);
   alert(`✅ تم اختيار ${sheetName}`);
   loadNames(); // ✅ تحميل البيانات وفقًا للشيت المختار
   changePage("choiceSection", "weekSelectionPage"); // ✅ انتقال صحيح إلى صفحة اختيار الأسبوع
