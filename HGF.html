@@ -431,11 +431,16 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
   const number = Number(document.getElementById("numberInput").value);
 
   // بيانات الإرسال
-  const data = {
+  if (!selectedWeek || isNaN(parseInt(selectedWeek))) {
+    alert("❌ يجب تحديد الأسبوع بشكل صحيح!");
+    return;
+}
+
+const data = {
     name: name,
     number: number,
     sheet: selectedSheet,
-    week: selectedWeek // ✅ إضافة الأسبوع المختار إلى البيانات المُرسَلة
+    week: parseInt(selectedWeek) // ✅ تأكد من تمرير `week` كرقم صحيح
 };
 
   fetch(scriptURL, {
