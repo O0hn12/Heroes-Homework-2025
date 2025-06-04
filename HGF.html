@@ -203,7 +203,7 @@ table {
 
   <!-- ✅ صفحة إدخال البيانات -->
   <div class="data-section page" id="dataSection" style="display: none;">
-    <h2>Heroes Adventure 2025 - <span id="selectedSheet">لم يتم الاختيار بعد</span></h2>
+    <h2>Heroes Adventure 2025 - <span id="selectedWeek">لم يتم الاختيار بعد</span></h2>
     <div class="form-group">
       <label for="nameInput">الاسم</label>
       <input type="text" id="nameInput" autocomplete="off" oninput="checkSubmitState()">
@@ -287,7 +287,12 @@ table {
 
     function selectWeek(weekName) {
     console.log(`🔍 تم اختيار الأسبوع: ${weekName}`); // ✅ تتبع التنفيذ
-    document.getElementById("selectedWeek").textContent = weekName;
+    const weekElement = document.getElementById("selectedWeek");
+if (weekElement) {
+    weekElement.textContent = weekName; // ✅ فقط إذا كان العنصر موجودًا
+} else {
+    console.error("❌ العنصر selectedWeek غير موجود في HTML!");
+}
     changePage("weekSelectionPage", "dataSection"); // ✅ انتقال صحيح إلى صفحة إدخال البيانات
 }
     
