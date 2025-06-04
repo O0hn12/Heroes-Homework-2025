@@ -277,36 +277,54 @@ table {
   document.getElementById("searchSection").style.display = (newPage === "dataSection") ? "block" : "none";
 }
     
-    function selectSheet(sheetName) { // ✅ الآن الدالة مستقلة ويمكن استدعاؤها بشكل صحيح
-  selectedSheet = sheetName;
-  selectedWeek = ""; // ✅ تعيينه كقيمة أولية لمنع الأخطاء
-const weekElement = document.getElementById("selectedWeek");
-if (weekElement) {
-    weekElement.textContent = selectedWeek;
-} else {
-    console.error("❌ العنصر selectedWeek غير موجود في HTML!");
-}
-console.log(`✅ تم تعيين selectedWeek بنجاح: ${selectedWeek}`);
-  alert(`✅ تم اختيار ${sheetName}`);
-  loadNames(); // ✅ تحميل البيانات وفقًا للشيت المختار
-  changePage("choiceSection", "weekSelectionPage"); // ✅ انتقال صحيح إلى صفحة اختيار الأسبوع
+    function selectSheet(sheetName) {
+    selectedSheet = sheetName;
+    selectedWeek = ""; // ✅ تعيينه كقيمة أولية لمنع الأخطاء
+
+    // ✅ تحديث اسم الشيت داخل HTML
+    const sheetElement = document.getElementById("selectedSheet");
+    if (sheetElement) {
+        sheetElement.textContent = selectedSheet;
+        console.log(`✅ تم تحديث اسم الشيت: ${selectedSheet}`);
+    } else {
+        console.error("❌ العنصر selectedSheet غير موجود في HTML!");
+    }
+
+    // ✅ تحديث الأسبوع داخل HTML ليصبح فارغًا
+    const weekElement = document.getElementById("selectedWeek");
+    if (weekElement) {
+        weekElement.textContent = "❌ لم يتم الاختيار بعد"; // ✅ لا تتركه فارغًا
+    }
+
+    alert(`✅ تم اختيار ${sheetName}`);
+    loadNames(); // ✅ تحميل البيانات وفقًا للشيت المختار
+    changePage("choiceSection", "weekSelectionPage"); // ✅ انتقال صحيح إلى اختيار الأسبوع
 }
 
     function selectWeek(weekName) {
-    console.log(`🔍 تم اختيار الأسبوع: ${weekName}`); // ✅ تتبع التنفيذ
-    selectedWeek = weekName; // ✅ تخزين قيمة الأسبوع في متغير عام
-    console.log("✅ تم تعيين selectedWeek:", selectedWeek);
+    selectedWeek = weekName;
+    console.log(`🔍 تم اختيار الأسبوع: ${selectedWeek}`); // ✅ تتبع التنفيذ
 
-    // ✅ تأكد من وجود العنصر قبل تحديثه
+    // ✅ تأكد من تحديث الأسبوع داخل HTML
     const weekElement = document.getElementById("selectedWeek");
-    if (!weekElement) {
+    if (weekElement) {
+        weekElement.textContent = selectedWeek;
+        console.log(`✅ تم تحديث الأسبوع: ${selectedWeek}`);
+    } else {
         console.error("❌ العنصر selectedWeek غير موجود في HTML! تأكد من إضافته.");
         return;
     }
-    
-    weekElement.textContent = selectedWeek; // ✅ تحديث الأسبوع المختار داخل HTML
-    
-    changePage("weekSelectionPage", "dataSection"); // ✅ انتقال إلى صفحة إدخال البيانات
+
+    // ✅ تأكد من أن `selectedSheet` يظهر بوضوح
+    const sheetElement = document.getElementById("selectedSheet");
+    if (sheetElement && selectedSheet) {
+        sheetElement.textContent = selectedSheet;
+        console.log(`✅ الشيت المختار لا يزال محفوظ: ${selectedSheet}`);
+    } else {
+        console.error("❌ العنصر selectedSheet غير موجود في HTML! تأكد من إضافته.");
+    }
+
+    changePage("weekSelectionPage", "dataSection"); // ✅ انتقال صحيح إلى صفحة إدخال البيانات
     console.log("✅ تم الانتقال إلى صفحة إدخال البيانات");
 }
     
