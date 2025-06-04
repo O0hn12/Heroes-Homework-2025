@@ -467,16 +467,18 @@ const data = {
 })
   .then(response => {
     console.log("✅ استجابة Google Apps Script:", response);
+    
     if (!response.success) {
-      console.error("❌ فشل إدخال البيانات:", response);
+        alert(response.message); // 📌 عرض رسالة الخطأ للمستخدم مباشرة
+        console.error("❌ فشل إدخال البيانات:", response);
     } else {
-      alert("✅ تم الإدخال بنجاح!");
-      document.getElementById("nameInput").value = ""; // ✅ تفريغ مربع الاسم بعد الإدخال
-document.getElementById("numberInput").value = ""; // ✅ تفريغ مربع الرقم أيضًا
-      loadNames();
-      checkSubmitState();
+        alert("✅ تم الإدخال بنجاح!");
+        document.getElementById("nameInput").value = "";
+        document.getElementById("numberInput").value = "";
+        loadNames();
+        checkSubmitState();
     }
-  })
+})
   .catch(err => console.error("❌ خطأ أثناء إرسال البيانات:", err));
 }
     
