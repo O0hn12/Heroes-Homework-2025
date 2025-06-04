@@ -279,7 +279,7 @@ table {
     
     function selectSheet(sheetName) { // ✅ الآن الدالة مستقلة ويمكن استدعاؤها بشكل صحيح
   selectedSheet = sheetName;
-  selectedWeek = weekName; // ✅ تخزين قيمة الأسبوع بشكل صحيح
+  selectedWeek = ""; // ✅ تعيينه كقيمة أولية لمنع الأخطاء
 const weekElement = document.getElementById("selectedWeek");
 if (weekElement) {
     weekElement.textContent = selectedWeek;
@@ -294,7 +294,8 @@ console.log(`✅ تم تعيين selectedWeek بنجاح: ${selectedWeek}`);
 
     function selectWeek(weekName) {
     console.log(`🔍 تم اختيار الأسبوع: ${weekName}`); // ✅ تتبع التنفيذ
-    selectedWeek = weekName; // ✅ حفظ `weekName` في متغير عام يمكن الوصول إليه لاحقًا
+    selectedWeek = weekName; // ✅ تخزين قيمة الأسبوع في متغير عام
+console.log("✅ تم تعيين selectedWeek:", selectedWeek);
 const weekElement = document.getElementById("selectedWeek");
 if (weekElement) {
     weekElement.textContent = selectedWeek; // ✅ التأكد من عرض `selectedWeek` داخل الصفحة
