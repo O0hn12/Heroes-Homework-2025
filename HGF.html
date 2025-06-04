@@ -420,8 +420,9 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
   const data = {
     name: name,
     number: number,
-    sheet: selectedSheet
-  };
+    sheet: selectedSheet,
+    week: selectedWeek // ✅ إضافة الأسبوع المختار إلى البيانات المُرسَلة
+};
 
   fetch(scriptURL, {
     method: 'POST',
