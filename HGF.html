@@ -284,6 +284,11 @@ table {
   loadNames(); // ✅ تحميل البيانات وفقًا للشيت المختار
   changePage("choiceSection", "weekSelectionPage"); // ✅ انتقال صحيح إلى صفحة اختيار الأسبوع
 }
+
+    function selectWeek(weekName) {
+    document.getElementById("selectedWeek").textContent = weekName; // ✅ حفظ الأسبوع المختار
+    changePage("weekSelectionPage", "dataSection"); // ✅ انتقال صحيح إلى صفحة إدخال البيانات
+}
     
 function loadNames() {
     if (!selectedSheet) {
@@ -335,11 +340,6 @@ function loadNames() {
             });
         })
         .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
-}
-
-    function selectWeek(weekName) {
-    document.getElementById("selectedWeek").textContent = weekName; // ✅ حفظ الأسبوع المختار
-    changePage("weekSelectionPage", "dataSection"); // ✅ انتقال صحيح إلى صفحة إدخال البيانات
 }
 
 function showSuggestions(inputElement, suggestionsContainer) {
