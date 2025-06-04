@@ -431,9 +431,9 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
   const number = Number(document.getElementById("numberInput").value);
 
   // بيانات الإرسال
-  if (!selectedWeek || selectedWeek === "" || isNaN(parseInt(selectedWeek))) {
+  if (!selectedWeek || selectedWeek.trim() === "") {
     alert("❌ يجب تحديد الأسبوع بشكل صحيح!");
-    console.error("❌ مشكلة في تمرير `selectedWeek`:", selectedWeek);
+    console.error("❌ `selectedWeek` فارغ أو غير معرف:", selectedWeek);
     return;
 }
 
@@ -441,7 +441,7 @@ const data = {
     name: name,
     number: number,
     sheet: selectedSheet,
-    week: parseInt(selectedWeek) // ✅ تأكد من تمرير `week` كرقم صحيح
+    week: selectedWeek // ✅ تمرير `week` كما هو بدون تحويله إلى رقم
 };
 
   fetch(scriptURL, {
