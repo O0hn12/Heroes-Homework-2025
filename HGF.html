@@ -203,7 +203,7 @@ table {
 
   <!-- ✅ صفحة إدخال البيانات -->
   <div class="data-section page" id="dataSection" style="display: none;">
-    <h2>Heroes Adventure 2025 - <span id="selectedWeek">لم يتم الاختيار بعد</span></h2>
+    <h2>Heroes Adventure 2025 - <span id="selectedSheet">لم يتم الاختيار بعد</span> - <span id="selectedWeek">لم يتم الاختيار بعد</span></h2>
     <div class="form-group">
       <label for="nameInput">الاسم</label>
       <input type="text" id="nameInput" autocomplete="off" oninput="checkSubmitState()">
@@ -279,7 +279,12 @@ table {
     
     function selectSheet(sheetName) { // ✅ الآن الدالة مستقلة ويمكن استدعاؤها بشكل صحيح
   selectedSheet = sheetName;
-  document.getElementById("selectedSheet").textContent = sheetName;
+  const sheetElement = document.getElementById("selectedSheet");
+if (sheetElement) {
+    sheetElement.textContent = sheetName;
+} else {
+    console.error("❌ العنصر selectedSheet غير موجود في HTML!");
+}
   alert(`✅ تم اختيار ${sheetName}`);
   loadNames(); // ✅ تحميل البيانات وفقًا للشيت المختار
   changePage("choiceSection", "weekSelectionPage"); // ✅ انتقال صحيح إلى صفحة اختيار الأسبوع
