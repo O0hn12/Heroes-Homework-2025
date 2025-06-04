@@ -339,7 +339,7 @@ function loadNames() {
 
     function selectWeek(weekName) {
     document.getElementById("selectedWeek").textContent = weekName; // ✅ حفظ الأسبوع المختار
-    showPage("dataSection"); // ✅ الانتقال إلى صفحة إدخال البيانات بعد الاختيار
+    changePage("weekSelectionPage", "dataSection"); // ✅ انتقال صحيح إلى صفحة إدخال البيانات
 }
 
 function showSuggestions(inputElement, suggestionsContainer) {
