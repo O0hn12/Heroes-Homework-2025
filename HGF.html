@@ -183,9 +183,21 @@ table {
     <button onclick="selectSheet('6ب')">6ب</button>
   </div>
 
-  <div id="weekSelectionPage" class="page">
+  <!-- ✅ صفحة اختيار الأسبوع -->
+<div class="week-section page" id="weekSelectionPage" style="display: none;">
     <h2>اختر الأسبوع</h2>
-    <div id="weekButtons"></div> <!-- ✅ هنا سيتم إدراج الأزرار للأسبوع -->
+    <div id="weekButtons">
+        <button onclick="selectWeek('الاسبوع الاول')">الأسبوع الأول</button>
+        <button onclick="selectWeek('الاسبوع التانى')">الأسبوع الثاني</button>
+        <button onclick="selectWeek('الاسبوع الثالث')">الأسبوع الثالث</button>
+        <button onclick="selectWeek('الاسبوع الرابع')">الأسبوع الرابع</button>
+        <button onclick="selectWeek('الاسبوع الخامس')">الأسبوع الخامس</button>
+        <button onclick="selectWeek('الاسبوع السادس')">الأسبوع السادس</button>
+        <button onclick="selectWeek('الاسبوع السابع')">الأسبوع السابع</button>
+        <button onclick="selectWeek('الاسبوع الثامن')">الأسبوع الثامن</button>
+        <button onclick="selectWeek('الاسبوع التاسع')">الأسبوع التاسع</button>
+        <button onclick="selectWeek('الاسبوع العاشر')">الأسبوع العاشر</button>
+    </div>
     <button onclick="goBackToTeams()">رجوع</button>
 </div>
 
@@ -270,7 +282,7 @@ table {
   document.getElementById("selectedSheet").textContent = sheetName;
   alert(`✅ تم اختيار ${sheetName}`);
   loadNames(); // ✅ تحميل البيانات وفقًا للشيت المختار
-  changePage("choiceSection", "dataSection"); // ✅ الانتقال إلى صفحة إدخال البيانات
+  showPage("weekSelectionPage"); // ✅ انتقال صحيح إلى صفحة اختيار الأسبوع
 }
     
 function loadNames() {
@@ -325,38 +337,9 @@ function loadNames() {
         .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
 }
 
-    function loadWeeks() {
-    fetch(`${scriptURL}?action=getWeeks&sheet=${selectedSheet}`)
-        .then(res => res.json())
-        .then(response => {
-            console.log("📌 أسماء الأسابيع المستلمة:", response);
-
-            const weekButtonsContainer = document.getElementById("weekButtons");
-            weekButtonsContainer.innerHTML = ""; // ✅ تفريغ القديم قبل إدخال الأزرار الجديدة
-
-            if (!response.success || !response.weeks || response.weeks.length === 0) {
-                weekButtonsContainer.innerHTML = "<p>❌ لا توجد بيانات للأسابيع!</p>";
-                return;
-            }
-
-            response.weeks.forEach((week, index) => {
-                const button = document.createElement("button");
-                button.textContent = week;
-                button.onclick = () => selectWeek(index + 1); // ✅ تحديد الأسبوع المطلوب
-                weekButtonsContainer.appendChild(button);
-            });
-
-            showPage("weekSelectionPage"); // ✅ الانتقال لصفحة اختيار الأسبوع
-        })
-        .catch(err => console.error("❌ خطأ أثناء تحميل الأسابيع:", err));
-}
-
-    function getWeeks(sheetName) {
-    let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
-    if (!sheet) return { success: false, message: "❌ الشيت غير موجود!" };
-
-    let weeks = sheet.getRange(1, 2, 1, 10).getValues()[0]; // ✅ استخراج أسماء الأعمدة من الثاني للـ 11
-    return { success: true, weeks };
+    function selectWeek(weekName) {
+    document.getElementById("selectedWeek").textContent = weekName; // ✅ حفظ الأسبوع المختار
+    showPage("dataSection"); // ✅ الانتقال إلى صفحة إدخال البيانات بعد الاختيار
 }
 
 function showSuggestions(inputElement, suggestionsContainer) {
