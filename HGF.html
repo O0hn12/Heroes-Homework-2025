@@ -292,9 +292,10 @@ if (sheetElement) {
 
     function selectWeek(weekName) {
     console.log(`🔍 تم اختيار الأسبوع: ${weekName}`); // ✅ تتبع التنفيذ
-    const weekElement = document.getElementById("selectedWeek");
+    selectedWeek = weekName; // ✅ حفظ `weekName` في متغير عام يمكن الوصول إليه لاحقًا
+const weekElement = document.getElementById("selectedWeek");
 if (weekElement) {
-    weekElement.textContent = weekName; // ✅ فقط إذا كان العنصر موجودًا
+    weekElement.textContent = selectedWeek; // ✅ التأكد من عرض `selectedWeek` داخل الصفحة
 } else {
     console.error("❌ العنصر selectedWeek غير موجود في HTML!");
 }
