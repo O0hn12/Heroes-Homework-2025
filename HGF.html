@@ -295,14 +295,19 @@ console.log(`✅ تم تعيين selectedWeek بنجاح: ${selectedWeek}`);
     function selectWeek(weekName) {
     console.log(`🔍 تم اختيار الأسبوع: ${weekName}`); // ✅ تتبع التنفيذ
     selectedWeek = weekName; // ✅ تخزين قيمة الأسبوع في متغير عام
-console.log("✅ تم تعيين selectedWeek:", selectedWeek);
-const weekElement = document.getElementById("selectedWeek");
-if (weekElement) {
-    weekElement.textContent = selectedWeek; // ✅ التأكد من عرض `selectedWeek` داخل الصفحة
-} else {
-    console.error("❌ العنصر selectedWeek غير موجود في HTML!");
-}
-    changePage("weekSelectionPage", "dataSection"); // ✅ انتقال صحيح إلى صفحة إدخال البيانات
+    console.log("✅ تم تعيين selectedWeek:", selectedWeek);
+
+    // ✅ تأكد من وجود العنصر قبل تحديثه
+    const weekElement = document.getElementById("selectedWeek");
+    if (!weekElement) {
+        console.error("❌ العنصر selectedWeek غير موجود في HTML! تأكد من إضافته.");
+        return;
+    }
+    
+    weekElement.textContent = selectedWeek; // ✅ تحديث الأسبوع المختار داخل HTML
+    
+    changePage("weekSelectionPage", "dataSection"); // ✅ انتقال إلى صفحة إدخال البيانات
+    console.log("✅ تم الانتقال إلى صفحة إدخال البيانات");
 }
     
 function loadNames() {
