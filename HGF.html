@@ -445,7 +445,16 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
       'Content-Type': 'application/json'
     }
   })
-  .then(res => res.json())
+  .then(res => res.text()) // ✅ استقبال الاستجابة كنص لفحص نوع البيانات
+.then(data => {
+    console.log("📌 استجابة السيرفر:", data);
+    try {
+        return JSON.parse(data);
+    } catch (error) {
+        console.error("❌ خطأ في تحويل البيانات إلى JSON:", error);
+        return { success: false, error: "❌ استجابة غير صالحة" };
+    }
+})
   .then(response => {
     console.log("✅ استجابة Google Apps Script:", response);
     if (!response.success) {
@@ -472,7 +481,16 @@ function searchName() {
   }
 
   fetch(`${scriptURL}?action=searchName&sheet=${selectedSheet}&name=${encodeURIComponent(search)}`)
-    .then(res => res.json())
+    .then(res => res.text()) // ✅ استقبال الاستجابة كنص لفحص نوع البيانات
+.then(data => {
+    console.log("📌 استجابة السيرفر:", data);
+    try {
+        return JSON.parse(data);
+    } catch (error) {
+        console.error("❌ خطأ في تحويل البيانات إلى JSON:", error);
+        return { found: false, data: [] };
+    }
+})
     .then(response => {
         console.log("📌 شكل البيانات داخل `response.data`:", JSON.stringify(response, null, 2));
 
