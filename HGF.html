@@ -286,7 +286,8 @@ table {
 }
 
     function selectWeek(weekName) {
-    document.getElementById("selectedWeek").textContent = weekName; // ✅ حفظ الأسبوع المختار
+    console.log(`🔍 تم اختيار الأسبوع: ${weekName}`); // ✅ تتبع التنفيذ
+    document.getElementById("selectedWeek").textContent = weekName;
     changePage("weekSelectionPage", "dataSection"); // ✅ انتقال صحيح إلى صفحة إدخال البيانات
 }
     
