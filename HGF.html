@@ -431,7 +431,7 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
   const number = Number(document.getElementById("numberInput").value);
 
   // بيانات الإرسال
-  if (!selectedWeek || selectedWeek.trim() === "") {
+  if (!selectedWeek || typeof selectedWeek !== "string" || selectedWeek.length === 0) {
     alert("❌ يجب تحديد الأسبوع بشكل صحيح!");
     console.error("❌ `selectedWeek` فارغ أو غير معرف:", selectedWeek);
     return;
