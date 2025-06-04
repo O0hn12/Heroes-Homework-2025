@@ -494,6 +494,10 @@ function searchName() {
     .then(res => res.text()) // ✅ استقبال الاستجابة كنص لفحص نوع البيانات
 .then(data => {
     console.log("📌 استجابة السيرفر:", data);
+    if (data.startsWith("<!DOCTYPE html>")) {
+        console.error("❌ السيرفر يعيد HTML بدلًا من JSON! قد يكون هناك خطأ في `Google Apps Script`.");
+        return { found: false, data: [] };
+    }
     try {
         return JSON.parse(data);
     } catch (error) {
