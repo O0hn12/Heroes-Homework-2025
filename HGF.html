@@ -252,11 +252,6 @@ table {
 
     <button id="submitBtn" onclick="submitData()" disabled>Submit</button>
 </div>
-  
-  <!-- ✅ وضع الزر داخل `div` خاص به -->
-<div id="backButtonWrapper">
-    <button id="backBtn" onclick="goBackToWeekSelection()">⬅️ رجوع</button>
-</div>
 
     <!-- ✅ البحث الآن مخفي في البداية -->
 <div class="search-section dark-background" id="searchSection" style="display: none;">
@@ -320,7 +315,10 @@ table {
   // ✅ إظهار البحث فقط إذا كانت الصفحة الجديدة هي `dataSection`
   document.getElementById("searchSection").style.display = (newPage === "dataSection") ? "block" : "none";
       const backButton = document.getElementById("backBtn");
-backButton.style.display = (newPage === "dataSection") ? "block" : "none";
+backButton.style.display = (newPage === "dataSection") ? "block" : "none"; // ✅ يظهر فقط في صفحة إدخال البيانات
+if (newPage === "passwordPage") {
+    backButton.style.display = "none"; // ✅ إخفاءه تمامًا في الصفحة الأولى
+}
 }
     
     function selectSheet(sheetName) {
