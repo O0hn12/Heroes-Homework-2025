@@ -121,21 +121,22 @@ table {
     }
 
     #backBtn {
-    position: absolute; /* ✅ داخل dataSection وليس ثابت بكل الصفحات */
-    bottom: 10px; /* ✅ يجعله قريبًا من الحافة */
-    left: 10px; /* ✅ يجعله في أقصى اليسار */
-    width: 50px; /* ✅ تصغير حجمه ليصبح مربعًا صغيرًا */
-    height: 50px; /* ✅ جعله مربع الشكل */
-    background-color: #ff4d4d; /* ✅ لون الزر */
-    color: white; /* ✅ لون النص */
-    border: none; /* ✅ إزالة الحدود */
-    border-radius: 5px; /* ✅ تقريب الحواف */
-    font-size: 20px; /* ✅ تحسين حجم النص */
-    cursor: pointer; /* ✅ يجعل الزر قابل للنقر */
+    display: none; /* ✅ إخفاء الزر في جميع الصفحات افتراضيًا */
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 50px;
+    height: 50px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
 }
 
 #backBtn:hover {
-    background-color: #cc0000; /* ✅ تغيير اللون عند تمرير الماوس */
+    background-color: #cc0000;
 }
 
 
@@ -301,6 +302,8 @@ table {
 
   // ✅ إظهار البحث فقط إذا كانت الصفحة الجديدة هي `dataSection`
   document.getElementById("searchSection").style.display = (newPage === "dataSection") ? "block" : "none";
+      const backButton = document.getElementById("backBtn");
+    backButton.style.display = (nextPage === "dataSection") ? "block" : "none";
 }
     
     function selectSheet(sheetName) {
