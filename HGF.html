@@ -121,22 +121,23 @@ table {
     }
 
     #backBtn {
-    position: fixed; /* ✅ يجعله ثابتًا خارج أي عنصر آخر */
-    bottom: 20px; /* ✅ يجعله في أسفل الصفحة */
-    left: 20px; 
-    padding: 10px 20px; /* ✅ تحسين حجمه */
+    position: absolute; /* ✅ داخل dataSection وليس ثابت بكل الصفحات */
+    bottom: 10px; /* ✅ يجعله قريبًا من الحافة */
+    left: 10px; /* ✅ يجعله في أقصى اليسار */
+    width: 50px; /* ✅ تصغير حجمه ليصبح مربعًا صغيرًا */
+    height: 50px; /* ✅ جعله مربع الشكل */
     background-color: #ff4d4d; /* ✅ لون الزر */
     color: white; /* ✅ لون النص */
     border: none; /* ✅ إزالة الحدود */
     border-radius: 5px; /* ✅ تقريب الحواف */
-    font-size: 16px; /* ✅ تحسين حجم النص */
+    font-size: 20px; /* ✅ تحسين حجم النص */
     cursor: pointer; /* ✅ يجعل الزر قابل للنقر */
-    z-index: 999; /* ✅ يضمن بقاء الزر فوق جميع العناصر */
 }
 
 #backBtn:hover {
     background-color: #cc0000; /* ✅ تغيير اللون عند تمرير الماوس */
 }
+
 
 
     /* تحسين التصميم على شاشات الموبايل */
@@ -236,9 +237,11 @@ table {
     </div>
 
     <button id="submitBtn" onclick="submitData()" disabled>Submit</button>
-</div>
+
   <!-- ✅ زر الرجوع خارج جميع الحاويات -->
 <button id="backBtn" onclick="goBackToWeekSelection()">⬅️ رجوع</button>
+</div>
+  
 
 
     <!-- ✅ البحث الآن مخفي في البداية -->
