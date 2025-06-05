@@ -120,6 +120,23 @@ table {
       cursor: pointer;
     }
 
+    #backBtn {
+    position: absolute; /* ✅ يضعه في موقع ثابت داخل الصفحة */
+    bottom: 20px; /* ✅ يجعله في أسفل الصفحة */
+    left: 20px; /* ✅ يجعله في أقصى اليسار */
+    padding: 10px 20px; /* ✅ تحسين حجم الزر */
+    background-color: #ff4d4d; /* ✅ لون الزر */
+    color: white; /* ✅ لون النص */
+    border: none; /* ✅ إزالة الحدود */
+    border-radius: 5px; /* ✅ تقريب الحواف */
+    font-size: 16px; /* ✅ تحسين حجم النص */
+    cursor: pointer; /* ✅ يجعل الزر قابل للنقر */
+}
+
+#backBtn:hover {
+    background-color: #cc0000; /* ✅ تغيير اللون عند تمرير الماوس */
+}
+
     /* تحسين التصميم على شاشات الموبايل */
     @media screen and (max-width: 768px) {
       .data-section, .search-section, .login-section, .choice-section {
