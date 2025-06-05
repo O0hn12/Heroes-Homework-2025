@@ -121,26 +121,30 @@ table {
     }
 
     #backBtn {
-    display: none; /* ✅ إخفاء الزر في جميع الصفحات افتراضيًا */
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    width: 80px;
-    height: 80px;
+    width: 100px; /* ✅ حجم مناسب */
+    height: 50px;
+    font-size: 16px; /* ✅ تصغير حجم النص بحيث يكون داخل الزر */
+    line-height: 50px; /* ✅ توسيط النص رأسياً */
+    text-align: center; /* ✅ يجعل النص في منتصف الزر */
+    padding: 0; /* ✅ إزالة أي مسافات زائدة */
     background-color: #ff4d4d;
     color: white;
     border: none;
     border-radius: 5px;
-    font-size: 20px;
     cursor: pointer;
 }
 
 #backBtn:hover {
     background-color: #cc0000;
 }
-
-
-
+    .week-title {
+    background-color: rgba(0, 0, 0, 0.1); /* ✅ لون مظلل */
+    padding: 10px; /* ✅ يضيف مسافة حول النص */
+    border-radius: 5px; /* ✅ يجعل الحواف ناعمة */
+    text-align: center; /* ✅ توسيط النص */
+    font-weight: bold; /* ✅ يجعل النص بارز */
+}
+    
     /* تحسين التصميم على شاشات الموبايل */
     @media screen and (max-width: 768px) {
       .data-section, .search-section, .login-section, .choice-section {
