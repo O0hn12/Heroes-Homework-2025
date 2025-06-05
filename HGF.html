@@ -238,12 +238,12 @@ table {
     </div>
 
     <button id="submitBtn" onclick="submitData()" disabled>Submit</button>
-
-  <!-- ✅ زر الرجوع خارج جميع الحاويات -->
-<button id="backBtn" onclick="goBackToWeekSelection()">⬅️ رجوع</button>
 </div>
   
-
+  <!-- ✅ وضع الزر داخل `div` خاص به -->
+<div id="backButtonWrapper">
+    <button id="backBtn" onclick="goBackToWeekSelection()">⬅️ رجوع</button>
+</div>
 
     <!-- ✅ البحث الآن مخفي في البداية -->
 <div class="search-section dark-background" id="searchSection" style="display: none;">
