@@ -303,7 +303,7 @@ table {
   // ✅ إظهار البحث فقط إذا كانت الصفحة الجديدة هي `dataSection`
   document.getElementById("searchSection").style.display = (newPage === "dataSection") ? "block" : "none";
       const backButton = document.getElementById("backBtn");
-    backButton.style.display = (nextPage === "dataSection") ? "block" : "none";
+backButton.style.display = (newPage === "dataSection") ? "block" : "none";
 }
     
     function selectSheet(sheetName) {
