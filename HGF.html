@@ -202,21 +202,25 @@ table {
 </div>
 
   <!-- ✅ صفحة إدخال البيانات -->
-  <div class="data-section page" id="dataSection" style="display: none;">
+<div class="data-section page" id="dataSection" style="display: none;">
     <h2>Heroes Adventure 2025 - <span id="selectedSheet">لم يتم الاختيار بعد</span> - <span id="selectedWeek">لم يتم الاختيار بعد</span></h2>
+
     <div class="form-group">
-      <label for="nameInput">الاسم</label>
-      <input type="text" id="nameInput" autocomplete="off" oninput="checkSubmitState()">
-      <div id="nameSuggestions"></div>
+        <label for="nameInput">الاسم</label>
+        <input type="text" id="nameInput" autocomplete="off" oninput="checkSubmitState()">
+        <div id="nameSuggestions"></div>
     </div>
 
     <div class="form-group">
-      <label for="numberInput">الرقم (بين 0 و 5)</label>
-      <input type="number" id="numberInput" min="0" max="5" oninput="checkSubmitState()">
+        <label for="numberInput">الرقم (بين 0 و 5)</label>
+        <input type="number" id="numberInput" min="0" max="5" oninput="checkSubmitState()">
     </div>
 
     <button id="submitBtn" onclick="submitData()" disabled>Submit</button>
-  </div>
+
+    <!-- ✅ زر الرجوع إلى صفحة اختيار الأسبوع -->
+    <button id="backBtn" onclick="goBackToWeekSelection()">⬅️ رجوع</button>
+</div>
 
     <!-- ✅ البحث الآن مخفي في البداية -->
 <div class="search-section dark-background" id="searchSection" style="display: none;">
@@ -565,6 +569,10 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
         table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط عند البحث
     })
     .catch(err => console.error('❌ خطأ أثناء البحث:', err));
+}
+    function goBackToWeekSelection() {
+    console.log("🔙 الرجوع إلى صفحة اختيار الأسبوع");
+    changePage("dataSection", "weekSelectionPage"); // ✅ رجوع للصفحة السابقة
 }
 
   </script>
