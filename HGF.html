@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Heroes Adventure 2025</title>
-  <link rel="icon" type="image/png" href="https://i.imgur.com/jKMhKlP.png">
+  <link rel="icon" type="image/png" href="https://drive.google.com/file/d/1twu_gckxQpbaY-fKjG-0kEfHyp-KoGR6/view?usp=drive_link">
   
   <!-- إضافة ضرورية لتجاوب الموبايل -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -121,21 +121,23 @@ table {
     }
 
     #backBtn {
-    position: absolute; /* ✅ يضعه في موقع ثابت داخل الصفحة */
+    position: fixed; /* ✅ يجعله ثابتًا خارج أي عنصر آخر */
     bottom: 20px; /* ✅ يجعله في أسفل الصفحة */
-    left: 20px; /* ✅ يجعله في أقصى اليسار */
-    padding: 10px 20px; /* ✅ تحسين حجم الزر */
+    left: 20px; 
+    padding: 10px 20px; /* ✅ تحسين حجمه */
     background-color: #ff4d4d; /* ✅ لون الزر */
     color: white; /* ✅ لون النص */
     border: none; /* ✅ إزالة الحدود */
     border-radius: 5px; /* ✅ تقريب الحواف */
     font-size: 16px; /* ✅ تحسين حجم النص */
     cursor: pointer; /* ✅ يجعل الزر قابل للنقر */
+    z-index: 999; /* ✅ يضمن بقاء الزر فوق جميع العناصر */
 }
 
 #backBtn:hover {
     background-color: #cc0000; /* ✅ تغيير اللون عند تمرير الماوس */
 }
+
 
     /* تحسين التصميم على شاشات الموبايل */
     @media screen and (max-width: 768px) {
