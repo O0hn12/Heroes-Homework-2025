@@ -211,7 +211,7 @@ table {
 
   <!-- ✅ صفحة اختيار الشيت -->
   <div class="choice-section page" id="choiceSection" style="display: none;">
-    <h2>اختر الشيت الذي تريد إدخال البيانات إليه</h2>
+    <h2>اختر الفرقة</h2>
     <button onclick="selectSheet('1ب')">1ب</button>
     <button onclick="selectSheet('2ب')">2ب</button>
     <button onclick="selectSheet('3ب')">3ب</button>
@@ -250,8 +250,8 @@ table {
     </div>
 
     <div class="form-group">
-        <label for="numberInput">الرقم (بين 0 و 5)</label>
-        <input type="number" id="numberInput" min="0" max="5" oninput="checkSubmitState()">
+        <label for="numberInput">الرقم (بين 0 و 10)</label>
+        <input type="number" id="numberInput" min="0" max="10" oninput="checkSubmitState()">
     </div>
 
     <button id="submitBtn" onclick="submitData()" disabled>Submit</button>
@@ -488,7 +488,7 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
     function checkSubmitState() {
   const name = document.getElementById("nameInput").value.trim();
   const number = document.getElementById("numberInput").value.trim();
-  const validNumber = number !== "" && +number >= 0 && +number <= 5;
+  const validNumber = number !== "" && +number >= 0 && +number <= 10;
   const hasName = name !== "";
 
   console.log("🔍 فحص حالة الإدخال: الاسم =", hasName, "| الرقم =", validNumber);
