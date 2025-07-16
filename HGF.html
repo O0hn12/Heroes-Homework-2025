@@ -464,9 +464,10 @@ let filtered = allNames.filter(name => name && name.toLowerCase().includes(value
         item.className = "suggestion-item";
         item.textContent = name;
         item.onclick = () => {
-          inputElement.value = name;
-          suggestionsContainer.innerHTML = "";
-        };
+  const exactName = allNames.find(n => n.toLowerCase().trim() === name.toLowerCase().trim());
+  inputElement.value = exactName ? exactName.trim() : name.trim();
+  suggestionsContainer.innerHTML = "";
+};
         suggestionsContainer.appendChild(item);
       });
     }
@@ -483,8 +484,13 @@ let filtered = allNames.filter(name => name && name.toLowerCase().includes(value
 document.getElementById("numberInput").addEventListener("input", checkSubmitState); // ✅
 
     document.getElementById("searchInput").addEventListener("input", function () {
-      showSuggestions(this, document.getElementById("searchSuggestions"));
-    });
+  if (allNames.length === 0) {
+    console.warn("🟡 الأسماء لم تُحمّل بعد، سيتم إعادة التحميل...");
+    loadNames();
+  }
+  showSuggestions(this, document.getElementById("searchSuggestions"));
+});
+
     function checkSubmitState() {
   const name = document.getElementById("nameInput").value.trim();
   const number = document.getElementById("numberInput").value.trim();
