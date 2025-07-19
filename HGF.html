@@ -318,7 +318,14 @@ table {
   const username = document.getElementById("loginUsername").value.trim();
   const password = document.getElementById("loginPassword").value.trim();
 
-  if (username === "hgf" && password === "2182013") {
+const users = {
+  "hgf": "2182013",
+  "john": "123",
+  "admin": "000"
+};
+
+if (users[username] && users[username] === password) {
+  // تسجيل دخول ناجح
     alert("تم تسجيل الدخول بنجاح");
     changePage("loginSection", "choiceSection"); // ✅ الانتقال إلى صفحة الاختيار بدلاً من إدخال البيانات
   } else {
