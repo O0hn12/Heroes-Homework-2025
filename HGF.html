@@ -795,21 +795,29 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
   return map[week];
 }
 
-    function updateStudentScore() {
-  const name = document.getElementById("editName").value.trim();
-  const newScore = document.getElementById("newScore").value.trim();
+    function updateStudentScore(sheet, name, week, score) {
+  try {
+    const range = sheet.getRange("A2:A" + sheet.getLastRow()).getValues();
+    let rowIndex = -1;
+    for (let i = 0; i < range.length; i++) {
+      if (range[i][0].toString().trim() === name.trim()) {
+        rowIndex = i + 2;
+        break;
+      }
+    }
 
-  if (!name || newScore === "") return alert("❌ أدخل الاسم والدرجة الجديدة");
+    if (rowIndex === -1) {
+      return { success: false, message: "❌ الاسم غير موجود!" };
+    }
 
-  fetch(`${scriptURL}?action=updateScore&sheet=${selectedSheet}&week=${selectedWeek}&name=${encodeURIComponent(name)}&score=${newScore}`, {
-  method: 'GET'
-})
-  .then(res => res.text())
-  .then(res => {
-    alert("✅ تم تعديل الدرجة بنجاح");
-    loadNames(); // تحديث الجدول بعد التعديل
-  });
+    const colIndex = sheet.getRange(`${week}1`).getColumn();
+    sheet.getRange(rowIndex, colIndex).setValue(score);
+    return { success: true, message: "✅ تم تعديل الدرجة بنجاح" };
+  } catch (error) {
+    return { success: false, message: "❌ خطأ أثناء تعديل الدرجة: " + error.message };
+  }
 }
+
   </script>
 
 </body>
