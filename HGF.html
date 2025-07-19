@@ -676,7 +676,7 @@ const data = {
   .catch(err => console.error("❌ خطأ أثناء إرسال البيانات:", err));
       // ✅ تحقق من الأسبوع السابق إن وجد
 const allWeeks = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
-const currentWeekIndex = allWeeks.indexOf(selectedWeek);
+const currentScore = Array.isArray(data.data?.[0]) ? data.data[0][getWeekIndex(selectedWeek)] : "-";
 if (currentWeekIndex > 0) {
   const prevWeek = allWeeks[currentWeekIndex - 1];
 
@@ -795,33 +795,55 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
   return map[week];
 }
 
-    function updateStudentScore(sheet, name, week, score) {
-  try {
-    const scoreNumber = Number(score);
-if (isNaN(scoreNumber) || scoreNumber < 0 || scoreNumber > 10) {
-  return { success: false, message: "❌ الدرجة يجب أن تكون رقم بين 0 و 10" };
-}
-    const range = sheet.getRange("A2:A" + sheet.getLastRow()).getValues();
-    let rowIndex = -1;
-    for (let i = 0; i < range.length; i++) {
-      if (range[i][0].toString().trim() === name.trim()) {
-        rowIndex = i + 2;
-        break;
-      }
-    }
+    function updateStudentScore() {
+  const name = document.getElementById("editName").value.trim();
+  const newScore = document.getElementById("newScore").value.trim();
 
-    if (rowIndex === -1) {
-      return { success: false, message: "❌ الاسم غير موجود!" };
-    }
-
-    const colIndex = sheet.getRange(`${week}1`).getColumn();
-    sheet.getRange(rowIndex, colIndex).setValue(score);
-    return { success: true, message: "✅ تم تعديل الدرجة بنجاح" };
-  } catch (error) {
-    return { success: false, message: "❌ خطأ أثناء تعديل الدرجة: " + error.message };
+  if (!name || newScore === "") {
+    alert("❌ يجب إدخال الاسم والدرجة الجديدة!");
+    return;
   }
-}
 
+  const scoreNumber = Number(newScore);
+  if (isNaN(scoreNumber) || scoreNumber < 0 || scoreNumber > 10) {
+    alert("❌ الدرجة يجب أن تكون رقم بين 0 و 10");
+    return;
+  }
+
+  const data = {
+    action: "updateScore",
+    sheet: selectedSheet,
+    name: name,
+    week: selectedWeek,
+    score: scoreNumber
+  };
+
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' }
+  })
+    .then(res => res.text())
+    .then(res => {
+      console.log("📌 رد السيرفر:", res);
+      try {
+        const json = JSON.parse(res);
+        if (json.success) {
+          alert("✅ تم تعديل الدرجة بنجاح");
+          document.getElementById("currentScore").value = scoreNumber;
+        } else {
+          alert("❌ فشل في تعديل الدرجة: " + json.message);
+        }
+      } catch (e) {
+        console.error("❌ خطأ في الرد:", e);
+        alert("❌ رد غير مفهوم من السيرفر");
+      }
+    })
+    .catch(err => {
+      console.error("❌ خطأ أثناء الإرسال:", err);
+      alert("❌ حدث خطأ أثناء التواصل مع السيرفر");
+    });
+}
   </script>
 
 </body>
