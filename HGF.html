@@ -773,7 +773,8 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
 }
 
     function loadStudentScore() {
-  const name = document.getElementById("editName").value.trim();
+  const nameInput = document.getElementById("editName");
+const name = allNames.find(n => n.trim() === nameInput.value.trim()) || nameInput.value.trim();
   if (!name) return alert("❌ أدخل اسم الطالب أولاً");
 
   fetch(`${scriptURL}?action=searchName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
