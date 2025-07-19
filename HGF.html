@@ -322,6 +322,35 @@ table {
     <button id="backBtn" onclick="goBackToWeekSelection()">⬅️ رجوع</button>
 </div>
 
+    <!-- ✅ صفحة تعديل البيانات -->
+<div class="data-section page" id="editSection" style="display: none;">
+  <h2>تعديل بيانات الطالب - <span id="editSheet"></span> - <span id="editWeek"></span></h2>
+
+  <div class="form-group">
+    <label for="editName">الاسم</label>
+    <input type="text" id="editName" autocomplete="off" oninput="showSuggestions(this, document.getElementById('editSuggestions'))">
+    <div id="editSuggestions" class="suggestions"></div>
+  </div>
+
+  <button onclick="loadStudentScore()">عرض النتيجة</button>
+
+  <div class="form-group">
+    <label for="currentScore">الدرجة الحالية</label>
+    <input type="text" id="currentScore" disabled placeholder="ستظهر هنا بعد البحث">
+  </div>
+
+  <div class="form-group">
+    <label for="newScore">الدرجة الجديدة</label>
+    <input type="number" id="newScore" min="0" max="10">
+  </div>
+
+  <button onclick="sendUpdatedScore()">تعديل</button>
+  <div class="backButtonContainer">
+    <button class="backBtn" onclick="changePage('editSection', 'weekSelectionPage')">⬅️ رجوع</button>
+  </div>
+</div>
+
+
   <script>
     let mode = ""; // إما "insert" أو "edit"
     let selectedSheet = "";
@@ -440,57 +469,24 @@ function goToEdit() {
 }
 
     function selectWeek(weekName) {
-    selectedWeek = weekName;
-    console.log(`🔍 تم اختيار الأسبوع: ${selectedWeek}`); // ✅ تتبع التنفيذ
+  selectedWeek = weekName;
+  const weekElement = document.getElementById("selectedWeek");
+  if (weekElement) weekElement.textContent = selectedWeek;
 
-    // ✅ تأكد من تحديث الأسبوع داخل HTML
-    const weekElement = document.getElementById("selectedWeek");
-    if (weekElement) {
-        weekElement.textContent = selectedWeek;
-        console.log(`✅ تم تحديث الأسبوع: ${selectedWeek}`);
-    } else {
-        console.error("❌ العنصر selectedWeek غير موجود في HTML! تأكد من إضافته.");
-        return;
-    }
+  const sheetElement = document.getElementById("selectedSheet");
+  if (sheetElement) sheetElement.textContent = selectedSheet;
 
-    // ✅ تأكد من أن `selectedSheet` يظهر بوضوح
-    const sheetElement = document.getElementById("selectedSheet");
-    if (sheetElement && selectedSheet) {
-        sheetElement.textContent = selectedSheet;
-        console.log(`✅ الشيت المختار لا يزال محفوظ: ${selectedSheet}`);
-    } else {
-        console.error("❌ العنصر selectedSheet غير موجود في HTML! تأكد من إضافته.");
-    }
+  if (mode === "edit") {
+    // ✅ اظهر صفحة التعديل
+    document.getElementById("editSheet").textContent = selectedSheet;
+    document.getElementById("editWeek").textContent = selectedWeek;
+    changePage("weekSelectionPage", "editSection");
+  } else {
+    // ✅ صفحة الإدخال العادية
+    changePage("weekSelectionPage", "dataSection");
+  }
 
-    changePage("weekSelectionPage", "dataSection"); // ✅ انتقال صحيح إلى صفحة إدخال البيانات
-    console.log("✅ تم الانتقال إلى صفحة إدخال البيانات");
-      const dataSection = document.getElementById("dataSection");
-
-if (mode === "edit") {
-  dataSection.innerHTML = `
-  <h2>تعديل بيانات الطالب</h2>
-
-  <div class="form-group">
-    <label for="editName">الاسم</label>
-    <input type="text" id="editName" autocomplete="off" oninput="showSuggestions(this, document.getElementById('editSuggestions'))">
-<div id="editSuggestions" class="suggestions"></div>
-  </div>
-
-  <button onclick="loadStudentScore()">عرض النتيجة</button>
-
-  <div class="form-group">
-    <label for="currentScore">الدرجة الحالية</label>
-    <input type="text" id="currentScore" disabled placeholder="ستظهر هنا بعد البحث">
-  </div>
-
-  <div class="form-group">
-    <label for="newScore">الدرجة الجديدة</label>
-    <input type="number" id="newScore" min="0" max="10">
-  </div>
-
-  <button onclick="updateStudentScore()">تعديل</button>
-`;
-}
+  console.log("✅ تم الانتقال إلى صفحة", mode === "edit" ? "تعديل البيانات" : "إدخال البيانات");
 }
     
 function loadNames() {
@@ -821,6 +817,57 @@ if (isNaN(scoreNumber) || scoreNumber < 0 || scoreNumber > 10) {
     return { success: false, message: "❌ خطأ أثناء تعديل الدرجة: " + error.message };
   }
 }
+
+    function sendUpdatedScore() {
+  const name = document.getElementById("editName").value.trim();
+  const score = document.getElementById("newScore").value;
+
+  if (!name || score === "") {
+    alert("❌ يرجى ملء الاسم والدرجة الجديدة");
+    return;
+  }
+
+  const scoreNum = Number(score);
+  if (scoreNum < 0 || scoreNum > 10) {
+    alert("❌ الدرجة يجب أن تكون بين 0 و 10");
+    return;
+  }
+
+  const data = {
+    action: "updateScore",
+    name,
+    sheet: selectedSheet,
+    week: selectedWeek,
+    score: scoreNum
+  };
+
+  fetch(scriptURL, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+    .then(res => res.text())
+    .then(text => {
+      try {
+        const json = JSON.parse(text);
+        if (json.success) {
+          alert("✅ تم تحديث الدرجة بنجاح!");
+        } else {
+          alert("❌ فشل التحديث: " + json.message);
+        }
+      } catch {
+        alert("❌ خطأ في استجابة السيرفر");
+        console.error("Response:", text);
+      }
+    })
+    .catch(err => {
+      console.error("❌ خطأ أثناء التحديث:", err);
+      alert("❌ حدث خطأ أثناء الإرسال");
+    });
+}
+
 
   </script>
 
