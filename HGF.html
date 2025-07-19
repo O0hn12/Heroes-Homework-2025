@@ -327,7 +327,11 @@ const users = {
 if (users[username] && users[username] === password) {
   // تسجيل دخول ناجح
     alert("تم تسجيل الدخول بنجاح");
-    changePage("loginSection", "choiceSection"); // ✅ الانتقال إلى صفحة الاختيار بدلاً من إدخال البيانات
+if (currentUser === "جون") {
+    changePage("loginSection", "chooseActionSection"); // صفحة فيها زرين إدخال وتعديل
+  } else {
+    changePage("loginSection", "choiceSection"); // باقي المستخدمين يروحوا عادي
+  }
   } else {
     alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة!");
   }
