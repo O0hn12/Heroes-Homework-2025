@@ -471,7 +471,6 @@ function goToEdit() {
     function selectWeek(weekName) {
   selectedWeek = weekName;
 
-  // ✅ تحديث النصوص في الصفحة
   const weekElement = document.getElementById("selectedWeek");
   if (weekElement) weekElement.textContent = selectedWeek;
 
@@ -479,22 +478,24 @@ function goToEdit() {
   if (sheetElement) sheetElement.textContent = selectedSheet;
 
   if (mode === "edit") {
-    // ✅ تحديث عنوان صفحة التعديل
     const editSheetLabel = document.getElementById("editSheet");
     const editWeekLabel = document.getElementById("editWeek");
     if (editSheetLabel) editSheetLabel.textContent = selectedSheet;
     if (editWeekLabel) editWeekLabel.textContent = selectedWeek;
 
-    // ✅ نقل للصفحة
     changePage("weekSelectionPage", "editSection");
 
-    // ✅ تحميل قائمة الأسماء لو مش موجودة
+    // ✅ حمل الأسماء لو مش موجودة
     if (allNames.length === 0) {
       console.log("📦 تحميل الأسماء لصفحة التعديل...");
       loadNames();
     }
+
+    // ✅ اجبر المستخدم يدخل اسم الطالب للتحميل التلقائي
+    document.getElementById("editName").value = ""; // افضّي الخانة
+    document.getElementById("currentScore").value = ""; // فضي الدرجة
+    document.getElementById("newScore").value = ""; // فضي الدرجة الجديدة
   } else {
-    // ✅ صفحة الإدخال العادية
     changePage("weekSelectionPage", "dataSection");
   }
 
