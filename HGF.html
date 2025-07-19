@@ -779,13 +779,20 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
   fetch(`${scriptURL}?action=searchName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
     .then(res => res.json())
     .then(data => {
-      if (!data || !data.found) {
-        alert("❌ الاسم غير موجود!");
+      if (!data || !data.found || !data.data || !Array.isArray(data.data[0])) {
+        alert("❌ الاسم غير موجود أو البيانات غير صالحة!");
         return;
       }
 
-      const currentScore = data.row[getWeekIndex(selectedWeek)];
-      document.getElementById("currentScore").value = currentScore !== "" ? currentScore : "-";
+      const index = getWeekIndex(selectedWeek);
+      const currentScore = data.data[0][index]; // ✅ نستخدم data.data بدلًا من data.row
+
+      document.getElementById("currentScore").value =
+        currentScore !== undefined && currentScore !== "" ? currentScore : "-";
+    })
+    .catch(err => {
+      console.error("❌ خطأ أثناء تحميل النتيجة:", err);
+      alert("❌ حدث خطأ أثناء جلب البيانات من السيرفر");
     });
 }
 
