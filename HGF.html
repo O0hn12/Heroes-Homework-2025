@@ -868,6 +868,37 @@ if (isNaN(scoreNumber) || scoreNumber < 0 || scoreNumber > 10) {
     });
 }
 
+    function goToWeekPage() {
+  const selectedWeek = document.getElementById("weekSelect").value;
+  if (!selectedWeek) {
+    alert("من فضلك اختر الأسبوع أولاً.");
+    return;
+  }
+
+  currentWeek = selectedWeek;
+
+  // لو أول مرة لسه ما ضافش صفحة البيانات
+  if (!document.getElementById("dataPage")) {
+    const template = document.getElementById("dataPageTemplate");
+    const clone = template.content.cloneNode(true);
+    document.body.appendChild(clone);
+
+    // ✅ هنا بتحط أي أكواد كانت بتربط الزرار بالأحداث
+    const submitButton = document.getElementById("submitButton");
+    if (submitButton) {
+      submitButton.addEventListener("click", submitData); // ← دي اسم دالة الإرسال بتاعتك
+    }
+  }
+
+  // إخفاء باقي الصفحات
+  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+
+  // إظهار صفحة البيانات
+  document.getElementById("dataPage").classList.remove("hidden");
+
+  console.log("✅ تم الانتقال إلى صفحة إدخال البيانات");
+}
+
   </script>
 
 </body>
