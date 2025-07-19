@@ -211,7 +211,7 @@ table {
 
   <!-- صفحة الاختيار الخاصة بجون -->
 <div id="choice-page" style="display:none; text-align: center; padding: 20px;">
-  <h2>مرحبًا جون 👋</h2>
+  <h2>مرحبًا 👋</h2>
   <p>ماذا تريد أن تفعل؟</p>
   <button onclick="showInputPage()">إدخال بيانات</button>
   <button onclick="showEditPage()">تعديل بيانات</button>
@@ -335,7 +335,7 @@ if (users[username] && users[username] === password) {
     
     function checkUser() {
     const name = document.getElementById("username").value.trim();
-    if (name === "جون") {
+    if (name === "john") {
       document.getElementById("johnOptions").classList.remove("hidden");
     } else {
       document.getElementById("otherUser").classList.remove("hidden");
