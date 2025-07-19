@@ -378,11 +378,11 @@ function goToEdit() {
 
   // ✅ إظهار البحث فقط إذا كانت الصفحة الجديدة هي `dataSection`
   document.getElementById("searchSection").style.display = (newPage === "dataSection") ? "block" : "none";
-      const backButton = document.getElementById("backBtn");
-backButton.style.display = (newPage === "dataSection") ? "block" : "none"; // ✅ يظهر فقط في صفحة إدخال البيانات
-if (newPage === "passwordPage") {
-    backButton.style.display = "none"; // ✅ إخفاءه تمامًا في الصفحة الأولى
-}
+      // ✅ زر الرجوع يظهر في كل الصفحات ما عدا loginPage
+  const backButton = document.getElementById("backBtn");
+  if (backButton) {
+    backButton.style.display = (newPage === "passwordPage") ? "none" : "inline-block";
+  }
 }
     
     function selectSheet(sheetName) {
