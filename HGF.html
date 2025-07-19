@@ -226,12 +226,9 @@ table {
   <button onclick="goToInsert()">إدخال بيانات</button>
   <button onclick="goToEdit()">تعديل بيانات</button>
    <div class="backButtonContainer">
-  <button class="backBtn" onclick="changePage('chooseActionSection', 'loginSection')">⬅️ رجوع</button>
+  <button class="backBtn" onclick="goBackFromChoice()">⬅️ رجوع</button>
 </div>
  </section>
-
-  
-
 
   <!-- ✅ صفحة اختيار الشيت -->
   <div class="choice-section page" id="choiceSection" style="display: none;">
@@ -377,6 +374,13 @@ function goToEdit() {
   changePage("chooseActionSection", "choiceSection"); // حالياً نفس الصفحة، لكن تقدر تعدلها بعدين
 }
 
+    function goBackFromChoice() {
+  if (currentUser === "john") {
+    changePage("choiceSection", "chooseActionSection");
+  } else {
+    changePage("choiceSection", "loginSection");
+  }
+}
 
     function changePage(oldPage, newPage) {
   // ✅ أخفي الصفحة القديمة
