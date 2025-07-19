@@ -378,10 +378,11 @@ function goToEdit() {
 
   // ✅ إظهار البحث فقط إذا كانت الصفحة الجديدة هي `dataSection`
   document.getElementById("searchSection").style.display = (newPage === "dataSection") ? "block" : "none";
-      // ✅ زر الرجوع يظهر في كل الصفحات ما عدا loginPage
+      // ✅ زر الرجوع يظهر في كل الصفحات ما عدا صفحة البداية
   const backButton = document.getElementById("backBtn");
   if (backButton) {
-    backButton.style.display = (newPage === "passwordPage") ? "none" : "inline-block";
+    const noBackPages = ["passwordPage", "loginPage"]; // أضف هنا أي صفحة تعتبرها صفحة بداية
+    backButton.style.display = noBackPages.includes(newPage) ? "none" : "inline-block";
   }
 }
     
