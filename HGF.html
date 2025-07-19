@@ -209,6 +209,21 @@ table {
     <button id="loginBtn">login</button>
   </div>
 
+  <!-- صفحة الاختيار الخاصة بجون -->
+<div id="choice-page" style="display:none; text-align: center; padding: 20px;">
+  <h2>مرحبًا جون 👋</h2>
+  <p>ماذا تريد أن تفعل؟</p>
+  <button onclick="showInputPage()">إدخال بيانات</button>
+  <button onclick="showEditPage()">تعديل بيانات</button>
+</div>
+
+
+<!-- رسالة لباقي المستخدمين -->
+<div id="otherUser" class="hidden">
+  <p>يتم تحويلك إلى صفحة إدخال البيانات...</p>
+</div>
+
+
   <!-- ✅ صفحة اختيار الشيت -->
   <div class="choice-section page" id="choiceSection" style="display: none;">
     <h2>اختر الفرقة</h2>
@@ -310,6 +325,24 @@ table {
     alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة!");
   }
 });
+    
+    function checkUser() {
+    const name = document.getElementById("username").value.trim();
+    if (name === "جون") {
+      document.getElementById("johnOptions").classList.remove("hidden");
+    } else {
+      document.getElementById("otherUser").classList.remove("hidden");
+      setTimeout(() => {
+        window.location.href = "insert.html"; // اسم صفحة الإدخال العادية
+      }, 1500);
+    }
+  }
+
+  function showEditPage() {
+  document.getElementById('choice-page').style.display = 'none';
+  document.getElementById('edit-page').style.display = 'block';
+}
+
     function changePage(oldPage, newPage) {
   document.getElementById(oldPage).classList.remove("active");
   document.getElementById(oldPage).style.display = "none";
