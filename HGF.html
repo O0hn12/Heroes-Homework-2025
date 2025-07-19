@@ -784,7 +784,7 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
         return;
       }
 
-      const currentScore = data.data[0][getWeekIndex(selectedWeek)];
+      const currentScore = data.data[0][getWeekIndex(selectedWeek) + 1];
       document.getElementById("currentScore").value = currentScore !== "" ? currentScore : "-";
     });
 }
@@ -801,19 +801,18 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
 
   if (!name || newScore === "") return alert("❌ أدخل الاسم والدرجة الجديدة");
 
-  fetch(scriptURL, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: "updateScore", // دي هتكون الدالة على Google Apps Script
-      name: name,
-      sheet: selectedSheet,
-      week: selectedWeek,
-      newScore: newScore
-    }),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
+  fetch(`${scriptURL}?action=updateScore`, {
+  method: 'POST',
+  body: JSON.stringify({
+    name: name,
+    sheet: selectedSheet,
+    week: selectedWeek,
+    score: newScore
+  }),
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
   .then(res => res.text())
   .then(res => {
     alert("✅ تم تعديل الدرجة بنجاح");
