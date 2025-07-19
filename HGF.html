@@ -210,13 +210,11 @@ table {
   </div>
 
   <!-- صفحة الاختيار الخاصة بجون -->
-<div id="choice-page" style="display:none; text-align: center; padding: 20px;">
-  <h2>مرحبًا 👋</h2>
-  <p>ماذا تريد أن تفعل؟</p>
-  <button onclick="showInputPage()">إدخال بيانات</button>
-  <button onclick="showEditPage()">تعديل بيانات</button>
-</div>
-
+<section id="chooseActionSection" style="display: none; text-align: center; padding: 20px;">
+  <h2>مرحبًا يا جون، اختر الإجراء:</h2>
+  <button onclick="goToInsert()">إدخال بيانات</button>
+  <button onclick="goToEdit()">تعديل بيانات</button>
+</section>
 
 <!-- رسالة لباقي المستخدمين -->
 <div id="otherUser" class="hidden">
@@ -349,10 +347,14 @@ if (currentUser === "جون") {
     }
   }
 
-  function showEditPage() {
-  document.getElementById('choice-page').style.display = 'none';
-  document.getElementById('edit-page').style.display = 'block';
+  function goToInsert() {
+  changePage("chooseActionSection", "choiceSection"); // صفحة الإدخال العادية
 }
+
+function goToEdit() {
+  changePage("chooseActionSection", "choiceSection"); // حالياً نفس الصفحة، لكن تقدر تعدلها بعدين
+}
+
 
     function changePage(oldPage, newPage) {
   document.getElementById(oldPage).classList.remove("active");
