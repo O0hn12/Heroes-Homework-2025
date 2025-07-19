@@ -468,18 +468,28 @@ function goToEdit() {
 
 if (mode === "edit") {
   dataSection.innerHTML = `
-    <h2>تعديل بيانات الطالب</h2>
-    <div class="form-group">
-      <label for="editName">الاسم</label>
-      <input type="text" id="editName" autocomplete="off">
-    </div>
-    <button onclick="loadStudentScore()">عرض النتيجة</button>
-    <div class="form-group">
-      <label for="newScore">الدرجة الجديدة</label>
-      <input type="number" id="newScore" min="0" max="10">
-    </div>
-    <button onclick="updateStudentScore()">تعديل</button>
-  `;
+  <h2>تعديل بيانات الطالب</h2>
+
+  <div class="form-group">
+    <label for="editName">الاسم</label>
+    <input type="text" id="editName" autocomplete="off" oninput="showSuggestions(this, document.getElementById('editSuggestions'))">
+<div id="editSuggestions" class="suggestions"></div>
+  </div>
+
+  <button onclick="loadStudentScore()">عرض النتيجة</button>
+
+  <div class="form-group">
+    <label for="currentScore">الدرجة الحالية</label>
+    <input type="text" id="currentScore" disabled placeholder="ستظهر هنا بعد البحث">
+  </div>
+
+  <div class="form-group">
+    <label for="newScore">الدرجة الجديدة</label>
+    <input type="number" id="newScore" min="0" max="10">
+  </div>
+
+  <button onclick="updateStudentScore()">تعديل</button>
+`;
 }
 }
     
@@ -775,9 +785,10 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
       }
 
       const currentScore = data.data[0][getWeekIndex(selectedWeek)];
-      alert(`📌 الدرجة الحالية: ${currentScore}`);
+      document.getElementById("currentScore").value = currentScore !== "" ? currentScore : "-";
     });
 }
+
 
     function getWeekIndex(week) {
   const map = { B:1, C:2, D:3, E:4, F:5, G:6, H:7, I:8, J:9, K:10 };
