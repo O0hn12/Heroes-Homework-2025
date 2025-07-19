@@ -323,6 +323,7 @@ table {
 </div>
 
   <script>
+    let mode = ""; // إما "insert" أو "edit"
     let selectedSheet = "";
     const scriptURL = 'https://hero2025.johnmamdouh777.workers.dev/';
     let allNames = [];
@@ -367,11 +368,13 @@ if (users[username] && users[username] === password) {
   }
 
   function goToInsert() {
-  changePage("chooseActionSection", "choiceSection"); // صفحة الإدخال العادية
+  mode = "insert";
+  changePage("chooseActionSection", "choiceSection");
 }
 
 function goToEdit() {
-  changePage("chooseActionSection", "choiceSection"); // حالياً نفس الصفحة، لكن تقدر تعدلها بعدين
+  mode = "edit";
+  changePage("chooseActionSection", "choiceSection");
 }
 
     function goBackFromChoice() {
@@ -461,6 +464,23 @@ function goToEdit() {
 
     changePage("weekSelectionPage", "dataSection"); // ✅ انتقال صحيح إلى صفحة إدخال البيانات
     console.log("✅ تم الانتقال إلى صفحة إدخال البيانات");
+      const dataSection = document.getElementById("dataSection");
+
+if (mode === "edit") {
+  dataSection.innerHTML = `
+    <h2>تعديل بيانات الطالب</h2>
+    <div class="form-group">
+      <label for="editName">الاسم</label>
+      <input type="text" id="editName" autocomplete="off">
+    </div>
+    <button onclick="loadStudentScore()">عرض النتيجة</button>
+    <div class="form-group">
+      <label for="newScore">الدرجة الجديدة</label>
+      <input type="number" id="newScore" min="0" max="10">
+    </div>
+    <button onclick="updateStudentScore()">تعديل</button>
+  `;
+}
 }
     
 function loadNames() {
@@ -742,6 +762,53 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
     changePage("dataSection", "weekSelectionPage"); // ✅ رجوع للصفحة السابقة
 }
 
+    function loadStudentScore() {
+  const name = document.getElementById("editName").value.trim();
+  if (!name) return alert("❌ أدخل اسم الطالب أولاً");
+
+  fetch(`${scriptURL}?action=searchName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data || !data.found) {
+        alert("❌ الاسم غير موجود!");
+        return;
+      }
+
+      const currentScore = data.data[0][getWeekIndex(selectedWeek)];
+      alert(`📌 الدرجة الحالية: ${currentScore}`);
+    });
+}
+
+    function getWeekIndex(week) {
+  const map = { B:1, C:2, D:3, E:4, F:5, G:6, H:7, I:8, J:9, K:10 };
+  return map[week];
+}
+
+    function updateStudentScore() {
+  const name = document.getElementById("editName").value.trim();
+  const newScore = document.getElementById("newScore").value.trim();
+
+  if (!name || newScore === "") return alert("❌ أدخل الاسم والدرجة الجديدة");
+
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: "updateScore", // دي هتكون الدالة على Google Apps Script
+      name: name,
+      sheet: selectedSheet,
+      week: selectedWeek,
+      newScore: newScore
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(res => res.text())
+  .then(res => {
+    alert("✅ تم تعديل الدرجة بنجاح");
+    loadNames(); // تحديث الجدول بعد التعديل
+  });
+}
   </script>
 
 </body>
