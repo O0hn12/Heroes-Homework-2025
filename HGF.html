@@ -216,12 +216,6 @@ table {
   <button onclick="goToEdit()">تعديل بيانات</button>
 </section>
 
-<!-- رسالة لباقي المستخدمين -->
-<div id="otherUser" class="hidden">
-  <p>يتم تحويلك إلى صفحة إدخال البيانات...</p>
-</div>
-
-
   <!-- ✅ صفحة اختيار الشيت -->
   <div class="choice-section page" id="choiceSection" style="display: none;">
     <h2>اختر الفرقة</h2>
@@ -320,12 +314,15 @@ const users = {
   "hgf": "2182013",
   "john": "123",
   "admin": "000"
+    
+  const currentUser = john;
+
 };
 
 if (users[username] && users[username] === password) {
   // تسجيل دخول ناجح
     alert("تم تسجيل الدخول بنجاح");
-if (currentUser === "جون") {
+if (currentUser === "john") {
     changePage("loginSection", "chooseActionSection"); // صفحة فيها زرين إدخال وتعديل
   } else {
     changePage("loginSection", "choiceSection"); // باقي المستخدمين يروحوا عادي
