@@ -377,13 +377,27 @@ function goToEdit() {
 
 
     function changePage(oldPage, newPage) {
-  document.getElementById(oldPage).classList.remove("active");
-  document.getElementById(oldPage).style.display = "none";
-  document.getElementById(newPage).style.display = "block";
-  setTimeout(() => { document.getElementById(newPage).classList.add("active"); }, 50);
+  // ✅ أخفي الصفحة القديمة
+  const oldEl = document.getElementById(oldPage);
+  if (oldEl) {
+    oldEl.classList.remove("active");
+    oldEl.style.display = "none";
+  }
+
+  // ✅ أظهر الصفحة الجديدة
+  const newEl = document.getElementById(newPage);
+  if (newEl) {
+    newEl.style.display = "block";
+    setTimeout(() => newEl.classList.add("active"), 50);
+  } else {
+    console.error("❌ الصفحة الجديدة غير موجودة:", newPage);
+  }
 
   // ✅ إظهار البحث فقط إذا كانت الصفحة الجديدة هي `dataSection`
-  document.getElementById("searchSection").style.display = (newPage === "dataSection") ? "block" : "none";
+  const searchEl = document.getElementById("searchSection");
+  if (searchEl) {
+    searchEl.style.display = (newPage === "dataSection") ? "block" : "none";
+  }
 
   // ✅ زر الرجوع يظهر في كل الصفحات ما عدا صفحة تسجيل الدخول فقط
   const backButton = document.getElementById("backBtn");
