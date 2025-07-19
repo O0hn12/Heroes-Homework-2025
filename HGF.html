@@ -225,9 +225,7 @@ table {
   </div>
   <button onclick="goToInsert()">إدخال بيانات</button>
   <button onclick="goToEdit()">تعديل بيانات</button>
-  <div id="backButtonContainer">
-    <button id="backBtn" onclick="goBackToWeekSelection()">⬅️ رجوع</button>
-  </div>
+  <button id="chooseBackBtn" class="back-button" style="display: none;" onclick="goBack()">🔙 رجوع</button>
  </section>
 
   
@@ -244,9 +242,7 @@ table {
     <button onclick="selectSheet('6ب')">6ب</button>
   </div>
   
-  <div id="backButtonContainer">
-    <button id="backBtn" onclick="goBackToWeekSelection()">⬅️ رجوع</button>
-</div>
+  <button id="chooseBackBtn" class="back-button" style="display: none;" onclick="goBack()">🔙 رجوع</button>
 
   <!-- ✅ صفحة اختيار الأسبوع -->
 <div id="weekSelectionPage" class="page" style="display: none;">
@@ -266,9 +262,7 @@ table {
         <button onclick="selectWeek('K')">الأسبوع العاشر</button>
     </div>
 </div>
-  <div id="backButtonContainer">
-    <button id="backBtn" onclick="goBackToWeekSelection()">⬅️ رجوع</button>
-</div>
+  <button id="chooseBackBtn" class="back-button" style="display: none;" onclick="goBack()">🔙 رجوع</button>
 
   <!-- ✅ صفحة إدخال البيانات -->
 <div class="data-section page" id="dataSection" style="display: none;">
