@@ -877,28 +877,25 @@ if (isNaN(scoreNumber) || scoreNumber < 0 || scoreNumber > 10) {
 
   currentWeek = selectedWeek;
 
-  // لو أول مرة لسه ما ضافش صفحة البيانات
   if (!document.getElementById("dataPage")) {
     const template = document.getElementById("dataPageTemplate");
     const clone = template.content.cloneNode(true);
     document.body.appendChild(clone);
 
-    // ✅ هنا بتحط أي أكواد كانت بتربط الزرار بالأحداث
+    // ✅ تفعيل زرار الإرسال بعد ظهور الصفحة
     const submitButton = document.getElementById("submitButton");
     if (submitButton) {
-      submitButton.addEventListener("click", submitData); // ← دي اسم دالة الإرسال بتاعتك
+      submitButton.addEventListener("click", submitData);
     }
+
+    // ✅ لو عندك عناصر تانية زي مربع البحث أو غيره، اربطها هنا بنفس الطريقة
   }
 
-  // إخفاء باقي الصفحات
+  // إخفاء كل الصفحات وفتح صفحة الإدخال
   document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
-
-  // إظهار صفحة البيانات
   document.getElementById("dataPage").classList.remove("hidden");
-
   console.log("✅ تم الانتقال إلى صفحة إدخال البيانات");
 }
-
   </script>
 
 </body>
