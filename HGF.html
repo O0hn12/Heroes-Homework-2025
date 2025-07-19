@@ -146,6 +146,14 @@ table {
     display: inline-block; /* ✅ يمنع امتداد الخلفية خارج النص */
     width: fit-content; /* ✅ يجعل الخلفية بنفس عرض النص */
 }
+    .welcome-box {
+    background-color: #f0f0f0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: inline-block;
+  }
     
     /* تحسين التصميم على شاشات الموبايل */
     @media screen and (max-width: 768px) {
@@ -209,12 +217,14 @@ table {
     <button id="loginBtn">login</button>
   </div>
 
-  <!-- صفحة الاختيار الخاصة بجون -->
-<section id="chooseActionSection" style="display: none; text-align: center; padding: 20px;">
-  <h2>مرحبًا يا جون، اختر الإجراء:</h2>
+  <section id="chooseActionSection" style="display: none; text-align: center; padding: 20px;">
+  <div class="welcome-box">
+    <h2>مرحبًا اختر الإجراء:</h2>
+  </div>
   <button onclick="goToInsert()">إدخال بيانات</button>
   <button onclick="goToEdit()">تعديل بيانات</button>
 </section>
+
 
   <!-- ✅ صفحة اختيار الشيت -->
   <div class="choice-section page" id="choiceSection" style="display: none;">
