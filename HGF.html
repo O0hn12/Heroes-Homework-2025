@@ -784,7 +784,7 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
         return;
       }
 
-      const currentScore = data.data[0][getWeekIndex(selectedWeek) + 1];
+      const currentScore = data.row[getWeekIndex(selectedWeek)];
       document.getElementById("currentScore").value = currentScore !== "" ? currentScore : "-";
     });
 }
@@ -801,17 +801,8 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
 
   if (!name || newScore === "") return alert("❌ أدخل الاسم والدرجة الجديدة");
 
-  fetch(`${scriptURL}?action=updateScore`, {
-  method: 'POST',
-  body: JSON.stringify({
-    name: name,
-    sheet: selectedSheet,
-    week: selectedWeek,
-    score: newScore
-  }),
-  headers: {
-    'Content-Type': 'application/json'
-  }
+  fetch(`${scriptURL}?action=updateScore&sheet=${selectedSheet}&week=${selectedWeek}&name=${encodeURIComponent(name)}&score=${newScore}`, {
+  method: 'GET'
 })
   .then(res => res.text())
   .then(res => {
