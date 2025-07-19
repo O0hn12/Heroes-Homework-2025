@@ -797,6 +797,10 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
 
     function updateStudentScore(sheet, name, week, score) {
   try {
+    const scoreNumber = Number(score);
+if (isNaN(scoreNumber) || scoreNumber < 0 || scoreNumber > 10) {
+  return { success: false, message: "❌ الدرجة يجب أن تكون رقم بين 0 و 10" };
+}
     const range = sheet.getRange("A2:A" + sheet.getLastRow()).getValues();
     let rowIndex = -1;
     for (let i = 0; i < range.length; i++) {
