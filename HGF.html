@@ -676,7 +676,7 @@ const data = {
   .catch(err => console.error("❌ خطأ أثناء إرسال البيانات:", err));
       // ✅ تحقق من الأسبوع السابق إن وجد
 const allWeeks = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
-const currentScore = Array.isArray(data.data?.[0]) ? data.data[0][getWeekIndex(selectedWeek)] : "-";
+const currentScore = Array.isArray(data?.data?.[0]) ? data.data[0][getWeekIndex(selectedWeek)] : "-";
 if (currentWeekIndex > 0) {
   const prevWeek = allWeeks[currentWeekIndex - 1];
 
