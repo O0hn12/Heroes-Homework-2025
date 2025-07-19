@@ -314,22 +314,21 @@ const users = {
   "hgf": "2182013",
   "john": "123",
   "admin": "000"
-    
-  const currentUser = john;
-
 };
 
 if (users[username] && users[username] === password) {
-  // تسجيل دخول ناجح
-    alert("تم تسجيل الدخول بنجاح");
-if (currentUser === "john") {
+  alert("تم تسجيل الدخول بنجاح");
+
+  const currentUser = username; // ✅ المتغير يجب أن يأخذ من username
+
+  if (currentUser === "john") {
     changePage("loginSection", "chooseActionSection"); // صفحة فيها زرين إدخال وتعديل
   } else {
     changePage("loginSection", "choiceSection"); // باقي المستخدمين يروحوا عادي
   }
-  } else {
-    alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة!");
-  }
+} else {
+  alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة!");
+}
 });
     
     function checkUser() {
