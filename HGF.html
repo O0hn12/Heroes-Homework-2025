@@ -860,7 +860,7 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
   const week = document.getElementById("reportWeekInput").value.trim();
   if (!week) return alert("❌ الرجاء اختيار الأسبوع.");
 
-  fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
+  fetch(`${scriptURL}?action=getStudentScores&sheet=${selectedSheet}`)
     .then(res => res.json())
     .then(data => {
       const index = getWeekIndex(week);
@@ -886,7 +886,7 @@ function generateWeekReport() {
   const week = document.getElementById("reportWeekInput").value.trim();
   if (!week) return alert("❌ الرجاء إدخال اسم الأسبوع.");
 
-  fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
+  fetch(`${scriptURL}?action=getStudentScores&sheet=${selectedSheet}`)
     .then(res => res.json())
     .then(data => {
       const index = getWeekIndex(week);
