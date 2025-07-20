@@ -510,7 +510,7 @@ function loadNames() {
         return; 
     }
 
-    fetch(`https://hero2025.johnmamdouh777.workers.dev/?action=getAllNames&sheet=${encodeURIComponent(selectedSheet)}`)
+    fetch(`${scriptURL}?action=getStudentScores&sheet=${selectedSheet}`)
     .then(res => res.text()) // ✅ استقبال الاستجابة كنص لفحص نوع البيانات
     .then(data => {
         console.log("📌 استجابة السيرفر:", data); // ✅ فحص البيانات المستلمة
