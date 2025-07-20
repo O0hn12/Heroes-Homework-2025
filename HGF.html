@@ -458,6 +458,7 @@ if (mode === "edit") {
   dataSection.innerHTML = `
   <h2>تعديل بيانات الطالب</h2>
 
+  <!-- 🔁 قسم تعديل الدرجة -->
   <div class="form-group">
     <label for="editName">الاسم</label>
     <input type="text" id="editName" autocomplete="off" oninput="showSuggestions(this, document.getElementById('editSuggestions'))">
@@ -469,22 +470,23 @@ if (mode === "edit") {
     <input type="number" id="newScore" min="0" max="10">
   </div>
 
-  <button onclick="updateStudentScore()">تعديل</button>
-  `;
-  dataSection.innerHTML = `
-  <h2>عرض تقرير الأسبوع</h2>
+  <button onclick="updateStudentScore()">✅ تعديل</button>
+
+  <hr>
+
+  <!-- 📊 قسم التقارير -->
+  <h2>تقرير الأسبوع</h2>
 
   <div class="form-group">
-    <label for="reportWeekInput">اكتب اسم الأسبوع (مثلاً: B)</label>
+    <label for="reportWeekInput">اختر اسم الأسبوع (زي: B)</label>
     <input type="text" id="reportWeekInput" autocomplete="off">
   </div>
 
   <button onclick="showWeekCount()">📊 عرض العدد</button>
-  <button onclick="generateWeekReport()">📋 تقرير الأسبوع</button>
+  <button onclick="generateWeekReport()">📋 عرض التقرير</button>
 
   <div id="weekReportResult"></div>
-`;
-
+  `;
 }
 // ⬇️ أضف ده لإنه بيكمل إغلاق الدالة الأصلية
 }
