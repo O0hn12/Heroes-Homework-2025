@@ -473,7 +473,7 @@ if (mode === "edit") {
   <div class="form-group">
     <label for="editName">الاسم</label>
     <input type="text" id="editName" autocomplete="off" oninput="showSuggestions(this, document.getElementById('editSuggestions'))">
-<div id="editSuggestions" class="suggestions"></div>
+    <div id="editSuggestions" class="suggestions"></div>
   </div>
 
   <div class="form-group">
@@ -483,6 +483,8 @@ if (mode === "edit") {
 
   <button onclick="updateStudentScore()">تعديل</button>
   `;
+}
+// ⬇️ أضف ده لإنه بيكمل إغلاق الدالة الأصلية
 }
     
 function loadNames() {
