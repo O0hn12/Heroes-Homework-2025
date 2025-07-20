@@ -470,28 +470,20 @@ if (mode === "edit") {
   dataSection.innerHTML = `
   <h2>تعديل بيانات الطالب</h2>
 
-  <div class="form-group">
-    <label for="editName">الاسم</label>
-    <input type="text" id="editName" autocomplete="off" oninput="showSuggestions(this, document.getElementById('editSuggestions'))">
-<div id="editSuggestions" class="suggestions"></div>
-  </div>
+<div class="form-group">
+  <label for="editName">الاسم</label>
+  <input type="text" id="editName" autocomplete="off" 
+         oninput="showSuggestions(this, document.getElementById('editSuggestions'))">
+  <div id="editSuggestions" class="suggestions"></div>
+</div>
 
-  <button onclick="loadStudentScore()">عرض النتيجة</button>
+<div class="form-group">
+  <label for="newScore">الدرجة الجديدة</label>
+  <input type="number" id="newScore" min="0" max="10">
+</div>
 
-  <div class="form-group">
-    <label for="currentScore">الدرجة الحالية</label>
-    <input type="text" id="currentScore" disabled placeholder="ستظهر هنا بعد البحث">
-  </div>
+<button onclick="updateStudentScore()">تعديل</button>
 
-  <div class="form-group">
-    <label for="newScore">الدرجة الجديدة</label>
-    <input type="number" id="newScore" min="0" max="10">
-  </div>
-
-  <button onclick="updateStudentScore()">تعديل</button>
-`;
-}
-}
     
 function loadNames() {
     if (!selectedSheet) {
