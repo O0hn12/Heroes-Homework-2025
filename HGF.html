@@ -336,7 +336,13 @@ table {
 
 const users = {
   "hgf": "2182013",
-  "john": "123",
+  "John": "123",
+  "Selvana": "123",
+  "Maria": "123",
+  "Mariam": "123",
+  "Bebo": "123",
+  "Magood": "123",
+  "Andro": "123",
   "admin": "000"
 };
 
@@ -345,11 +351,13 @@ if (users[username] && users[username] === password) {
 
   const currentUser = username; // ✅ المتغير يجب أن يأخذ من username
 
-  if (currentUser === "john") {
-    changePage("loginSection", "chooseActionSection"); // صفحة فيها زرين إدخال وتعديل
-  } else {
-    changePage("loginSection", "choiceSection"); // باقي المستخدمين يروحوا عادي
-  }
+  const privilegedUsers = ["John", "Selvana", "Maria", "Mariam", "Bebo", "Magood", "Andro", "admin"]; // ✅ ضيف أي مستخدم مميز هنا
+
+if (privilegedUsers.includes(currentUser)) {
+  changePage("loginSection", "chooseActionSection");
+} else {
+  changePage("loginSection", "choiceSection");
+}
 } else {
   alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة!");
 }
