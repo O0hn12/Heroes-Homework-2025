@@ -481,16 +481,16 @@ if (mode === "edit") {
     <label for="reportWeekInput">اختر اسم الأسبوع (زي: B)</label>
     <select id="reportWeekInput">
   <option value="">اختر الأسبوع</option>
-  <option value="B">الأسبوع الأول</option>
-  <option value="C">الأسبوع الثاني</option>
-  <option value="D">الأسبوع الثالث</option>
-  <option value="E">الأسبوع الرابع</option>
-  <option value="F">الأسبوع الخامس</option>
-  <option value="G">الأسبوع السادس</option>
-  <option value="H">الأسبوع السابع</option>
-  <option value="I">الأسبوع الثامن</option>
-  <option value="J">الأسبوع التاسع</option>
-  <option value="K">الأسبوع العاشر</option>
+  <option value="الأسبوع الأول">الأسبوع الأول</option>
+  <option value="الأسبوع الثاني">الأسبوع الثاني</option>
+  <option value="الأسبوع الثالث">الأسبوع الثالث</option>
+  <option value="الأسبوع الرابع">الأسبوع الرابع</option>
+  <option value="الأسبوع الخامس">الأسبوع الخامس</option>
+  <option value="الأسبوع السادس">الأسبوع السادس</option>
+  <option value="الأسبوع السابع">الأسبوع السابع</option>
+  <option value="الأسبوع الثامن">الأسبوع الثامن</option>
+  <option value="الأسبوع التاسع">الأسبوع التاسع</option>
+  <option value="الأسبوع العاشر">الأسبوع العاشر</option>
 </select>
   </div>
 
@@ -785,8 +785,16 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
 
     function getWeekIndex(weekName) {
   const weekMap = {
-    "B": 1, "C": 2, "D": 3, "E": 4, "F": 5,
-    "G": 6, "H": 7, "I": 8, "J": 9, "K": 10
+    "الأسبوع الأول": 1,
+    "الأسبوع الثاني": 2,
+    "الأسبوع الثالث": 3,
+    "الأسبوع الرابع": 4,
+    "الأسبوع الخامس": 5,
+    "الأسبوع السادس": 6,
+    "الأسبوع السابع": 7,
+    "الأسبوع الثامن": 8,
+    "الأسبوع التاسع": 9,
+    "الأسبوع العاشر": 10
   };
   return weekMap[weekName] ?? undefined;
 }
