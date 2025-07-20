@@ -788,16 +788,16 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
 
     function getWeekIndex(weekName) {
   const weekMap = {
-    "الاسبوع الاول": 1,
-    "الاسبوع التانى": 2,
-    "الاسبوع الثالث": 3,
-    "الاسبوع الرابع": 4,
-    "الاسبوع الخامس": 5,
-    "الاسبوع السادس": 6,
-    "الاسبوع السابع": 7,
-    "الاسبوع الثامن": 8,
-    "الاسبوع التاسع": 9,
-    "الاسبوع العاشر": 10
+    "الاسبوع الاول": 0,
+    "الاسبوع التانى": 1,
+    "الاسبوع الثالث": 2,
+    "الاسبوع الرابع": 3,
+    "الاسبوع الخامس": 4,
+    "الاسبوع السادس": 5,
+    "الاسبوع السابع": 6,
+    "الاسبوع الثامن": 7,
+    "الاسبوع التاسع": 8,
+    "الاسبوع العاشر": 9
   };
   return weekMap[weekName] ?? undefined;
 }
@@ -859,32 +859,7 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
     });
 }
     
-    function showWeekCount() {
-  const week = document.getElementById("reportWeekInput").value.trim();
-  if (!week) return alert("❌ الرجاء اختيار الأسبوع.");
-
-  fetch(`${scriptURL}?action=getStudentScores&sheet=${selectedSheet}`)
-    .then(res => res.json())
-    .then(data => {
-      const index = getWeekIndex(week);
-      if (!data.students || index === undefined) {
-        document.getElementById("weekCountDisplay").textContent = "❌ لا يمكن حساب العدد لهذا الأسبوع.";
-        return;
-      }
-
-      const count = data.students.reduce((acc, student) => {
-        const score = student.scores?.[index];
-        return score && score !== "-" ? acc + 1 : acc;
-      }, 0);
-
-      document.getElementById("weekCountDisplay").textContent = `✅ عدد الطلاب الذين لديهم درجة في الأسبوع ${week}: ${count}`;
-    })
-    .catch(err => {
-      console.error("❌ خطأ في حساب العدد:", err);
-      document.getElementById("weekCountDisplay").textContent = "❌ حدث خطأ أثناء حساب العدد.";
-    });
-}
-
+    س
 function generateWeekReport() {
   const week = document.getElementById("reportWeekInput").value.trim();
   if (!week) return alert("❌ الرجاء إدخال اسم الأسبوع.");
