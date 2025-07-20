@@ -495,6 +495,7 @@ if (mode === "edit") {
   </div>
 
   <button onclick="showWeekCount()">📊 عرض العدد</button>
+  <div id="weekCountDisplay" class="form-group"></div>
   <button onclick="generateWeekReport()">📋 عرض التقرير</button>
 
   <div id="weekReportResult"></div>
@@ -783,14 +784,11 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
 }
 
     function getWeekIndex(weekName) {
-  const weeks = [
-    "First Week", "Second Week", "Third Week", "Fourth Week", 
-    "Fifth Week", "Sixth Week", "Seventh Week", "Eighth Week", 
-    "Ninth Week", "Tenth Week", "Eleventh Week", "Twelfth Week"
-  ];
-  const baseIndex = 1; // لأن العمود A فيه الاسم
-  const index = weeks.indexOf(weekName);
-  return index !== -1 ? baseIndex + index : baseIndex;
+  const weekMap = {
+    "B": 1, "C": 2, "D": 3, "E": 4, "F": 5,
+    "G": 6, "H": 7, "I": 8, "J": 9, "K": 10
+  };
+  return weekMap[weekName] ?? undefined;
 }
 
     function updateStudentScore() {
@@ -852,23 +850,30 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
     
     function showWeekCount() {
   const week = document.getElementById("reportWeekInput").value.trim();
-  if (!week) return alert("❌ الرجاء إدخال اسم الأسبوع.");
+  if (!week) return alert("❌ الرجاء اختيار الأسبوع.");
 
   fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
     .then(res => res.json())
     .then(data => {
       const index = getWeekIndex(week);
-      if (!data.students || index === undefined) return alert("❌ بيانات غير صالحة.");
+      if (!data.students || index === undefined) {
+        document.getElementById("weekCountDisplay").textContent = "❌ لا يمكن حساب العدد لهذا الأسبوع.";
+        return;
+      }
 
       const count = data.students.reduce((acc, student) => {
         const score = student.scores?.[index];
         return score && score !== "-" ? acc + 1 : acc;
       }, 0);
 
-      alert(`✅ عدد الخلايا المملوءة بالدرجات في ${week}: ${count}`);
+      document.getElementById("weekCountDisplay").textContent = `✅ عدد الطلاب الذين لديهم درجة في الأسبوع ${week}: ${count}`;
     })
-    .catch(err => console.error("❌ خطأ في حساب العدد:", err));
+    .catch(err => {
+      console.error("❌ خطأ في حساب العدد:", err);
+      document.getElementById("weekCountDisplay").textContent = "❌ حدث خطأ أثناء حساب العدد.";
+    });
 }
+
 function generateWeekReport() {
   const week = document.getElementById("reportWeekInput").value.trim();
   if (!week) return alert("❌ الرجاء إدخال اسم الأسبوع.");
