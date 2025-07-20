@@ -483,6 +483,20 @@ if (mode === "edit") {
 
   <button onclick="updateStudentScore()">تعديل</button>
   `;
+  dataSection.innerHTML = `
+  <h2>عرض تقرير الأسبوع</h2>
+
+  <div class="form-group">
+    <label for="reportWeekInput">اكتب اسم الأسبوع (مثلاً: B)</label>
+    <input type="text" id="reportWeekInput" autocomplete="off">
+  </div>
+
+  <button onclick="showWeekCount()">📊 عرض العدد</button>
+  <button onclick="generateWeekReport()">📋 تقرير الأسبوع</button>
+
+  <div id="weekReportResult"></div>
+`;
+
 }
 // ⬇️ أضف ده لإنه بيكمل إغلاق الدالة الأصلية
 }
@@ -882,6 +896,47 @@ const name = allNames.find(n => n.trim() === nameInput.value.trim()) || nameInpu
       console.error("❌ خطأ:", err);
       document.getElementById("resultContainer").innerText = "❌ حدث خطأ أثناء جلب النتيجة.";
     });
+}
+    function showWeekCount() {
+  const week = document.getElementById("reportWeekInput").value.trim();
+  if (!week) return alert("❌ الرجاء إدخال اسم الأسبوع.");
+
+  fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
+    .then(res => res.json())
+    .then(data => {
+      const index = getWeekIndex(week);
+      if (!data.students || index === undefined) return alert("❌ بيانات غير صالحة.");
+
+      const count = data.students.reduce((acc, student) => {
+        const score = student.scores?.[index];
+        return score && score !== "-" ? acc + 1 : acc;
+      }, 0);
+
+      alert(`✅ عدد الخلايا المملوءة بالدرجات في ${week}: ${count}`);
+    })
+    .catch(err => console.error("❌ خطأ في حساب العدد:", err));
+}
+function generateWeekReport() {
+  const week = document.getElementById("reportWeekInput").value.trim();
+  if (!week) return alert("❌ الرجاء إدخال اسم الأسبوع.");
+
+  fetch(`${scriptURL}?action=getAllNames&sheet=${selectedSheet}`)
+    .then(res => res.json())
+    .then(data => {
+      const index = getWeekIndex(week);
+      if (!data.students || index === undefined) return alert("❌ بيانات غير صالحة.");
+
+      let html = `<table><thead><tr><th>الاسم</th><th>الدرجة</th></tr></thead><tbody>`;
+
+      data.students.forEach(student => {
+        const score = student.scores?.[index] ?? "-";
+        html += `<tr><td>${student.name}</td><td>${score}</td></tr>`;
+      });
+
+      html += `</tbody></table>`;
+      document.getElementById("weekReportResult").innerHTML = html;
+    })
+    .catch(err => console.error("❌ خطأ في إنشاء التقرير:", err));
 }
 
   </script>
