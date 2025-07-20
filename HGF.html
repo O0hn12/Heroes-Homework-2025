@@ -894,6 +894,8 @@ function generateWeekReport() {
       document.getElementById("weekReportResult").innerHTML = html;
     })
     .catch(err => console.error("❌ خطأ في إنشاء التقرير:", err));
+  window.generateWeekReport = generateWeekReport;
+
 }
     function showWeekCount() {
   const week = document.getElementById("reportWeekInput").value.trim();
@@ -920,6 +922,7 @@ function generateWeekReport() {
       console.error("❌ خطأ في حساب العدد:", err);
       document.getElementById("weekCountDisplay").textContent = "❌ حدث خطأ أثناء حساب العدد.";
     });
+      window.showWeekCount = showWeekCount;
 }
 
   </script>
