@@ -351,7 +351,7 @@ if (users[username] && users[username] === password) {
 
   const currentUser = username; // ✅ المتغير يجب أن يأخذ من username
 
-  const privilegedUsers = ["John", "Selvana", "Maria", "Mariam", "Bebo", "Magood", "Andro", "admin"]; // ✅ ضيف أي مستخدم مميز هنا
+  const privilegedUsers = ["john", "selvana", "maria", "mariam", "bebo", "magood", "andro", "admin"]; // ✅ ضيف أي مستخدم مميز هنا
 
 if (privilegedUsers.includes(currentUser)) {
   changePage("loginSection", "chooseActionSection");
