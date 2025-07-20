@@ -798,9 +798,15 @@ const name = allNames.find(n => n.trim() === nameInput.value.trim()) || nameInpu
 }
 
 
-    function getWeekIndex(week) {
-  const map = { B:1, C:2, D:3, E:4, F:5, G:6, H:7, I:8, J:9, K:10 };
-  return map[week];
+    function getWeekIndex(weekName) {
+  const weeks = [
+    "First Week", "Second Week", "Third Week", "Fourth Week", 
+    "Fifth Week", "Sixth Week", "Seventh Week", "Eighth Week", 
+    "Ninth Week", "Tenth Week", "Eleventh Week", "Twelfth Week"
+  ];
+  const baseIndex = 1; // لأن العمود A فيه الاسم
+  const index = weeks.indexOf(weekName);
+  return index !== -1 ? baseIndex + index : baseIndex;
 }
 
     function updateStudentScore() {
@@ -861,7 +867,7 @@ const name = allNames.find(n => n.trim() === nameInput.value.trim()) || nameInpu
 }
     function getStudentResult() {
   const name = document.getElementById("studentNameInput").value.trim();
-  const sheet = "اسم_الشيت"; // غيّر ده حسب اسم الشيت الحقيقي
+  const sheet = document.getElementById("sheetSelect").value;
   const url = `https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?action=getRowByName&sheet=${encodeURIComponent(sheet)}&name=${encodeURIComponent(name)}`;
 
   fetch(url)
@@ -871,9 +877,11 @@ const name = allNames.find(n => n.trim() === nameInput.value.trim()) || nameInpu
       if (!data.row || data.row.length === 0) {
         container.innerText = "❌ لم يتم العثور على الطالب.";
       } else {
-        // افترض إن الدرجة في العمود رقم 2 مثلاً:
-        const score = data.row[1]; 
-        container.innerText = `✅ درجة المغامر: ${score}`;
+        const selectedWeek = document.getElementById("weekSelect").value; // ← لازم تضيف ده
+        const headerRow = data.row; // ← الصف كامل
+        const weekIndex = getWeekIndex(selectedWeek); // ← نحدد العمود بناءً على الأسبوع
+        const score = data.row[weekIndex] ?? "غير مسجل";
+        container.innerText = `✅ درجة المغامر في ${selectedWeek}: ${score}`;
       }
     })
     .catch(err => {
