@@ -881,6 +881,32 @@ function generateWeekReport() {
     })
     .catch(err => console.error("❌ خطأ في إنشاء التقرير:", err));
 }
+    function showWeekCount() {
+  const week = document.getElementById("reportWeekInput").value.trim();
+  if (!week) return alert("❌ الرجاء اختيار الأسبوع.");
+
+  fetch(`${scriptURL}?action=getStudentScores&sheet=${selectedSheet}`)
+    .then(res => res.json())
+    .then(data => {
+      const index = getWeekIndex(week);
+      if (!data.students || index === undefined) {
+        document.getElementById("weekCountDisplay").textContent = "❌ لا يمكن حساب العدد لهذا الأسبوع.";
+        return;
+      }
+
+      const count = data.students.reduce((acc, student) => {
+        const score = student.scores?.[index];
+        return score !== undefined && score !== "" && score !== "-" ? acc + 1 : acc;
+      }, 0);
+
+      document.getElementById("weekCountDisplay").textContent =
+        `✅ عدد الطلاب الذين لديهم درجة في الأسبوع ${week}: ${count}`;
+    })
+    .catch(err => {
+      console.error("❌ خطأ في حساب العدد:", err);
+      document.getElementById("weekCountDisplay").textContent = "❌ حدث خطأ أثناء حساب العدد.";
+    });
+}
 
   </script>
 
