@@ -532,13 +532,6 @@ function loadNames() {
 
         let tableBody = document.querySelector("#resultTable tbody");
         tableBody.innerHTML = "";
-
-        // ✅ تحقق من `students` قبل التنفيذ
-        if (!data.students || !Array.isArray(data.students)) {
-            console.error("❌ البيانات المستلمة لا تحتوي على `students`.");
-            return;
-        }
-
         data.students.forEach(student => {
             let scores = Array.isArray(student.scores) ? student.scores : [];
             while (scores.length < 9) { 
