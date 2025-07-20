@@ -803,8 +803,11 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
 }
 
     function updateStudentScore() {
-  const name = document.getElementById("editName").value.trim();
-  const newScore = document.getElementById("newScore").value.trim();
+  const nameInput = document.getElementById("editName");
+  const scoreInput = document.getElementById("newScore");
+
+  const name = nameInput.value.trim();
+  const newScore = scoreInput.value.trim();
 
   if (!name || newScore === "") {
     alert("❌ يجب إدخال الاسم والدرجة الجديدة!");
@@ -812,7 +815,7 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
   }
 
   const scoreNumber = Number(newScore);
-    if (isNaN(scoreNumber) || scoreNumber < 0 || scoreNumber > 10) {
+  if (isNaN(scoreNumber) || scoreNumber < 0 || scoreNumber > 10) {
     alert("❌ الدرجة يجب أن تكون رقمًا بين 0 و10!");
     return;
   }
@@ -844,7 +847,13 @@ table.style.display = "table"; // ✅ تأكد من ظهور الجدول فقط
         const response = JSON.parse(data);
         if (response.success) {
           alert("✅ تم تعديل الدرجة بنجاح!");
-          loadNames(); // إعادة تحميل البيانات بعد التحديث
+
+          // ✅ مسح الخانات بعد التعديل
+          nameInput.value = "";
+          scoreInput.value = "";
+
+          // ✅ إعادة تحميل البيانات المحدثة
+          loadNames();
         } else {
           alert("❌ فشل التعديل: " + (response.message || "خطأ غير معروف"));
         }
