@@ -510,7 +510,7 @@ function loadNames() {
         return; 
     }
 
-    fetch(`${scriptURL}?action=getStudentScores&sheet=${selectedSheet}`)
+    fetch(`${scriptURL}?action=getNames&sheet=${selectedSheet}`)
     .then(res => res.text()) // ✅ استقبال الاستجابة كنص لفحص نوع البيانات
     .then(data => {
         console.log("📌 استجابة السيرفر:", data); // ✅ فحص البيانات المستلمة
