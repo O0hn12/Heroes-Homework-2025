@@ -859,6 +859,28 @@ const name = allNames.find(n => n.trim() === nameInput.value.trim()) || nameInpu
       alert("❌ حدث خطأ أثناء إرسال البيانات إلى السيرفر!");
     });
 }
+    function getStudentResult() {
+  const name = document.getElementById("studentNameInput").value.trim();
+  const sheet = "اسم_الشيت"; // غيّر ده حسب اسم الشيت الحقيقي
+  const url = `https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?action=getRowByName&sheet=${encodeURIComponent(sheet)}&name=${encodeURIComponent(name)}`;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("resultContainer");
+      if (!data.row || data.row.length === 0) {
+        container.innerText = "❌ لم يتم العثور على الطالب.";
+      } else {
+        // افترض إن الدرجة في العمود رقم 2 مثلاً:
+        const score = data.row[1]; 
+        container.innerText = `✅ درجة المغامر: ${score}`;
+      }
+    })
+    .catch(err => {
+      console.error("❌ خطأ:", err);
+      document.getElementById("resultContainer").innerText = "❌ حدث خطأ أثناء جلب النتيجة.";
+    });
+}
 
   </script>
 
