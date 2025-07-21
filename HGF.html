@@ -758,7 +758,7 @@ function searchName() {
       row.appendChild(nameCell);
 
       // ✅ توزيع الدرجات على الأعمدة الصحيحة للأسابيع
-      let scores = response.row.slice(1);
+      let scores = Array.isArray(response.data) ? response.data.slice(1) : [];
       for (let i = 0; i < 9; i++) {
         const td = document.createElement("td");
         td.textContent = scores[i] !== undefined && scores[i] !== "" ? scores[i] : "-";
