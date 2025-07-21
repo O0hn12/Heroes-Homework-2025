@@ -512,25 +512,24 @@ if (mode === "insert") {
 function selectWeek(weekCode) {
   selectedWeek = weekCode;
 
-  // ✅ تحديث الاسم في الواجهة لو موجود
+  // ✅ تحديث النص في الواجهة لو حابب يظهر
   const weekLabel = document.getElementById("selectedWeek");
   if (weekLabel) weekLabel.textContent = weekCode;
 
   console.log("✅ تم اختيار الأسبوع:", weekCode);
 
-  // ✅ لو الوضع هو إدخال بيانات، انتقل مباشرة لصفحة الإدخال
+  // ✅ لو المستخدم العادي في وضع إدخال، يتم التنقل للصفحة مباشرة
   if (mode === "insert") {
     changePage("weekSelectionPage", "dataSection");
-
-    // ✳️ تحديث واجهة الإدخال لو حابب يبان اسم الفرقة والأسبوع بشكل واضح
-    const sheetLabel = document.getElementById("selectedSheet");
-    if (sheetLabel) sheetLabel.textContent = selectedSheet;
     
-    const weekInfo = document.getElementById("selectedWeek");
-    if (weekInfo) weekInfo.textContent = weekCode;
-  }
+    // ✅ تحديث العنصر اللي بيعرض اسم الأسبوع في صفحة الإدخال
+    const selectedWeekLabel = document.getElementById("selectedWeek");
+    if (selectedWeekLabel) selectedWeekLabel.textContent = weekCode;
 
-  // ✅ لو في وضع تعديل، لا تعمل شيء — لأن اختيار الأسبوع مش جزء من المسار
+    // ✅ تحديث اسم الشيت كمان لو موجود
+    const selectedSheetLabel = document.getElementById("selectedSheet");
+    if (selectedSheetLabel) selectedSheetLabel.textContent = selectedSheet;
+  }
 }
   
 function loadNames() {
