@@ -416,90 +416,92 @@ function goToEdit() {
   selectedWeek = "";
 
   // ✅ تحديث العناصر في الواجهة
-  document.getElementById("selectedSheet").textContent = selectedSheet;
-  document.getElementById("selectedWeek").textContent = "❌ لم يتم الاختيار بعد";
+  const sheetLabel = document.getElementById("selectedSheet");
+  if (sheetLabel) sheetLabel.textContent = selectedSheet;
+
+  const weekLabel = document.getElementById("selectedWeek");
+  if (weekLabel) weekLabel.textContent = "❌ لم يتم الاختيار بعد";
 
   alert(`✅ تم اختيار ${sheetName}`);
-  loadNames();
+  loadNames(); // ✅ تحميل الأسماء من السيرفر
 
-  // ✅ الانتقال المناسب حسب الوضع الحالي
+  // ✅ تغيير الصفحة حسب الوضع الحالي
   if (mode === "edit") {
-    changePage("choiceSection", "dataSection"); // ← نروح لتعديل البيانات مباشرة
+    changePage("choiceSection", "dataSection");
+
+    const dataSection = document.getElementById("dataSection");
+    if (dataSection) {
+      dataSection.innerHTML = `
+        <h2>تعديل بيانات الطالب</h2>
+
+        <div class="form-group">
+          <label for="editWeekDropdown">اختر الأسبوع:</label>
+          <select id="editWeekDropdown" class="right-align">
+            <option value="">اختر الأسبوع</option>
+            <option value="B">الاسبوع الاول</option>
+            <option value="C">الاسبوع التانى</option>
+            <option value="D">الاسبوع الثالث</option>
+            <option value="E">الاسبوع الرابع</option>
+            <option value="F">الاسبوع الخامس</option>
+            <option value="G">الاسبوع السادس</option>
+            <option value="H">الاسبوع السابع</option>
+            <option value="I">الاسبوع الثامن</option>
+            <option value="J">الاسبوع التاسع</option>
+            <option value="K">الاسبوع العاشر</option>
+          </select>
+
+          <label for="editName">الاسم</label>
+          <input type="text" id="editName" autocomplete="off" oninput="showSuggestions(this, document.getElementById('editSuggestions'))">
+          <div id="editSuggestions" class="suggestions"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="newScore">الدرجة الجديدة</label>
+          <input type="number" id="newScore" min="0" max="10">
+        </div>
+
+        <button onclick="updateStudentScore()">✅ تعديل</button>
+
+        <hr>
+
+        <h2>تقرير الأسبوع</h2>
+        <div class="form-group">
+          <label for="reportWeekInput">اختر الأسبوع</label>
+          <select id="reportWeekInput">
+            <option value="">اختر الأسبوع</option>
+            <option value="الاسبوع الاول">الاسبوع الاول</option>
+            <option value="الاسبوع التانى">الاسبوع التانى</option>
+            <option value="الاسبوع الثالث">الاسبوع الثالث</option>
+            <option value="الاسبوع الرابع">الاسبوع الرابع</option>
+            <option value="الاسبوع الخامس">الاسبوع الخامس</option>
+            <option value="الاسبوع السادس">الاسبوع السادس</option>
+            <option value="الاسبوع السابع">الاسبوع السابع</option>
+            <option value="الاسبوع الثامن">الاسبوع الثامن</option>
+            <option value="الاسبوع التاسع">الاسبوع التاسع</option>
+            <option value="الاسبوع العاشر">الاسبوع العاشر</option>
+          </select>
+        </div>
+
+        <button onclick="showWeekCount()">📊 عرض العدد</button>
+        <div id="weekCountDisplay" class="form-group"></div>
+        <button onclick="generateWeekReport()">📋 عرض التقرير</button>
+        <div id="weekReportResult"></div>
+      `;
+
+      // ✅ ربط الحدث بعد توليد القائمة
+      const weekDropdown = document.getElementById("editWeekDropdown");
+      if (weekDropdown) {
+        weekDropdown.addEventListener("change", function () {
+          selectedWeek = this.value;
+          console.log("✅ تم اختيار الأسبوع:", selectedWeek);
+        });
+      } else {
+        console.warn("❌ لم يتم العثور على editWeekDropdown");
+      }
+    }
   } else {
-    changePage("choiceSection", "weekSelectionPage"); // ← نروح لاختيار الأسبوع
+    changePage("choiceSection", "weekSelectionPage");
   }
-
-
-const dataSection = document.getElementById("dataSection");
-  dataSection.innerHTML = `...`; // ← توليد المحتوى
-
-  // ✅ بعد ما يتولد العنصر، اربط الحدث عليه
-  document.getElementById("editWeekDropdown").addEventListener("change", function () {
-    selectedWeek = this.value;
-    console.log("✅ تم اختيار الأسبوع:", selectedWeek);    
-});
-if (mode === "edit") {
-  dataSection.innerHTML = `
-  <h2>تعديل بيانات الطالب</h2>
-
-  <!-- 🔁 قسم تعديل الدرجة -->
-  <div class="form-group">
-  <label for="editWeekDropdown">اختر الأسبوع:</label>
-<select id="editWeekDropdown" class="right-align">
-  <option value="">اختر الأسبوع</option>
-  <option value="B">الاسبوع الاول</option>
-  <option value="C">الاسبوع التانى</option>
-  <option value="D">الاسبوع الثالث</option>
-  <option value="E">الاسبوع الرابع</option>
-  <option value="F">الاسبوع الخامس</option>
-  <option value="G">الاسبوع السادس</option>
-  <option value="H">الاسبوع السابع</option>
-  <option value="I">الاسبوع الثامن</option>
-  <option value="J">الاسبوع التاسع</option>
-  <option value="K">الاسبوع العاشر</option>
-</select>
-    <label for="editName">الاسم</label>
-    <input type="text" id="editName" autocomplete="off" oninput="showSuggestions(this, document.getElementById('editSuggestions'))">
-    <div id="editSuggestions" class="suggestions"></div>
-  </div>
-
-  <div class="form-group">
-    <label for="newScore">الدرجة الجديدة</label>
-    <input type="number" id="newScore" min="0" max="10">
-  </div>
-
-  <button onclick="updateStudentScore()">✅ تعديل</button>
-
-  <hr>
-
-  <!-- 📊 قسم التقارير -->
-  <h2>تقرير الأسبوع</h2>
-
-  <div class="form-group">
-    <label for="reportWeekInput">اختر الأسبوع</label>
-    <select id="reportWeekInput">
-  <option value="">اختر الأسبوع</option>
-  <option value="الاسبوع الاول">الاسبوع الاول</option>
-  <option value="الاسبوع التانى">الاسبوع التانى</option>
-  <option value="الاسبوع الثالث">الاسبوع الثالث</option>
-  <option value="الاسبوع الرابع">الاسبوع الرابع</option>
-  <option value="الاسبوع الخامس">الاسبوع الخامس</option>
-  <option value="الاسبوع السادس">الاسبوع السادس</option>
-  <option value="الاسبوع السابع">الاسبوع السابع</option>
-  <option value="الاسبوع الثامن">الاسبوع الثامن</option>
-  <option value="الاسبوع التاسع">الاسبوع التاسع</option>
-  <option value="الاسبوع العاشر">الاسبوع العاشر</option>
-</select>
-  </div>
-
-  <button onclick="showWeekCount()">📊 عرض العدد</button>
-  <div id="weekCountDisplay" class="form-group"></div>
-  <button onclick="generateWeekReport()">📋 عرض التقرير</button>
-
-  <div id="weekReportResult"></div>
-  `;
-}
-// ⬇️ أضف ده لإنه بيكمل إغلاق الدالة الأصلية
 }
     
 function loadNames() {
