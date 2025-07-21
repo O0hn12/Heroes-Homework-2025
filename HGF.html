@@ -459,7 +459,11 @@ if (!week) return alert("❌ اختر الأسبوع أولًا من القائ�
         console.error("❌ العنصر selectedSheet غير موجود في HTML! تأكد من إضافته.");
     }
 
-    changePage("weekSelectionPage", "dataSection"); // ✅ انتقال صحيح إلى صفحة إدخال البيانات
+    if (mode === "edit") {
+  changePage("choiceSection", "dataSection");
+} else {
+  changePage("choiceSection", "weekSelectionPage");
+}
     console.log("✅ تم الانتقال إلى صفحة إدخال البيانات");
       const dataSection = document.getElementById("dataSection");
 
