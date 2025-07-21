@@ -435,36 +435,25 @@ function goToEdit() {
     changePage("choiceSection", "weekSelectionPage"); // ✅ انتقال صحيح إلى اختيار الأسبوع
 }
 
-    function selectWeek(weekName) {
-    selectedWeek = weekName;
-    console.log(`🔍 تم اختيار الأسبوع: ${selectedWeek}`); // ✅ تتبع التنفيذ
+    function selectSheet(sheetName) {
+  selectedSheet = sheetName;
+  selectedWeek = "";
 
-    // ✅ تأكد من تحديث الأسبوع داخل HTML
-    const week = document.getElementById("editWeekDropdown")?.value;
-if (!week) return alert("❌ اختر الأسبوع أولًا من القائمة بالأعلى!");
-    if (weekElement) {
-        weekElement.textContent = selectedWeek;
-        console.log(`✅ تم تحديث الأسبوع: ${selectedWeek}`);
-    } else {
-        console.error("❌ العنصر selectedWeek غير موجود في HTML! تأكد من إضافته.");
-        return;
-    }
+  // ✅ تحديث العناصر في الواجهة
+  document.getElementById("selectedSheet").textContent = selectedSheet;
+  document.getElementById("selectedWeek").textContent = "❌ لم يتم الاختيار بعد";
 
-    // ✅ تأكد من أن `selectedSheet` يظهر بوضوح
-    const sheetElement = document.getElementById("selectedSheet");
-    if (sheetElement && selectedSheet) {
-        sheetElement.textContent = selectedSheet;
-        console.log(`✅ الشيت المختار لا يزال محفوظ: ${selectedSheet}`);
-    } else {
-        console.error("❌ العنصر selectedSheet غير موجود في HTML! تأكد من إضافته.");
-    }
+  alert(`✅ تم اختيار ${sheetName}`);
+  loadNames();
 
-    if (mode === "edit") {
-  changePage("choiceSection", "dataSection");
-} else {
-  changePage("choiceSection", "weekSelectionPage");
+  // ✅ الانتقال المناسب حسب الوضع الحالي
+  if (mode === "edit") {
+    changePage("choiceSection", "dataSection"); // ← نروح لتعديل البيانات مباشرة
+  } else {
+    changePage("choiceSection", "weekSelectionPage"); // ← نروح لاختيار الأسبوع
+  }
 }
-    console.log("✅ تم الانتقال إلى صفحة إدخال البيانات");
+
       const dataSection = document.getElementById("dataSection");
 
 if (mode === "edit") {
