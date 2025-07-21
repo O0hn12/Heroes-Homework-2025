@@ -533,10 +533,12 @@ function loadNames() {
 
     let row = document.createElement("tr");
 
+    // ✅ إضافة الاسم
     let nameCell = document.createElement("td");
     nameCell.textContent = student.name || "❌ غير معروف";
     row.appendChild(nameCell);
 
+    // ✅ إضافة الدرجات
     for (let i = 0; i < 9; i++) {
       const td = document.createElement("td");
       td.textContent = scores[i] !== undefined && scores[i] !== "" ? scores[i] : "-";
@@ -548,23 +550,6 @@ function loadNames() {
 } else {
   console.warn("⚠️ البيانات لا تحتوي على مصفوفة طلاب!");
 }
-
-            let row = document.createElement("tr");
-
-            // ✅ إضافة الاسم إلى الصف
-            let nameCell = document.createElement("td");
-            nameCell.textContent = student.name || "❌ غير معروف";
-            row.appendChild(nameCell);
-
-            // ✅ إضافة الدرجات إلى الصف
-            for (let i = 0; i < 9; i++) {
-                const td = document.createElement("td");
-                td.textContent = scores[i] !== undefined && scores[i] !== "" ? scores[i] : "-";
-                row.appendChild(td);
-            }
-
-            tableBody.appendChild(row);
-        });
     }
     .catch(err => console.error("❌ خطأ أثناء تحميل الأسماء:", err));
 }
