@@ -430,7 +430,13 @@ function goToEdit() {
   }
 
 
-      const dataSection = document.getElementById("dataSection");
+const dataSection = document.getElementById("dataSection");
+  dataSection.innerHTML = `...`; // ← توليد المحتوى
+
+  // ✅ بعد ما يتولد العنصر، اربط الحدث عليه
+  document.getElementById("editWeekDropdown").addEventListener("change", function () {
+    selectedWeek = this.value;
+    console.log("✅ تم اختيار الأسبوع:", selectedWeek);    
 
 if (mode === "edit") {
   dataSection.innerHTML = `
