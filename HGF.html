@@ -495,7 +495,11 @@ function goToEdit() {
           selectedWeek = this.value;
           console.log("✅ تم اختيار الأسبوع:", selectedWeek);
         });
-      } else {
+      }
+if (mode === "insert") {
+    changePage("weekSelectionPage", "dataSection");
+  }
+ else {
         console.warn("❌ لم يتم العثور على editWeekDropdown");
       }
     }
