@@ -440,7 +440,8 @@ function goToEdit() {
     console.log(`🔍 تم اختيار الأسبوع: ${selectedWeek}`); // ✅ تتبع التنفيذ
 
     // ✅ تأكد من تحديث الأسبوع داخل HTML
-    const weekElement = document.getElementById("selectedWeek");
+    const week = document.getElementById("editWeekDropdown")?.value;
+if (!week) return alert("❌ اختر الأسبوع أولًا من القائمة بالأعلى!");
     if (weekElement) {
         weekElement.textContent = selectedWeek;
         console.log(`✅ تم تحديث الأسبوع: ${selectedWeek}`);
@@ -468,6 +469,20 @@ if (mode === "edit") {
 
   <!-- 🔁 قسم تعديل الدرجة -->
   <div class="form-group">
+  <label for="editWeekDropdown">اختر الأسبوع:</label>
+<select id="editWeekDropdown">
+  <option value="">اختر الأسبوع</option>
+  <option value="B">الاسبوع الاول</option>
+  <option value="C">الاسبوع التانى</option>
+  <option value="D">الاسبوع الثالث</option>
+  <option value="E">الاسبوع الرابع</option>
+  <option value="F">الاسبوع الخامس</option>
+  <option value="G">الاسبوع السادس</option>
+  <option value="H">الاسبوع السابع</option>
+  <option value="I">الاسبوع الثامن</option>
+  <option value="J">الاسبوع التاسع</option>
+  <option value="K">الاسبوع العاشر</option>
+</select>
     <label for="editName">الاسم</label>
     <input type="text" id="editName" autocomplete="off" oninput="showSuggestions(this, document.getElementById('editSuggestions'))">
     <div id="editSuggestions" class="suggestions"></div>
@@ -486,7 +501,7 @@ if (mode === "edit") {
   <h2>تقرير الأسبوع</h2>
 
   <div class="form-group">
-    <label for="reportWeekInput">اختر اسم الأسبوع (زي: B)</label>
+    <label for="reportWeekInput">اختر الأسبوع</label>
     <select id="reportWeekInput">
   <option value="">اختر الأسبوع</option>
   <option value="الاسبوع الاول">الاسبوع الاول</option>
