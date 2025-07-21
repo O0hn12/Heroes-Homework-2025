@@ -760,7 +760,11 @@ function searchName() {
       row.appendChild(nameCell);
 
       // ✅ توزيع الدرجات على الأعمدة
-      const scores = response.data.slice(1); // ← تفادي الخطأ السابق
+      const scores = Array.isArray(response.data) ? response.data.slice(1) : [];
+
+while (scores.length < 9) {
+  scores.push("-"); // عشان نضمن ظهور كل الأعمدة
+}
       for (let i = 0; i < 9; i++) {
         const td = document.createElement("td");
         td.textContent = scores[i] !== undefined && scores[i] !== "" ? scores[i] : "-";
