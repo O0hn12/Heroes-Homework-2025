@@ -760,7 +760,7 @@ function searchName() {
       const tbody = table.querySelector("tbody");
       tbody.innerHTML = "";
 
-      if (!response || !response.found || !response.row || response.row.length === 0) {
+      if (!response || !response.found || !response.data || response.data.length === 0)
         alert("❌ الاسم غير موجود أو البيانات غير صحيحة!");
         console.error("❌ استجابة البحث فارغة أو غير صالحة:", response);
         return;
@@ -770,7 +770,7 @@ function searchName() {
 
       // ✅ إدراج الاسم في أول عمود
       const nameCell = document.createElement("td");
-      nameCell.textContent = response.row[0] || "❌ الاسم غير موجود";
+      nameCell.textContent = response.data[0] || "❌ الاسم غير موجود";
       row.appendChild(nameCell);
 
       // ✅ توزيع الدرجات على الأعمدة الصحيحة للأسابيع
