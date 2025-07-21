@@ -507,7 +507,32 @@ if (mode === "insert") {
     changePage("choiceSection", "weekSelectionPage");
   }
 }
+  
+
+function selectWeek(weekCode) {
+  selectedWeek = weekCode;
+
+  // ✅ تحديث الاسم في الواجهة لو موجود
+  const weekLabel = document.getElementById("selectedWeek");
+  if (weekLabel) weekLabel.textContent = weekCode;
+
+  console.log("✅ تم اختيار الأسبوع:", weekCode);
+
+  // ✅ لو الوضع هو إدخال بيانات، انتقل مباشرة لصفحة الإدخال
+  if (mode === "insert") {
+    changePage("weekSelectionPage", "dataSection");
+
+    // ✳️ تحديث واجهة الإدخال لو حابب يبان اسم الفرقة والأسبوع بشكل واضح
+    const sheetLabel = document.getElementById("selectedSheet");
+    if (sheetLabel) sheetLabel.textContent = selectedSheet;
     
+    const weekInfo = document.getElementById("selectedWeek");
+    if (weekInfo) weekInfo.textContent = weekCode;
+  }
+
+  // ✅ لو في وضع تعديل، لا تعمل شيء — لأن اختيار الأسبوع مش جزء من المسار
+}
+  
 function loadNames() {
   if (!selectedSheet) {
     console.error("❌ لم يتم اختيار شيت بعد!");
