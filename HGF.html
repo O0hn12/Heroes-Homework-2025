@@ -766,11 +766,11 @@ function searchName() {
       const tbody = table.querySelector("tbody");
       tbody.innerHTML = "";
 
-      if (!response || !response.found || !response.data || response.data.length === 0)
-        alert("❌ الاسم غير موجود أو البيانات غير صحيحة!");
-        console.error("❌ استجابة البحث فارغة أو غير صالحة:", response);
-        return;
-      }
+      if (!response || !response.found || !response.data || response.data.length === 0) {
+  alert("❌ الاسم غير موجود أو البيانات غير صحيحة!");
+  console.error("❌ استجابة البحث فارغة أو غير صالحة:", response);
+  return;
+}
 
       const row = document.createElement("tr");
 
