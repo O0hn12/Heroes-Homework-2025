@@ -526,7 +526,24 @@ function loadNames() {
         tableBody.innerHTML = "";
         if (Array.isArray(data.students)) {
   data.students.forEach(student => {
-    // ... كود العرض هنا
+    let scores = Array.isArray(student.scores) ? student.scores : [];
+    while (scores.length < 9) {
+      scores.push("-");
+    }
+
+    let row = document.createElement("tr");
+
+    let nameCell = document.createElement("td");
+    nameCell.textContent = student.name || "❌ غير معروف";
+    row.appendChild(nameCell);
+
+    for (let i = 0; i < 9; i++) {
+      const td = document.createElement("td");
+      td.textContent = scores[i] !== undefined && scores[i] !== "" ? scores[i] : "-";
+      row.appendChild(td);
+    }
+
+    tableBody.appendChild(row);
   });
 } else {
   console.warn("⚠️ البيانات لا تحتوي على مصفوفة طلاب!");
