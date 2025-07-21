@@ -412,30 +412,6 @@ function goToEdit() {
 }
     
     function selectSheet(sheetName) {
-    selectedSheet = sheetName;
-    selectedWeek = ""; // ✅ تعيينه كقيمة أولية لمنع الأخطاء
-
-    // ✅ تحديث اسم الشيت داخل HTML
-    const sheetElement = document.getElementById("selectedSheet");
-    if (sheetElement) {
-        sheetElement.textContent = selectedSheet;
-        console.log(`✅ تم تحديث اسم الشيت: ${selectedSheet}`);
-    } else {
-        console.error("❌ العنصر selectedSheet غير موجود في HTML!");
-    }
-
-    // ✅ تحديث الأسبوع داخل HTML ليصبح فارغًا
-    const weekElement = document.getElementById("selectedWeek");
-    if (weekElement) {
-        weekElement.textContent = "❌ لم يتم الاختيار بعد"; // ✅ لا تتركه فارغًا
-    }
-
-    alert(`✅ تم اختيار ${sheetName}`);
-    loadNames(); // ✅ تحميل البيانات وفقًا للشيت المختار
-    changePage("choiceSection", "weekSelectionPage"); // ✅ انتقال صحيح إلى اختيار الأسبوع
-}
-
-    function selectSheet(sheetName) {
   selectedSheet = sheetName;
   selectedWeek = "";
 
