@@ -548,10 +548,6 @@ function loadNames() {
 } else {
   console.warn("⚠️ البيانات لا تحتوي على مصفوفة طلاب!");
 }
-            let scores = Array.isArray(student.scores) ? student.scores : [];
-            while (scores.length < 9) { 
-                scores.push("-"); // ✅ ضمان أن كل صف يحتوي على 9 أعمدة
-            }
 
             let row = document.createElement("tr");
 
