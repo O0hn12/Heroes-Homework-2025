@@ -708,11 +708,11 @@ const data = {
   .catch(err => console.error("❌ خطأ أثناء إرسال البيانات:", err));
       // ✅ تحقق من الأسبوع السابق إن وجد
 const allWeeks = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
-const currentScore = Array.isArray(data?.data?.[0]) ? data.data[0][getWeekIndex(selectedWeek)] : "-";
+const currentWeekIndex = allWeeks.indexOf(selectedWeek); // ✅ تحديد الفهرس الحالي
+
 if (currentWeekIndex > 0) {
   const prevWeek = allWeeks[currentWeekIndex - 1];
 
-  // نطلب الصف من Google Sheets
   fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
     .then(res => res.json())
     .then(data => {
@@ -725,9 +725,9 @@ if (currentWeekIndex > 0) {
         'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5,
         'G': 6, 'H': 7, 'I': 8, 'J': 9, 'K': 10
       };
-      const prevWeekIndex = colMap[prevWeek]; // رقم العمود داخل الصف
-
+      const prevWeekIndex = colMap[prevWeek];
       const prevValue = data.row[prevWeekIndex];
+
       if (!prevValue || prevValue === "" || prevValue === "-") {
         alert("⚠️ تم الإدخال بنجاح، لكن الأسبوع السابق لم يتم إدخال بياناته!");
       }
