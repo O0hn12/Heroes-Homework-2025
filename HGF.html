@@ -925,6 +925,49 @@ function generateWeekReport() {
     });
       window.showWeekCount = showWeekCount;
 }
+    function submitWeekData(currentWeekName, currentData) {
+  const previousWeek = getPreviousWeekName(currentWeekName);
+
+  // ارسل بيانات الأسبوع الحالي
+  fetch(`${scriptURL}?action=submitWeek&week=${currentWeekName}`, {
+    method: "POST",
+    body: JSON.stringify(currentData),
+    headers: { "Content-Type": "application/json" }
+  })
+  .then(res => res.text())
+  .then(() => {
+    // بعد إدخال البيانات، تحقق من الأسبوع السابق
+    checkPreviousWeek(previousWeek);
+  })
+  .catch(err => console.error("❌ خطأ أثناء إدخال البيانات:", err));
+}
+
+function getPreviousWeekName(weekName) {
+  const weekNumber = parseInt(weekName.replace("Week ", ""));
+  return `Week ${weekNumber - 1}`;
+}
+
+function checkPreviousWeek(prevWeek) {
+  fetch(`${scriptURL}?action=getWeekData&week=${encodeURIComponent(prevWeek)}`)
+    .then(res => res.text())
+    .then(text => {
+      const response = JSON.parse(text);
+
+      if (!response || !Array.isArray(response.rows) || response.rows.length === 0) {
+        alert(`✅ تم إدخال بيانات الأسبوع الحالي، لكن الأسبوع السابق (${prevWeek}) لا يحتوي على بيانات.`);
+      } else {
+        let emptyRows = response.rows.filter(row => {
+          // افترض إن أول عنصر هو الاسم، والباقي درجات
+          return row.slice(1).every(val => val === "" || val === null || val === 0);
+        });
+
+        if (emptyRows.length === response.rows.length) {
+          alert(`✅ تم إدخال بيانات الأسبوع الحالي، لكن الأسبوع السابق (${prevWeek}) يبدو فاضي تمامًا.`);
+        }
+      }
+    })
+    .catch(err => console.error("❌ خطأ أثناء فحص الأسبوع السابق:", err));
+}
 
   </script>
 
