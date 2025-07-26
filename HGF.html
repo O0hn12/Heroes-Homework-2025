@@ -751,8 +751,11 @@ function searchName() {
   }
 
   fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(search)}`)
-  .then(res => res.text()).then(console.log);
-  .then(response => {
+  .then(res => res.text())
+  .then(text => {
+    console.log("📦 الاستجابة كنص:", text);
+    const response = JSON.parse(text);
+
     if (!response.found || !Array.isArray(response.row)) {
       alert("❌ الاسم غير موجود أو البيانات غير صحيحة!");
       return;
