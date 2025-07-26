@@ -734,7 +734,20 @@ const data = {
         showNotification(finalMessage + " ⚠️ حدث خطأ أثناء التحقق من الأسبوع السابق.");
       });
   } else {
-    showNotification(finalMessage);
+    const box = document.getElementById("notificationBox");
+box.textContent = finalMessage;
+box.style.display = "block";
+box.style.background = "#ffc107";
+box.style.color = "#000";
+box.style.padding = "10px";
+box.style.margin = "15px 0";
+box.style.borderRadius = "8px";
+box.style.fontWeight = "bold";
+
+// لو حابب يختفي بعد وقت معيّن:
+setTimeout(() => {
+  box.style.display = "none";
+}, 5000);
   }
 }
 })
@@ -1004,15 +1017,6 @@ function checkPreviousWeek(prevWeek) {
       }
     })
     .catch(err => console.error("❌ خطأ أثناء فحص الأسبوع السابق:", err));
-}
-    function showNotification(message, duration = 5000) {
-  const box = document.getElementById("notificationBox");
-  box.textContent = message;
-  box.style.display = "block";
-
-  setTimeout(() => {
-    box.style.display = "none";
-  }, duration);
 }
     
   </script>
