@@ -727,11 +727,11 @@ const data = {
           finalMessage += ` ⚠️ لكن الأسبوع السابق فاضي!`;
         }
 
-        showNotification(finalMessage);
+        alert(finalMessage);
       })
       .catch(err => {
         console.error("❌ خطأ أثناء التحقق من الأسبوع السابق:", err);
-        showNotification(finalMessage + " ⚠️ حدث خطأ أثناء التحقق من الأسبوع السابق.");
+        alert(`⚠️ تم الإدخال بنجاح، لكن الأسبوع السابق (${prevWeek}) لم يتم إدخال بياناته!`);
       });
   } else {
     const box = document.getElementById("notificationBox");
