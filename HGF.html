@@ -697,15 +697,46 @@ const data = {
     console.log("✅ استجابة Google Apps Script:", response);
     
     if (!response.success) {
-        alert(response.message); // 📌 عرض رسالة الخطأ للمستخدم مباشرة
-        console.error("❌ فشل إدخال البيانات:", response);
-    } else {
-        alert("✅ تم الإدخال بنجاح!");
-        document.getElementById("nameInput").value = "";
-        document.getElementById("numberInput").value = "";
-        loadNames();
-        checkSubmitState();
-    }
+  showNotification(`❌ فشل إدخال البيانات: ${response.message || "غير معروف"}`);
+} else {
+  let finalMessage = "✅ تم الإدخال بنجاح!";
+
+  const allWeeks = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+  const currentWeekIndex = allWeeks.indexOf(selectedWeek);
+
+  if (currentWeekIndex > 0) {
+    const prevWeek = allWeeks[currentWeekIndex - 1];
+
+    fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
+      .then(res => res.text())
+      .then(text => {
+        if (text.startsWith("<!DOCTYPE")) {
+          showNotification("❌ خطأ: السيرفر رجع HTML بدل JSON.");
+          return;
+        }
+
+        const data = JSON.parse(text);
+        const colMap = {
+          'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5,
+          'G': 6, 'H': 7, 'I': 8, 'J': 9, 'K': 10
+        };
+        const prevWeekIndex = colMap[prevWeek];
+        const prevValue = data.row?.[prevWeekIndex];
+
+        if (!prevValue || prevValue === "" || prevValue === "-") {
+          finalMessage += ` ⚠️ لكن الأسبوع السابق فاضي!`;
+        }
+
+        showNotification(finalMessage);
+      })
+      .catch(err => {
+        console.error("❌ خطأ أثناء التحقق من الأسبوع السابق:", err);
+        showNotification(finalMessage + " ⚠️ حدث خطأ أثناء التحقق من الأسبوع السابق.");
+      });
+  } else {
+    showNotification(finalMessage);
+  }
+}
 })
   .catch(err => console.error("❌ خطأ أثناء إرسال البيانات:", err));
       // ✅ تحقق من الأسبوع السابق إن وجد
@@ -750,37 +781,42 @@ function searchName() {
     return;
   }
 
-  fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(search)}`)
+  fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
   .then(res => res.text())
   .then(text => {
-    console.log("📦 الاستجابة كنص:", text);
-    const response = JSON.parse(text);
+    console.log("📦 محتوى الأسبوع السابق:", text);
 
-    if (!response.found || !Array.isArray(response.row)) {
-      alert("❌ الاسم غير موجود أو البيانات غير صحيحة!");
+    // لو الاستجابة بدأت بـ "<!DOCTYPE" فدي صفحة HTML
+    if (text.startsWith("<!DOCTYPE") || text.startsWith("<html")) {
+      alert("❌ تعذر التحقق من الأسبوع السابق: السيرفر رجع صفحة HTML بدل JSON!");
       return;
     }
 
-    const table = document.getElementById("resultTable");
-    const tbody = table.querySelector("tbody");
-    tbody.innerHTML = "";
-
-    const row = document.createElement("tr");
-    const nameCell = document.createElement("td");
-    nameCell.textContent = response.row[0] || "❌ غير معروف";
-    row.appendChild(nameCell);
-
-    const scores = response.row.slice(1);
-    for (let i = 0; i < 9; i++) {
-      const td = document.createElement("td");
-      td.textContent = scores[i] !== undefined && scores[i] !== "" ? scores[i] : "-";
-      row.appendChild(td);
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      alert("❌ الاستجابة غير صالحة للتحليل كـ JSON.");
+      console.error(e);
+      return;
     }
 
-    tbody.appendChild(row);
-    table.style.display = "table";
+    // تابع التحقق بناءً على `data.row` و `colMap` زي ما كنت بتعمل
+    const colMap = {
+      'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5,
+      'G': 6, 'H': 7, 'I': 8, 'J': 9, 'K': 10
+    };
+    const allWeeks = Object.keys(colMap);
+    const currentWeekIndex = allWeeks.indexOf(selectedWeek);
+    const prevWeek = allWeeks[currentWeekIndex - 1];
+    const prevWeekIndex = colMap[prevWeek];
+    const prevValue = data.row?.[prevWeekIndex];
+
+    if (!prevValue || prevValue === "" || prevValue === "-") {
+      alert(`⚠️ تم الإدخال بنجاح، لكن الأسبوع السابق (${prevWeek}) لم يتم إدخال بياناته!`);
+    }
   })
-  .catch(err => console.error("❌ خطأ أثناء البحث:", err));
+  .catch(err => console.error("❌ خطأ أثناء التحقق من الأسبوع السابق:", err));
 }
     
     function goBackToWeekSelection() {
@@ -969,6 +1005,16 @@ function checkPreviousWeek(prevWeek) {
     })
     .catch(err => console.error("❌ خطأ أثناء فحص الأسبوع السابق:", err));
 }
+    function showNotification(message, duration = 5000) {
+  const box = document.getElementById("notificationBox");
+  box.textContent = message;
+  box.style.display = "block";
+
+  setTimeout(() => {
+    box.style.display = "none";
+  }, duration);
+}
+    
   </script>
 
 </body>
