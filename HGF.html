@@ -669,95 +669,94 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
     return;
   }
 
-  const data = {
-    name,
-    number,
-    sheet: selectedSheet,
-    week: selectedWeek
-  };
+  // ⬇️ إضافة التحقق من الاسم قبل الإرسال
+  fetch(`${scriptURL}?action=getNames&sheet=${selectedSheet}`)
+    .then(res => res.json())
+    .then(namesList => {
+      const validNames = Array.isArray(namesList) ? namesList.map(n => n.trim()) : [];
 
-  fetch(scriptURL, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(res => res.text())
-  .then(text => {
-    console.log("📌 استجابة السيرفر:", text);
-    try {
-      return JSON.parse(text);
-    } catch (error) {
-      console.error("❌ خطأ في تحويل البيانات إلى JSON:", error);
-      return { success: false, error: "❌ استجابة غير صالحة" };
-    }
-  })
-  .then(response => {
-    console.log("✅ استجابة Google Apps Script:", response);
+      if (!validNames.includes(name)) {
+        alert("❌ الاسم غير صحيح. يرجى اختياره من الاقتراحات.");
+        return; // يوقف العملية
+      }
 
-    if (!response.success) {
-      showNotification(`❌ فشل إدخال البيانات: ${response.message || "غير معروف"}`);
-      return;
-    }
+      // لو الاسم صحيح، نكمل بباقي الكود زي ما هو عندك 👇
+      const data = {
+        name,
+        number,
+        sheet: selectedSheet,
+        week: selectedWeek
+      };
 
-    let finalMessage = "✅ تم الإدخال بنجاح!";
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(res => res.text())
+      .then(text => {
+        console.log("📌 استجابة السيرفر:", text);
+        try {
+          return JSON.parse(text);
+        } catch (error) {
+          console.error("❌ خطأ في تحويل البيانات إلى JSON:", error);
+          return { success: false, error: "❌ استجابة غير صالحة" };
+        }
+      })
+      .then(response => {
+        console.log("✅ استجابة Google Apps Script:", response);
 
-    // ✅ تفريغ الخانات
-    document.getElementById("nameInput").value = "";
-    document.getElementById("numberInput").value = "";
-    document.getElementById("nameSuggestions").innerHTML = "";
-    document.getElementById("nameInput").focus();
-    checkSubmitState();
+        if (!response.success) {
+          showNotification(`❌ فشل إدخال البيانات: ${response.message || "غير معروف"}`);
+          return;
+        }
 
-    // ✅ تحقق من الأسبوع السابق مع تأخير خفيف لتسريع الأداء
-    const allWeeks = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
-    const currentWeekIndex = allWeeks.indexOf(selectedWeek);
+        let finalMessage = "✅ تم الإدخال بنجاح!";
 
-    if (currentWeekIndex > 0) {
-      const prevWeek = allWeeks[currentWeekIndex - 1];
+        document.getElementById("nameInput").value = "";
+        document.getElementById("numberInput").value = "";
+        document.getElementById("nameSuggestions").innerHTML = "";
+        document.getElementById("nameInput").focus();
+        checkSubmitState();
 
-      setTimeout(() => {
-        fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
-          .then(res => res.text())
-          .then(text => {
-            if (text.startsWith("<!DOCTYPE")) {
-              showNotification("❌ خطأ: السيرفر رجع HTML بدل JSON.");
-              return;
-            }
+        const allWeeks = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+        const currentWeekIndex = allWeeks.indexOf(selectedWeek);
 
-            const data = JSON.parse(text);
-            const colMap = { 'B':1, 'C':2, 'D':3, 'E':4, 'F':5, 'G':6, 'H':7, 'I':8, 'J':9, 'K':10 };
-            const prevValue = data.row?.[colMap[prevWeek]];
+        if (currentWeekIndex > 0) {
+          const prevWeek = allWeeks[currentWeekIndex - 1];
 
-            if (!prevValue || prevValue === "" || prevValue === "-") {
-              finalMessage += ` ⚠️ لكن الأسبوع السابق فاضي!`;
-            }
+          setTimeout(() => {
+            fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
+              .then(res => res.text())
+              .then(text => {
+                if (text.startsWith("<!DOCTYPE")) {
+                  showNotification("❌ خطأ: السيرفر رجع HTML بدل JSON.");
+                  return;
+                }
 
-            alert(finalMessage);
-          })
-          .catch(err => {
-            console.error("❌ خطأ أثناء التحقق من الأسبوع السابق:", err);
-            alert(`⚠️ تم الإدخال بنجاح، لكن الأسبوع السابق (${prevWeek}) لم يتم إدخال بياناته!`);
-          });
-      }, 300); // ⏱️ تأخير لتحسين السرعة
-    } else {
-      const box = document.getElementById("notificationBox");
-      box.textContent = finalMessage;
-      box.style.display = "block";
-      box.style.background = "#ffc107";
-      box.style.color = "#000";
-      box.style.padding = "10px";
-      box.style.margin = "15px 0";
-      box.style.borderRadius = "8px";
-      box.style.fontWeight = "bold";
+                const data = JSON.parse(text);
+                const colMap = { 'B':1, 'C':2, 'D':3, 'E':4, 'F':5, 'G':6, 'H':7, 'I':8, 'J':9, 'K':10 };
+                const prevValue = data.row?.[colMap[prevWeek]];
 
-      setTimeout(() => {
-        box.style.display = "none";
-      }, 300);
-    }
-  })
-  .catch(err => console.error("❌ خطأ أثناء إرسال البيانات:", err));
+                if (!prevValue || prevValue === "" || prevValue === "-") {
+                  finalMessage += ` ⚠️ لكن الأسبوع السابق فاضي!`;
+                }
+
+                alert(finalMessage);
+              })
+              .catch(err => {
+                console.error("❌ خطأ أثناء التحقق من الأسبوع السابق:", err);
+                alert(`⚠️ تم الإدخال بنجاح، لكن الأسبوع السابق (${prevWeek}) لم يتم إدخال بياناته!`);
+              });
+          }, 300);
+        }
+      })
+      .catch(err => console.error("❌ خطأ أثناء إرسال البيانات:", err));
+    })
+    .catch(err => {
+      console.error("❌ فشل جلب الأسماء للتحقق:", err);
+      alert("⚠️ حدث خطأ أثناء التحقق من الاسم.");
+    });
 }
     
 function searchName() {
