@@ -714,39 +714,51 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
           }
 
           let finalMessage = "✅ تم الإدخال بنجاح!";
-          document.getElementById("nameInput").value = "";
-          document.getElementById("numberInput").value = "";
-          document.getElementById("nameSuggestions").innerHTML = "";
-          document.getElementById("nameInput").focus();
-          checkSubmitState();
-
           const allWeeks = ['B','C','D','E','F','G','H','I','J','K'];
           const currentWeekIndex = allWeeks.indexOf(selectedWeek);
+
           if (currentWeekIndex > 0) {
             const prevWeek = allWeeks[currentWeekIndex - 1];
-            setTimeout(() => {
-              fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
-                .then(res => res.text())
-                .then(text => {
-                  if (text.startsWith("<!DOCTYPE")) {
-                    showNotification("❌ السيرفر رجع HTML بدل JSON.");
-                    return;
-                  }
-                  const data = JSON.parse(text);
-                  const colMap = { B:1, C:2, D:3, E:4, F:5, G:6, H:7, I:8, J:9, K:10 };
-                  const prevValue = data.row?.[colMap[prevWeek]];
-                  if (!prevValue || prevValue === "" || prevValue === "-") {
-                    finalMessage += ` ⚠️ لكن الأسبوع السابق فاضي!`;
-                  }
-                  alert(finalMessage);
-                })
-                .catch(err => {
-                  console.error("❌ خطأ أثناء التحقق من الأسبوع السابق:", err);
-                  alert(`⚠️ تم الإدخال بنجاح، لكن الأسبوع السابق (${prevWeek}) لم يتم إدخال بياناته!`);
-                });
-            }, 300);
+            fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
+              .then(res => res.text())
+              .then(text => {
+                if (text.startsWith("<!DOCTYPE")) {
+                  showNotification("❌ السيرفر رجع HTML بدل JSON.");
+                  return;
+                }
+                const data = JSON.parse(text);
+                const colMap = { B:1, C:2, D:3, E:4, F:5, G:6, H:7, I:8, J:9, K:10 };
+                const rawPrevValue = data.row?.[colMap[prevWeek]];
+                const prevValue = typeof rawPrevValue === "string" ? rawPrevValue.trim() : rawPrevValue;
+
+                if (prevValue === "" || prevValue === "-" || prevValue === null || isNaN(prevValue)) {
+                  finalMessage += ` ⚠️ لكن الأسبوع السابق فاضي!`;
+                }
+
+                alert(finalMessage);
+                // ✅ بعد الـ alert فضي الخانات
+                document.getElementById("nameInput").value = "";
+                document.getElementById("numberInput").value = "";
+                document.getElementById("nameSuggestions").innerHTML = "";
+                document.getElementById("nameInput").focus();
+                checkSubmitState();
+              })
+              .catch(err => {
+                console.error("❌ خطأ أثناء التحقق من الأسبوع السابق:", err);
+                alert(`⚠️ تم الإدخال بنجاح، لكن الأسبوع السابق (${prevWeek}) لم يتم إدخال بياناته!`);
+                document.getElementById("nameInput").value = "";
+                document.getElementById("numberInput").value = "";
+                document.getElementById("nameSuggestions").innerHTML = "";
+                document.getElementById("nameInput").focus();
+                checkSubmitState();
+              });
           } else {
             alert(finalMessage);
+            document.getElementById("nameInput").value = "";
+            document.getElementById("numberInput").value = "";
+            document.getElementById("nameSuggestions").innerHTML = "";
+            document.getElementById("nameInput").focus();
+            checkSubmitState();
           }
         })
         .catch(err => {
