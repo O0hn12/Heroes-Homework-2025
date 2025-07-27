@@ -670,6 +670,9 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
     return;
   }
 
+  const cleanedName = name.toLowerCase().trim();
+
+  // ✅ أول fetch: الأسماء
   fetch(`${scriptURL}?action=getNames&sheet=${selectedSheet}`)
     .then(res => res.json())
     .then(response => {
@@ -677,93 +680,72 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
         ? response.names.map(n => n.trim().toLowerCase())
         : [];
 
-      const cleanedName = name.toLowerCase().trim();
-
       if (!namesArray.includes(cleanedName)) {
         alert("❌ الاسم غير صحيح. يرجى اختياره من الاقتراحات.");
         return;
       }
 
-      const data = {
-        name: name.trim(),
-        number,
-        sheet: selectedSheet,
-        week: selectedWeek
-      };
+      const allWeeks = ['B','C','D','E','F','G','H','I','J','K'];
+      const currentWeekIndex = allWeeks.indexOf(selectedWeek);
+      const prevWeek = currentWeekIndex > 0 ? allWeeks[currentWeekIndex - 1] : null;
 
-      fetch(scriptURL, {
+      const postData = fetch(scriptURL, {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: JSON.stringify({ name, number, sheet: selectedSheet, week: selectedWeek }),
         headers: { 'Content-Type': 'application/json' }
-      })
-        .then(res => res.text())
-        .then(text => {
-          console.log("📌 استجابة السيرفر:", text);
-          let response;
+      });
+
+      const prevWeekData = prevWeek
+        ? fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
+        : Promise.resolve(null);
+
+      // ✅ تنفيذ الاثنين معًا
+      Promise.all([postData, prevWeekData])
+        .then(async ([postRes, rowRes]) => {
+          const postText = await postRes.text();
+          let postResponse;
           try {
-            response = JSON.parse(text);
+            postResponse = JSON.parse(postText);
           } catch (error) {
-            console.error("❌ خطأ في تحويل البيانات إلى JSON:", error);
+            console.error("❌ خطأ في تحويل الإدخال إلى JSON:", error);
             alert("⚠️ حدث خطأ أثناء معالجة الاستجابة.");
             return;
           }
 
-          if (!response.success) {
-            showNotification(`❌ فشل إدخال البيانات: ${response.message || "غير معروف"}`);
+          if (!postResponse.success) {
+            showNotification(`❌ فشل إدخال البيانات: ${postResponse.message || "غير معروف"}`);
             return;
           }
 
           let finalMessage = "✅ تم الإدخال بنجاح!";
-          const allWeeks = ['B','C','D','E','F','G','H','I','J','K'];
-          const currentWeekIndex = allWeeks.indexOf(selectedWeek);
 
-          if (currentWeekIndex > 0) {
-            const prevWeek = allWeeks[currentWeekIndex - 1];
-            fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
-              .then(res => res.text())
-              .then(text => {
-                if (text.startsWith("<!DOCTYPE")) {
-                  showNotification("❌ السيرفر رجع HTML بدل JSON.");
-                  return;
-                }
-                const data = JSON.parse(text);
-                const colMap = { B:1, C:2, D:3, E:4, F:5, G:6, H:7, I:8, J:9, K:10 };
-                const rawPrevValue = data.row?.[colMap[prevWeek]];
-                const prevValue = typeof rawPrevValue === "string" ? rawPrevValue.trim() : rawPrevValue;
+          if (rowRes) {
+            const rowText = await rowRes.text();
+            if (rowText.startsWith("<!DOCTYPE")) {
+              showNotification("❌ السيرفر رجع HTML بدل JSON.");
+            } else {
+              const data = JSON.parse(rowText);
+              const colMap = { B:1, C:2, D:3, E:4, F:5, G:6, H:7, I:8, J:9, K:10 };
+              const rawPrevValue = data.row?.[colMap[prevWeek]];
+              const prevValue = typeof rawPrevValue === "string" ? rawPrevValue.trim() : rawPrevValue;
 
-                if (prevValue === "" || prevValue === "-" || prevValue === null || isNaN(prevValue)) {
-                  finalMessage += ` ⚠️ لكن الأسبوع السابق فاضي!`;
-                }
-
-                alert(finalMessage);
-                // ✅ بعد الـ alert فضي الخانات
-                document.getElementById("nameInput").value = "";
-                document.getElementById("numberInput").value = "";
-                document.getElementById("nameSuggestions").innerHTML = "";
-                document.getElementById("nameInput").focus();
-                checkSubmitState();
-              })
-              .catch(err => {
-                console.error("❌ خطأ أثناء التحقق من الأسبوع السابق:", err);
-                alert(`⚠️ تم الإدخال بنجاح، لكن الأسبوع السابق (${prevWeek}) لم يتم إدخال بياناته!`);
-                document.getElementById("nameInput").value = "";
-                document.getElementById("numberInput").value = "";
-                document.getElementById("nameSuggestions").innerHTML = "";
-                document.getElementById("nameInput").focus();
-                checkSubmitState();
-              });
-          } else {
-            alert(finalMessage);
-            document.getElementById("nameInput").value = "";
-            document.getElementById("numberInput").value = "";
-            document.getElementById("nameSuggestions").innerHTML = "";
-            document.getElementById("nameInput").focus();
-            checkSubmitState();
+              if (prevValue === "" || prevValue === "-" || prevValue === null || isNaN(prevValue)) {
+                finalMessage += ` ⚠️ لكن الأسبوع السابق فاضي!`;
+              }
+            }
           }
+
+          alert(finalMessage);
+          // ✅ بعد الـ alert: فضي الخانات
+          document.getElementById("nameInput").value = "";
+          document.getElementById("numberInput").value = "";
+          document.getElementById("nameSuggestions").innerHTML = "";
+          document.getElementById("nameInput").focus();
+          checkSubmitState();
         })
         .catch(err => {
-          console.error("❌ خطأ أثناء إرسال البيانات:", err);
-          alert("⚠️ تعذر الاتصال بالسيرفر.");
+          console.error("❌ خطأ أثناء الإدخال أو التحقق من الأسبوع السابق:", err);
+          alert("⚠️ حصل خطأ أثناء إرسال أو التحقق.");
         });
     })
     .catch(err => {
