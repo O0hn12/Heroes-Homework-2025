@@ -675,10 +675,13 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
     .then(namesList => {
       const validNames = Array.isArray(namesList) ? namesList.map(n => n.trim()) : [];
 
-      if (!validNames.includes(name)) {
-        alert("❌ الاسم غير صحيح. يرجى اختياره من الاقتراحات.");
-        return; // يوقف العملية
-      }
+      const cleanedName = name.trim();
+const cleanedValidNames = validNames.map(n => n.trim());
+
+if (!cleanedValidNames.includes(cleanedName)) {
+  alert("❌ الاسم غير صحيح. يرجى اختياره من الاقتراحات.");
+  return;
+}
 
       // لو الاسم صحيح، نكمل بباقي الكود زي ما هو عندك 👇
       const data = {
