@@ -673,7 +673,8 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
   fetch(`${scriptURL}?action=getNames&sheet=${selectedSheet}`)
     .then(res => res.json())
     .then(namesList => {
-      const validNames = Array.isArray(namesList) ? namesList.map(n => n.trim()) : [];
+      .then(response => {
+  const namesArray = Array.isArray(response.names) ? response.names.map(n => n.trim()) : [];
 
       const cleanedName = name.trim();
 const cleanedValidNames = validNames.map(n => n.trim());
