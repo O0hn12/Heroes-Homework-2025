@@ -722,11 +722,17 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
     let finalMessage = "✅ تم الإدخال بنجاح!";
 
     if (rowRes) {
-      const rowText = await rowRes.text();
-      if (rowText.startsWith("<!DOCTYPE")) {
-        showNotification("❌ السيرفر رجع HTML بدل JSON.");
+  try {
+    const rowText = await rowRes.text();
+    if (rowText.startsWith("<!DOCTYPE") || rowText.startsWith("<html")) {
+      console.warn("❌ السيرفر رجّع HTML بدل JSON:", rowText.slice(0, 100));
+      finalMessage += " ⚠️ لم يمكن التحقق من الأسبوع السابق (الرد غير صالح).";
+    } else {
+      const data = JSON.parse(rowText);
+
+      if (!data.row || !Array.isArray(data.row)) {
+        finalMessage += " ⚠️ لم يتم العثور على بيانات الأسبوع السابق.";
       } else {
-        const data = JSON.parse(rowText);
         const colMap = { B:1, C:2, D:3, E:4, F:5, G:6, H:7, I:8, J:9, K:10 };
         const rawPrevValue = data.row?.[colMap[prevWeek]];
         const prevValue = typeof rawPrevValue === "string" ? rawPrevValue.trim() : rawPrevValue;
@@ -736,6 +742,11 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
         }
       }
     }
+  } catch (e) {
+    console.error("❌ فشل في تحليل رد الأسبوع السابق:", e);
+    finalMessage += " ⚠️ لم يمكن التحقق من الأسبوع السابق (تحليل فشل).";
+  }
+}
 
     alert(finalMessage);
 
