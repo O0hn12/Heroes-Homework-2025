@@ -715,7 +715,7 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
     }
 
     if (!postResponse.success) {
-      showNotification(`❌ فشل إدخال البيانات: ${postResponse.message || "غير معروف"}`);
+      alert(`❌ فشل إدخال البيانات: ${postResponse.message || "غير معروف"}`);
       return;
     }
 
