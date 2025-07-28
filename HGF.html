@@ -653,7 +653,7 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
   document.getElementById("submitBtn").disabled = !(validNumber && hasName);
 }
 
-    function submitData() {
+    async function submitData() {
   console.log("✅ تم الضغط على زر الإدخال");
 
   if (!selectedSheet) {
@@ -672,86 +672,84 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
 
   const cleanedName = name.toLowerCase().trim();
 
-  // ✅ أول fetch: الأسماء
-  fetch(`${scriptURL}?action=getNames&sheet=${selectedSheet}`)
-    .then(res => res.json())
-    .then(response => {
-      const namesArray = Array.isArray(response.names)
-        ? response.names.map(n => n.trim().toLowerCase())
-        : [];
+  try {
+    const namesResponse = await fetch(`${scriptURL}?action=getNames&sheet=${selectedSheet}`);
+    const namesJson = await namesResponse.json();
 
-      if (!namesArray.includes(cleanedName)) {
-        alert("❌ الاسم غير صحيح. يرجى اختياره من الاقتراحات.");
-        return;
-      }
+    const namesArray = Array.isArray(namesJson.names)
+      ? namesJson.names.map(n => n.trim().toLowerCase())
+      : [];
 
-      const allWeeks = ['B','C','D','E','F','G','H','I','J','K'];
-      const currentWeekIndex = allWeeks.indexOf(selectedWeek);
-      const prevWeek = currentWeekIndex > 0 ? allWeeks[currentWeekIndex - 1] : null;
+    if (!namesArray.includes(cleanedName)) {
+      alert("❌ الاسم غير صحيح. يرجى اختياره من الاقتراحات.");
+      return;
+    }
 
-      const postData = fetch(scriptURL, {
-        method: 'POST',
-        body: JSON.stringify({ name, number, sheet: selectedSheet, week: selectedWeek }),
-        headers: { 'Content-Type': 'application/json' }
-      });
+    // ✅ جاهز للإرسال
+    const allWeeks = ['B','C','D','E','F','G','H','I','J','K'];
+    const currentWeekIndex = allWeeks.indexOf(selectedWeek);
+    const prevWeek = currentWeekIndex > 0 ? allWeeks[currentWeekIndex - 1] : null;
 
-      const prevWeekData = prevWeek
-        ? fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
-        : Promise.resolve(null);
-
-      // ✅ تنفيذ الاثنين معًا
-      Promise.all([postData, prevWeekData])
-        .then(async ([postRes, rowRes]) => {
-          const postText = await postRes.text();
-          let postResponse;
-          try {
-            postResponse = JSON.parse(postText);
-          } catch (error) {
-            console.error("❌ خطأ في تحويل الإدخال إلى JSON:", error);
-            alert("⚠️ حدث خطأ أثناء معالجة الاستجابة.");
-            return;
-          }
-
-          if (!postResponse.success) {
-            showNotification(`❌ فشل إدخال البيانات: ${postResponse.message || "غير معروف"}`);
-            return;
-          }
-
-          let finalMessage = "✅ تم الإدخال بنجاح!";
-
-          if (rowRes) {
-            const rowText = await rowRes.text();
-            if (rowText.startsWith("<!DOCTYPE")) {
-              showNotification("❌ السيرفر رجع HTML بدل JSON.");
-            } else {
-              const data = JSON.parse(rowText);
-              const colMap = { B:1, C:2, D:3, E:4, F:5, G:6, H:7, I:8, J:9, K:10 };
-              const rawPrevValue = data.row?.[colMap[prevWeek]];
-              const prevValue = typeof rawPrevValue === "string" ? rawPrevValue.trim() : rawPrevValue;
-
-              if (prevValue === "" || prevValue === "-" || prevValue === null || isNaN(prevValue)) {
-                finalMessage += ` ⚠️ لكن الأسبوع السابق فاضي!`;
-              }
-            }
-          }
-
-          alert(finalMessage);
-          // ✅ بعد الـ alert: فضي الخانات
-          document.getElementById("nameInput").value = "";
-          document.getElementById("numberInput").value = "";
-          document.getElementById("nameSuggestions").innerHTML = "";
-          document.getElementById("nameInput").focus();
-          checkSubmitState();
-        })
-        .catch(err => {
-          console.error("❌ خطأ أثناء الإدخال أو التحقق من الأسبوع السابق:", err);
-          alert("⚠️ حصل خطأ أثناء إرسال أو التحقق.");
-        });
-    })
-    .catch(err => {
-      console.error("❌ فشل جلب الأسماء للتحقق:", err);
-      alert("⚠️ حدث خطأ أثناء التحقق من الاسم.");
+    // ✅ تجهيز الطلبات المتوازية
+    const postPromise = fetch(scriptURL, {
+      method: 'POST',
+      body: JSON.stringify({ name, number, sheet: selectedSheet, week: selectedWeek }),
+      headers: { 'Content-Type': 'application/json' }
     });
+
+    const prevWeekPromise = prevWeek
+      ? fetch(`${scriptURL}?action=getRowByName&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
+      : Promise.resolve(null);
+
+    // ✅ انتظر الاثنين معًا
+    const [postRes, rowRes] = await Promise.all([postPromise, prevWeekPromise]);
+
+    const postText = await postRes.text();
+    let postResponse;
+    try {
+      postResponse = JSON.parse(postText);
+    } catch (error) {
+      console.error("❌ خطأ في تحويل الإدخال إلى JSON:", error);
+      alert("⚠️ حدث خطأ أثناء معالجة الاستجابة.");
+      return;
+    }
+
+    if (!postResponse.success) {
+      showNotification(`❌ فشل إدخال البيانات: ${postResponse.message || "غير معروف"}`);
+      return;
+    }
+
+    let finalMessage = "✅ تم الإدخال بنجاح!";
+
+    if (rowRes) {
+      const rowText = await rowRes.text();
+      if (rowText.startsWith("<!DOCTYPE")) {
+        showNotification("❌ السيرفر رجع HTML بدل JSON.");
+      } else {
+        const data = JSON.parse(rowText);
+        const colMap = { B:1, C:2, D:3, E:4, F:5, G:6, H:7, I:8, J:9, K:10 };
+        const rawPrevValue = data.row?.[colMap[prevWeek]];
+        const prevValue = typeof rawPrevValue === "string" ? rawPrevValue.trim() : rawPrevValue;
+
+        if (prevValue === "" || prevValue === "-" || prevValue === null || isNaN(prevValue)) {
+          finalMessage += ` ⚠️ لكن الأسبوع السابق فاضي!`;
+        }
+      }
+    }
+
+    alert(finalMessage);
+
+    // ✅ تصفير الخانات
+    document.getElementById("nameInput").value = "";
+    document.getElementById("numberInput").value = "";
+    document.getElementById("nameSuggestions").innerHTML = "";
+    document.getElementById("nameInput").focus();
+    checkSubmitState();
+
+  } catch (err) {
+    console.error("❌ خطأ أثناء الإدخال:", err);
+    alert("⚠️ حصل خطأ أثناء إرسال البيانات.");
+  }
 }
     
 function searchName() {
