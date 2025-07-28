@@ -716,8 +716,17 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
 
     if (!postResponse.success && postResponse.message?.includes("warningMessage is not defined")) {
   alert("✅ تم الإدخال بنجاح!");
+
+  // ✅ تصفير الخانات يدويًا هنا
+  document.getElementById("nameInput").value = "";
+  document.getElementById("numberInput").value = "";
+  document.getElementById("nameSuggestions").innerHTML = "";
+  document.getElementById("nameInput").focus();
+  checkSubmitState();
+
   return;
-} else if (!postResponse.success) {
+}
+ else if (!postResponse.success) {
   alert(`❌ فشل إدخال البيانات: ${postResponse.message || "غير معروف"}`);
   return;
 }
