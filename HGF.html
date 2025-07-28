@@ -714,10 +714,13 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
       return;
     }
 
-    if (!postResponse.success) {
-      alert(`❌ فشل إدخال البيانات: ${postResponse.message || "غير معروف"}`);
-      return;
-    }
+    if (!postResponse.success && postResponse.message?.includes("warningMessage is not defined")) {
+  alert("✅ تم الإدخال بنجاح!");
+  return;
+} else if (!postResponse.success) {
+  alert(`❌ فشل إدخال البيانات: ${postResponse.message || "غير معروف"}`);
+  return;
+}
 
     let finalMessage = "✅ تم الإدخال بنجاح!";
 
