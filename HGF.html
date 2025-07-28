@@ -939,8 +939,23 @@ function generateWeekReport() {
   if (!week) return alert("❌ الرجاء اختيار الأسبوع.");
 
   fetch(`${scriptURL}?action=getStudentScores&sheet=${selectedSheet}`)
-    .then(res => res.json())
-    .then(data => {
+    .then(res => res.text())
+    .then(text => {
+      if (text.startsWith("<!DOCTYPE") || text.startsWith("<html")) {
+        document.getElementById("weekCountDisplay").textContent = "❌ السيرفر رجّع HTML بدل JSON!";
+        console.error("❌ الرد ليس JSON:", text);
+        return;
+      }
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        document.getElementById("weekCountDisplay").textContent = "❌ فشل تحليل بيانات السيرفر!";
+        console.error("❌ JSON Parse Error:", e);
+        return;
+      }
+
       const index = getWeekIndex(week);
       if (!data.students || index === undefined) {
         document.getElementById("weekCountDisplay").textContent = "❌ لا يمكن حساب العدد لهذا الأسبوع.";
@@ -959,8 +974,8 @@ function generateWeekReport() {
       console.error("❌ خطأ في حساب العدد:", err);
       document.getElementById("weekCountDisplay").textContent = "❌ حدث خطأ أثناء حساب العدد.";
     });
-      window.showWeekCount = showWeekCount;
 }
+    
     function submitWeekData(currentWeekName, currentData) {
   const previousWeek = getPreviousWeekName(currentWeekName);
 
