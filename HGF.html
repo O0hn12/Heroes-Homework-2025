@@ -727,32 +727,30 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
 
     if (rowText.startsWith("<!DOCTYPE") || rowText.startsWith("<html")) {
       console.warn("⚠️ السيرفر رجّع HTML بدل JSON:", rowText.slice(0, 100));
-      finalMessage += " ⚠️ لم يمكن التحقق من الأسبوع السابق (الرد ليس JSON).";
+      // ما نضيفش حاجة للرسالة هنا، نكمل عادي
     } else {
       let data;
       try {
         data = JSON.parse(rowText);
       } catch (parseErr) {
-        console.error("❌ JSON parse error:", parseErr, "↩️ النص:", rowText);
-        finalMessage += " ⚠️ فشل في تحليل بيانات الأسبوع السابق.";
+        console.error("❌ JSON parse error:", parseErr);
         data = null;
       }
 
-      if (data && data.row && Array.isArray(data.row)) {
+      if (data && Array.isArray(data.row)) {
         const colMap = { B:1, C:2, D:3, E:4, F:5, G:6, H:7, I:8, J:9, K:10 };
-        const rawPrevValue = data.row?.[colMap[prevWeek]];
+        const rawPrevValue = data.row[colMap[prevWeek]];
         const prevValue = typeof rawPrevValue === "string" ? rawPrevValue.trim() : rawPrevValue;
 
         if (prevValue === "" || prevValue === "-" || prevValue === null || isNaN(prevValue)) {
           finalMessage += ` ⚠️ لكن الأسبوع السابق فاضي!`;
         }
-      } else {
-        finalMessage += " ⚠️ لم يتم العثور على بيانات الأسبوع السابق.";
+        // ✅ لو فيه رقم → لا تضف أي تنبيه، وكمل عادي
       }
     }
   } catch (err) {
-    console.error("❌ فشل التحقق من الأسبوع السابق:", err);
-    finalMessage += " ⚠️ حدث خطأ أثناء التحقق من الأسبوع السابق.";
+    console.warn("⚠️ لم يمكن فحص الأسبوع السابق (لكن الإدخال نجح):", err);
+    // ما نكسرش حاجة
   }
 }
     alert(finalMessage);
