@@ -345,6 +345,7 @@ const users = {
   "andro": "123",
   "admin": "000" ,
   "jomana": "123" ,
+  "nadeen": "123" ,
   "labota": "204625"
 };
 
@@ -353,7 +354,7 @@ if (users[username] && users[username] === password) {
 
   const currentUser = username; // ✅ المتغير يجب أن يأخذ من username
 
-  const privilegedUsers = ["john", "selvana", "maria", "mariam", "bebo", "magood", "andro", "admin", "jomana" , "labota"];
+  const privilegedUsers = ["john", "selvana", "maria", "mariam", "bebo", "magood", "andro", "admin", "jomana" , "labota" , "nadeen"];
 
 if (privilegedUsers.includes(currentUser)) {
   changePage("loginSection", "chooseActionSection");
