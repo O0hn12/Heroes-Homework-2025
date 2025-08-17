@@ -678,7 +678,7 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
         name, 
         number, 
         sheet: selectedSheet, 
-        week: selectedWeek 
+        week: document.getElementById("weekSelect").value
       }),
       headers: { 'Content-Type': 'application/json' }
     });
