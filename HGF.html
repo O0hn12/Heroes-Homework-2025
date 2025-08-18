@@ -673,30 +673,31 @@ document.getElementById("numberInput").addEventListener("input", checkSubmitStat
   try {
     const res = await fetch(scriptURL, {
       method: 'POST',
-      body: JSON.stringify({ 
-        action: "submitData", 
-        name, 
-        number, 
-        sheet: selectedSheet, 
+      body: JSON.stringify({
+        action: "submitData",
+        name,
+        number,
+        sheet: selectedSheet,
         week: selectedWeek
       }),
       headers: { 'Content-Type': 'application/json' }
     });
 
     const data = await res.json();
+    console.log("📌 استجابة الإدخال:", data);
 
     if (!data.success) {
-      alert(`❌ فشل: ${data.error || "غير معروف"}`);
+      alert(data.error || "❌ فشل الإدخال!");
       return;
     }
 
-    let msg = "✅ تم الإدخال بنجاح!";
+    let msg = data.message || "✅ تم الإدخال بنجاح!";
     if (data.prevWeekEmpty) {
-      msg += " ⚠️ لكن الأسبوع السابق فاضي!";
+      msg += " ⚠️ تنبيه: الأسبوع السابق فارغ!";
     }
     alert(msg);
 
-    // ✅ تصفير الخانات
+    // ✅ تصفير الحقول
     document.getElementById("nameInput").value = "";
     document.getElementById("numberInput").value = "";
     document.getElementById("nameSuggestions").innerHTML = "";
